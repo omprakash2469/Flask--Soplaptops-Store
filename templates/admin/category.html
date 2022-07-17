@@ -1,0 +1,69 @@
+{% extends '/admin/layout.html' %}
+{% block body %}
+
+<!-- Content -->
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4">Categories /<a  href="/admin/categories/add" class="text-muted fw-light text-small cursor-pointer"><small>Add New Category</small></a></h4>
+
+    <!-- All Categories -->
+    <div class="card">
+        <h5 class="card-header"> All Categories </h5>
+        <div class="card-body">
+            <div class="table-responsive text-nowrap">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Category</th>
+                            <th>Description</th>
+                            <th>Image</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category in categories %}
+                        <tr>
+                            <td>
+                                <i class="fab fa-angular fa-lg text-danger me-3"></i>
+                                <strong>{{category.id}}</strong>
+                            </td>
+                            <td>{{category.category_name.capitalize()}}</td>
+                            <td>{{category.category_desc.capitalize()}}</td>
+                            <td><a target="_blank"
+                                    href="{{ url_for('static', filename='/images/categories/' + category.category_img) }}">View</a>
+                            </td>
+                            <td>
+                                <div class="dropdown">
+                                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
+                                        data-bs-toggle="dropdown">
+                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <form action="/admin/categories" method="POST">
+                                            <input type="hidden" name="fId" value="{{category.id}}">
+                                            <button class="dropdown-item" type="submit" name="action" value="editform">
+                                                <i class="bx bx-edit-alt me-1"></i> Edit
+                                            </button>
+                                            <button class="dropdown-item" type="submit" name="action" value="delete">
+                                                <i class="bx bx-trash me-1"></i> Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!--/ All Categories -->
+
+    <hr class="my-5">
+
+</div>
+<!-- / Content -->
+
+{% endblock %}

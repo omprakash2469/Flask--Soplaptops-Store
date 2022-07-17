@@ -1,0 +1,55 @@
+{% extends 'layout.html' %}
+{% block body %}
+
+<section class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="content">
+                    <h1 class="page-name">Gallery</h1>
+                    <ol class="breadcrumb">
+                        <li><a href="/">Home</a></li>
+                        <li class="active">Gallery</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="products section">
+    <div class="container">
+        <div class="row">
+            {% for i in images %}
+            <div class="col-md-4">
+                <div class="product-item" onclick="changeUrl('{{i}}')">
+                    <div class="product-thumb  cursor-pointer" data-toggle="modal" data-target="#product-modal">
+                        <img class="img-responsive" id="n"
+                            src="{{ url_for('static', filename='images/gallery/') }}{{i}}"
+                            alt="product-img">
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Modal -->
+<div class="modal product-modal fade" id="product-modal">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <i class="tf-ion-close"></i>
+    </button>
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-image">
+                    <img class="img-responsive" src="" alt="Gallery Images" id="product-modal-image">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.modal -->
+</div>
+{% endblock %}

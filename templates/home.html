@@ -1,0 +1,187 @@
+{% extends 'layout.html' %}
+{% block body %}
+
+<div class="hero-slider">
+	<div class="slider-item th-fullpage hero-area"
+		style="background-image: url({{ url_for('static', filename='images/slider/slider-1.jpg') }});">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 text-center">
+					<p data-duration-in=".3" data-animation-in="fadeInUp" data-delay-in=".1">DELL</p>
+					<h1 data-duration-in=".3" data-animation-in="fadeInUp" data-delay-in=".5">The Power to do more</h1>
+					<a data-duration-in=".3" data-animation-in="fadeInUp" data-delay-in=".8" class="btn"
+						href="/dell">Shop Now</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="slider-item th-fullpage hero-area"
+		style="background-image: url({{ url_for('static', filename='images/slider/slider-3.jpg') }});">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 text-left">
+					<p data-duration-in=".3" data-animation-in="fadeInUp" data-delay-in=".1">HP</p>
+					<h1 data-duration-in=".3" data-animation-in="fadeInUp" data-delay-in=".5">They should make the world
+						a better place.
+					</h1>
+					<a data-duration-in=".3" data-animation-in="fadeInUp" data-delay-in=".8" class="btn" href="/hp">Shop
+						Now</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="slider-item th-fullpage hero-area"
+		style="background-image: url({{ url_for('static', filename='images/slider/slider-2.jpg') }});">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 text-right">
+					<p data-duration-in=".3" data-animation-in="fadeInUp" data-delay-in=".1">APPLE</p>
+					<h1 data-duration-in=".3" data-animation-in="fadeInUp" data-delay-in=".5">Think Different — But Not
+						Too Different
+					</h1>
+					<a data-duration-in=".3" data-animation-in="fadeInUp" data-delay-in=".8" class="btn"
+						href="/apple">Shop Now</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<section class="product-category section">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="title text-center">
+					<h2>Product Category</h2>
+				</div>
+			</div>
+			<div class="col-md-6">
+				{% for fcategory in firstCategories %}
+				<div class="category-box">
+					<a href="{{fcategory.category_name}}">
+						<img src="/static/images/categories/{{fcategory.category_img}}"
+							alt="{{fcategory.category_desc}}" />
+						<div class="content">
+							<h3>{{fcategory.category_name.capitalize()}}</h3>
+						</div>
+					</a>
+				</div>
+				{% endfor %}
+			</div>
+			<div class="col-md-6">
+				{% for scategory in secondCategories %}
+				<div class="category-box">
+					<a href="{{scategory.category_name}}">
+						<img src="/static/images/categories/{{scategory.category_img}}"
+							alt="{{scategory.category_desc}}" />
+						<div class="content">
+							<h3>{{scategory.category_name.capitalize()}}</h3>
+						</div>
+					</a>
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+</section>
+
+<section class="products section bg-gray">
+	<div class="container">
+		<div class="row">
+			<div class="title text-center">
+				<h2>Trendy Products</h2>
+			</div>
+		</div>
+		<div class="row">
+			{% for i in products %}
+				{% for j in products[i]: %}
+					<div class="col-md-4">
+						<div class="product-item">
+							<div class="product-thumb">
+								<img class="img-responsive"
+									src="{{ url_for('static', filename='images/products/') }}{{i.lower()}}/{{products[i][j]['image']}}"
+									alt="product-img" />
+								<div class="preview-meta">
+									<ul>
+										<li>
+											<a href="/{{i.lower()}}/{{products[i][j]['name'].replace(' ', '-').lower()}}" ><i class="tf-ion-ios-search-strong"></i></a>
+										</li>
+										<li>
+											<form action="/cart" method="POST">
+												<input type="hidden" name="product_id" value="{{products[i][j]['id']}}">
+												<input type="hidden" name="quantity" value="1">
+												<input type="hidden" name="category" value="{{i.lower()}}">
+												<button type="submit"><i class="tf-ion-android-cart"></i></button>
+											</form>
+										</li>
+									</ul>
+								</div>
+							</div>
+							<div class="product-content">
+								<h4><a href="#">{{products[i][j]['name']}}</a></h4>
+								<p class="price">{{products[i][j]['price']}}</p>
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+			{% endfor %}
+		</div>
+	</div>
+</section>
+
+
+<!--
+	Start Call To Action 
+==================================== -->
+<section class="call-to-action bg-gray section" id="subscribe">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12 text-center">
+				<div class="title">
+					<h2>SUBSCRIBE TO NEWSLETTER</h2>
+					<p>Subscribe to our newsletter to get festive offers on laptops. You will be informed when any
+						discount will be offered. Don't forget to subscribe the newsletter.</p>
+				</div>
+				<div class="col-lg-6 col-md-offset-3">
+					<form class="input-group subscription-form" action="/" method="POST">
+						<input type="text" class="form-control" placeholder="Enter Your Email Address" name="email">
+						<span class="input-group-btn">
+							<button class="btn btn-main" type="submit">Subscribe Now!</button>
+						</span>
+					</form><!-- /input-group -->
+				</div><!-- /.col-lg-6 -->
+
+			</div>
+		</div> <!-- End row -->
+	</div> <!-- End container -->
+</section> <!-- End section -->
+
+<section class="section instagram-feed">
+	<div class="container">
+		<div class="row">
+			<div class="title">
+				<h2>View our Gallery</h2>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-12">
+				<div class="instagram-slider slick-initialized slick-slider">
+					<div class="slick-list draggable">
+						<div class="slick-track gallery-track">
+							{% for k in range(1, 6): %}
+								<a href="#" class="slick-slide slick-cloned" style="width: 179px;">
+									<img src="https://media.convertkit.com/post/qLaZULUK-ultimate-instagram-image-sizes-guide.jpg"
+										alt="instagram-image">
+								</a>
+							{% endfor %}
+						</div>
+						<div class="text-center">
+							<a href="/gallery" class="btn btn-main text-center d-inline">View Gallery</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+</section>
+
+{% endblock %}

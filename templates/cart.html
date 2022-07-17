@@ -1,0 +1,81 @@
+{% extends 'layout.html' %}
+{% block body %}
+
+<section class="page-header">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="content">
+          <h1 class="page-name">Cart</h1>
+          <ol class="breadcrumb">
+            <li><a href="/">Home</a></li>
+            <li class="active">cart</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="page-wrapper">
+  <div class="cart shopping">
+    <div class="container">
+      <div class="row">
+        <div class="">
+          <div class="block">
+            <div class="product-list">
+              <table class="table table-hover table-bordered">
+                <thead>
+                  <tr>
+                    <th class="">Item Name</th>
+                    <th class="">Price</th>
+                    <th class="">Qty.</th>
+                    <th class="">Del.</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for i in session['shoppingCart'] %}
+                  <tr class="">
+                    <td class="">
+                      <div class="product-info">
+                        <img width="80" src="images/shop/cart/cart-1.jpg" alt="" />
+                        <a
+                          href="/{{session['shoppingCart'][i]['category']}}/{{session['shoppingCart'][i]['name'].replace(' ', '-').lower()}}">{{session['shoppingCart'][i]['name'].capitalize()}}</a>
+                      </div>
+                    </td>
+                    <td class="">Rs. {{session['shoppingCart'][i]['price']}}</td>
+                    <td class="">{{session['shoppingCart'][i]['quantity']}}</td>
+                    <td class="">
+                      <form action="/del" class="text-center" method="POST">
+                        <input type="hidden" name="category" value="{{session['shoppingCart'][i]['category'].lower()}}">
+                        <input type="hidden" name="product_id" value="{{i}}">
+                        <button class="product-remove" type="submit"><i class="tf-ion-ios-trash"></i></button>
+                      </form>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                  {% if session['shoppingCart'] == {} %}
+                  <tr class="">
+                    <td class="text-center" colspan="4">No Products Added in Cart</td>
+                  </tr>
+                  {% endif %}
+                </tbody>
+              </table>
+
+              <!-- Alert if empty cart is ordered -->
+              {% if session['shoppingCart'] != {} and msg %}
+                <div class="alert alert-danger alert-common alert-dismissible" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                  <i class="tf-ion-alert-circled"></i><span>No Products Added!</span> {{msg}}
+                </div>
+              {% endif %}
+              <a href="/checkout" class="btn btn-main pull-right">Checkout</a>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% endblock %}

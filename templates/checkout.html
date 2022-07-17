@@ -1,0 +1,158 @@
+{% extends 'layout.html' %}
+{% block body %}
+
+<section class="page-header">
+   <div class="container">
+      <div class="row">
+         <div class="col-md-12">
+            <div class="content">
+               <h1 class="page-name">Checkout</h1>
+               <ol class="breadcrumb">
+                  <li><a href="/">Home</a></li>
+                  <li class="active">checkout</li>
+               </ol>
+            </div>
+         </div>
+      </div>
+   </div>
+</section>
+
+<div class="page-wrapper">
+   <div class="checkout shopping">
+      <div class="container">
+         <div class="row">
+            <div class="col-md-8">
+               <div class="block billing-details">
+                  <h4 class="widget-title">Delivery Details</h4>
+                  <form class="checkout-form" method="POST" action="/orders">
+                     <!-- Alert if Details are incomplete -->
+                     {% if msg %}
+                     <div class="alert alert-danger alert-common alert-dismissible mt-20" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                              aria-hidden="true">×</span></button>
+                        <i class="tf-ion-alert-circled"></i><span>Incomplete Details!</span> &nbsp; {{msg}}
+                     </div>
+                     {% endif %}
+                     <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="">
+                     </div>
+                     <div class="checkout-country-code clearfix">
+                        <div class="form-group">
+                           <label for="phone">Phone</label>
+                           <input type="number" class="form-control" id="phone" name="phone" value="" min="0">
+                        </div>
+                        <div class="form-group">
+                           <label for="email">Email</label>
+                           <input type="email" class="form-control" id="email" name="email" value="">
+                        </div>
+                     </div>
+                     <div class="form-group">
+                        <label for="address">Address</label>
+                        <input type="text" class="form-control" id="address" name="address" placeholder="">
+                     </div>
+                     <div class="form-group">
+                        <label for="street">Street</label>
+                        <input type="text" class="form-control" id="street" name="street" placeholder="">
+                     </div>
+                     <div class="checkout-country-code clearfix">
+                        <div class="form-group">
+                           <label for="zipcode">Zip Code</label>
+                           <input type="number" class="form-control" id="zipcode" name="zipcode" value="" min="0">
+                        </div>
+                        <div class="form-group">
+                           <label for="city">City</label>
+                           <input type="text" class="form-control" id="city" name="city" value="">
+                        </div>
+                     </div>
+                     <div class="form-group">
+                        <label for="country">Country</label>
+                        <input type="text" class="form-control" id="country" name="country" value="INDIA" readonly>
+                     </div>
+                     <button type="submit" class="btn btn-main mt-20">place order</button>
+                  </form>
+               </div>
+            </div>
+            <div class="col-md-4">
+               <div class="product-checkout-details">
+                  <div class="block">
+                     <h4 class="widget-title">Order Summary</h4>
+                     {% for i in session['shoppingCart'] %}
+                     <div class="media product-card">
+                        <form action="/del" class="text-center pull-right" method="POST">
+                           <input type="hidden" name="category"
+                              value="{{session['shoppingCart'][i]['category'].lower()}}">
+                           <input type="hidden" name="product_id" value="{{i}}">
+                           <button class="product-remove" type="submit"><i class="tf-ion-ios-trash"></i></button>
+                        </form>
+                        <div class="media-body">
+                           <h4 class="media-heading"><a
+                                 href="/{{session['shoppingCart'][i]['category']}}/{{session['shoppingCart'][i]['name'].replace(' ', '-').lower()}}">{{session['shoppingCart'][i]['name'].capitalize()}}</a>
+                           </h4>
+                           <p class="price">{{session['shoppingCart'][i]['quantity']}} &nbsp; x &nbsp;
+                              Rs.{{session['shoppingCart'][i]['price']}}</p>
+                        </div>
+                     </div>
+                     {% endfor %}
+                     <div class="discount-code">
+                        <p>Delivery Within 1-2 Days - Cash on Delivery</p>
+                     </div>
+                     <ul class="summary-prices">
+                        <li>
+                           <span>Subtotal:</span>
+                           <span class="bracket-price">{% set points = [0] -%}
+                              {% for single_item in session['shoppingCart'] -%}
+                              {% if points.append(points.pop()+ session['shoppingCart'][single_item]["price"] *
+                              session['shoppingCart'][single_item]["quantity"] | int()) -%}{% endif %}
+                              {% endfor %}
+                              {{ points }}</span>
+                        </li>
+                        <li>
+                           <span>Shipping:</span>
+                           <span>Free</span>
+                        </li>
+                     </ul>
+                     <div class="summary-total">
+                        <span>Total</span>
+                        <span class="bracket-price">{% set points = [0] -%}
+                           {% for single_item in session['shoppingCart'] -%}
+                           {% if points.append(points.pop()+ session['shoppingCart'][single_item]["price"] *
+                           session['shoppingCart'][single_item]["quantity"] | int()) -%}{% endif %}
+                           {% endfor %}
+                           {{ points }}</span>
+                     </div>
+                     <div class="verified-icon">
+                        <img src="{{ url_for('static', filename='images/shop/verified.png') }}">
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="coupon-modal" tabindex="-1" role="dialog">
+   <div class="modal-dialog" role="document">
+      <div class="modal-content">
+         <div class="modal-body">
+            <form>
+               <div class="form-group">
+                  <input class="form-control" type="text" placeholder="Enter Coupon Code">
+               </div>
+               <button type="submit" class="btn btn-main">Apply Coupon</button>
+            </form>
+         </div>
+      </div>
+   </div>
+</div>
+
+<Script>
+   let select_first = document.querySelectorAll('.bracket-price')
+   for (i = 0; i < select_first.length; i++) {
+      str = select_first[i].innerText.slice(1, -1)
+      select_first[i].innerText = "Rs. " + str
+   }
+</Script>
+
+{% endblock %}

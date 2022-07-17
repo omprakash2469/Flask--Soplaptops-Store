@@ -1,0 +1,20 @@
+{
+    "params":
+    {
+        "local_server": "True",
+        "database_uri": "mysql://root:@localhost/soplaptops",
+        "blog_name" : "SOP Laptops",
+        "root_uri" : "https://soplaptops.in",
+        "category_images_upload_path": "D:/Python/Flask/Flask Website Template/S.O.P Computers/static/images/categories/",
+        "product_images_upload_path": "D:/Python/Flask/Flask Website Template/S.O.P Computers/static/images/products/",
+        "gallery_images_folder": "D:/Python/Flask/Flask Website Template/S.O.P Computers/static/images/gallery/",
+        "fb_uri": "https://facebook.com/",
+        "inst_uri": "https://instagram.com/",
+        "tw_uri": "https://twitter.com/",
+        "pn_uri": "https://pinterest.com/",
+        "admin": "Omprakash",
+        "admin_password": "##om123@@",
+        "gmail_id": "sampleemail7499@gmail.com",
+        "gmail_password": "forgottenPassword12345"
+    }
+}

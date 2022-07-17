@@ -1,0 +1,4 @@
+1. pip install flask
+2. pip install flask-sqlalchemy
+3. pip install Flask-Mail
+4. pip install mysqlclient - for python version greater than 3

@@ -1,0 +1,139 @@
+{% extends 'layout.html' %}
+{% block body %}
+
+<section class="single-product">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6">
+				<ol class="breadcrumb">
+					<li><a href="/">Home</a></li>
+					<li><a href="/{{details['category'].lower()}}">{{details['category'].capitalize()}}</a></li>
+					<li class="active">{{details['product_name'].capitalize()}}</li>
+				</ol>
+			</div>
+			<div class="col-md-6">
+				<ol class="product-pagination text-right">
+					<li><a href="#"><i class="tf-ion-ios-arrow-left"></i> Previous </a></li>
+					<li><a href="#">Next <i class="tf-ion-ios-arrow-right"></i></a></li>
+				</ol>
+			</div>
+		</div>
+		<div class="row mt-20">
+			<div class="col-md-5">
+				<div class="single-product-slider">
+					<div id='carousel-custom' class='carousel slide' data-ride='carousel'>
+						<div class='carousel-outer'>
+							<!-- me art lab slider -->
+							<div class='carousel-inner ' id="select-first">
+								{% for image in details['urls'] %}
+								<div class='item' >
+									<img src="{{ url_for('static', filename='/images/products/') }}{{details['category'].lower()}}/{{image.image_name}}" alt="" data-zoom-image="images/shop/single-products/product-1.jpg" />
+								</div>
+								{% endfor %}
+							</div>
+							<!-- sag sol -->
+							<a class='left carousel-control' href='#carousel-custom' data-slide='prev'>
+								<i class="tf-ion-ios-arrow-left"></i>
+							</a>
+							<a class='right carousel-control' href='#carousel-custom' data-slide='next'>
+								<i class="tf-ion-ios-arrow-right"></i>
+							</a>
+						</div>
+						
+						<!-- thumb -->
+						<ol class='carousel-indicators mCustomScrollbar meartlab' id="select-first">
+							{% for image in details['urls'] %}
+								<li data-target='#carousel-custom' data-slide-to='0'>
+									<img src="{{ url_for('static', filename='/images/products/') }}{{details['category'].lower()}}/{{image.image_name}}" alt="" />
+								</li>
+							{% endfor %}
+						</ol>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-7">
+				<div class="single-product-details">
+					<h2>{{details['product_name'].title()}}</h2>
+					<p class="product-price">Rs. {{details['price']}}</p>
+					
+					<p class="product-description mt-20">{{formatDetails(details['product_desc'])|safe}}</p>
+
+					<div class="product-link">
+						<span class="format-bold-text">Category :</span>
+						<ul>
+							<li><a href="/{{details['category'].lower()}}">{{details['category'].capitalize()}}</a></li>
+						</ul>
+					</div>
+					<form action="/cart" method="POST">
+						<div class="product-quantity">
+							<span>Quantity :</span>
+							<input id="quantity" type="number" min="1" value="1" name="quantity" class="form-control product-quantity-slider">
+						</div>
+						<input type="hidden" name="product_id" value="{{details['id']}}">
+						<input type="hidden" name="category" value="{{details['category'].lower()}}">
+						<button type="submit" class="btn btn-main mt-20">Add to Cart</button>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="tabCommon mt-20">
+					<ul class="nav nav-tabs">
+						<li class="active"><a>Product Details</a></li>
+					</ul>
+					<div class="tab-content patternbg">
+						<div id="details" class="tab-pane fade active in">
+							<div class="formatDetail">{{formatDetails(details['details'])|safe}}</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- Related products -->
+<section class="products related-products section">
+	<div class="container">
+		<div class="row">
+			<div class="title text-center">
+				<h2>Related Products</h2>
+			</div>
+		</div>
+		<div class="row">
+			{% for i in rProducts %}
+			<div class="col-md-3">
+				<div class="product-item">
+					<div class="product-thumb">
+						<!-- <span class="bage">Sale</span> -->
+						<img class="img-responsive" src="{{ url_for('static', filename='images/products/')}}{{details['category'].lower()}}/{{rProducts[i]['image']}}" alt="product-img" />
+						<div class="preview-meta">
+							<ul>
+								<li>
+									<a href="/{{details['category'].lower()}}/{{rProducts[i]['name'].replace(' ', '-').lower()}}"><i class="tf-ion-ios-search-strong"></i></a>
+								</li>
+								<li>
+									<form action="/cart" method="POST">
+										<input type="hidden" name="product_id" value="{{rProducts[i]['id']}}">
+										<input type="hidden" name="quantity" value="1">
+										<input type="hidden" name="category" value="{{details['category'].lower()}}">
+										<button type="submit"><i class="tf-ion-android-cart"></i></button>
+									</form>
+								</li>
+							</ul>
+                      	</div>
+					</div>
+					<div class="product-content">
+						<h4><a href="/{{details['category'].lower()}}/{{rProducts[i]['name'].replace(' ', '-').lower()}}">{{rProducts[i]['name']}}</a></h4>
+						<p class="price">{{rProducts[i]['price']}}</p>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+</section>
+<script>document.getElementById('select-first').children[0].classList.add('active')</script>
+{% endblock %}
