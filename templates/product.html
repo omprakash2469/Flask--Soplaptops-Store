@@ -1,0 +1,143 @@
+{% extends 'layout.html' %}
+{% block body %}
+
+<!-- MAIN SECTION  -->
+<main class="py-7">
+    <!-- CHECKOUT PAGE -->
+
+    <!-- CHECKOUT HEADING -->
+    <div class="heading-box bg-gray-100 py-8 px-4 lg:py-12 flex">
+        <h1 class="text-2xl lg:text-3xl md:w-[720px] md:m-auto lg:w-[90%] xl:w-[1200px]">
+            <span class="text-gray-400 text-xl">{{details['category']|upper()}} </span>/ {{details['product']|title()}}</h1>
+    </div>
+
+    <section class="text-gray-400 body-font overflow-hidden">
+        <div class="container px-5 py-24 mx-auto">
+            <div class="lg:w-full xl:w-[1200px] mx-auto flex flex-wrap">
+                <div class="images lg:w-1/2 w-full lg:h-autoobject-center rounded">
+                    <img alt="ecommerce" class="object-cover  md:h-[450px] h-[350px] w-full"
+                        src="https://dummyimage.com/400x400" id="active_image">
+                    <div class="product-images grid grid-cols-4 gap-3 my-2 py-4" id="product_images">
+                        {% for image in details['urls'] %}
+                        <img src="{{url_for('static', filename='assets/images/products/')}}{{details['category']}}/{{image.image_name}}"
+                            class="w-full" alt="Great Laptops images">
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
+                    <h2 class="text-sm title-font text-gray-500 tracking-widest font-semibold">
+                        {{details['category'].upper()}}</h2>
+                    <h1 class="text-black text-3xl title-font font-medium mb-1">{{details['product']|title()}}</h1>
+                    <div class="flex mb-4">
+                        <span class="flex items-center">
+                            <svg fill="currentColor" stroke="currentColor" stroke-linecap="round"
+                                stroke-linejoin="round" stroke-width="2" class="w-4 h-4 text-yellow-400"
+                                viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z">
+                                </path>
+                            </svg>
+                            <svg fill="currentColor" stroke="currentColor" stroke-linecap="round"
+                                stroke-linejoin="round" stroke-width="2" class="w-4 h-4 text-yellow-400"
+                                viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z">
+                                </path>
+                            </svg>
+                            <svg fill="currentColor" stroke="currentColor" stroke-linecap="round"
+                                stroke-linejoin="round" stroke-width="2" class="w-4 h-4 text-yellow-400"
+                                viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z">
+                                </path>
+                            </svg>
+                            <svg fill="currentColor" stroke="currentColor" stroke-linecap="round"
+                                stroke-linejoin="round" stroke-width="2" class="w-4 h-4 text-yellow-400"
+                                viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z">
+                                </path>
+                            </svg>
+                            <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2" class="w-4 h-4 text-yellow-400" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z">
+                                </path>
+                            </svg>
+                            <span class="ml-3">4 Reviews</span>
+                        </span>
+                    </div>
+                    <p class="leading-relaxed text-gray-500">{{details['desc']|title()}}</p>
+                    <form action="{{url_for('addCart')}}" method="post">
+                        <div class="flex mt-6 items-center pb-5 border-b-2 border-gray-200 mb-5">
+                            <div class="flex items-center">
+                                <span class="mr-3">Quantity</span>
+                                <label class="relative">
+                                    <input type="number" name="quantity" id="quantity"
+                                        class="w-32 rounded border border-gray-700 focus:ring-2 focus:ring-yellow-900 bg-transparent appearance-none py-2 focus:outline-none focus:border-yellow-500 text-black px-3">
+                                </label>
+                            </div>
+                            <input type="hidden" name="category" value="{{details['category']}}">
+                            <input type="hidden" name="product_id" value="{{details['id']}}">
+                        </div>
+                        <div class="flex">
+                            <span class="title-font font-medium text-2xl text-black">Rs. {{details['price']}}</span>
+                            <button type="submit"
+                                class="flex ml-auto text-white bg-gray-800 border-0 py-2 px-6 focus:outline-none hover:bg-yellow-600 rounded">Add
+                                to Cart</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="product-details mt-12 xl:w-[1200px] xl:mx-auto">
+                <div class="heading">
+                    <h2 class="md:w-fit md:px-5 text-white bg-gray-800 border-0 py-2 pl-3 focus:outline-none">
+                        Product Details</h2>
+                </div>
+                <div class="specifications md:columns-2 p-3 border border-gray-200 text-gray-500">
+                    {{details['details']|safe()}}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RELATED PRODUCTS -->
+    <section class="px-4 py-8">
+        <!-- RELATED PRODUCTS -->
+        <div class="product-category">
+            <!-- RELATED HEADING -->
+            <h1 class="text-base mb-5 sm:text-center md:w-[720px] md:m-auto lg:w-[90%] xl:w-[1200px] font-semibold">
+                RELATED PRODUCTS
+            </h1>
+
+            <!-- RELATED -->
+            <div
+                class="pb-14 space-y-8 sm:w-4/6 sm:m-auto md:grid md:grid-cols-2 md:gap-8 md:w-11/12 xl:grid-cols-3 xl:gap-6 xl:w-[1200px]">
+                {% for i in range(1, 4) %}
+                <div class="product-info md:mt-8">
+                    <figure class="relative">
+                        <div class="relative">
+                            <a href="/"
+                                class="bg-black after:transition-all after:block after:absolute after:inset-0 hover:after:bg-black/30 after:w-full">
+                                <img class="w-full object-cover"
+                                    src="https://dummyimage.com/400x400"
+                                    alt="apple category image">
+                            </a>
+                        </div>
+                        <figcaption class="text-center py-3">
+                            <h2 class="font-semibold mb-1">Intel i5-4th GEN | 4GB RAM</h2>
+                            <p>Rs. 12000</p>
+                        </figcaption>
+                    </figure>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    <script>
+        document.getElementById('active_image').src = document.getElementById('product_images').children[0].src
+    </script>
+</main>
+<!--/ MAIN SECTION  -->
+
+{% endblock %}

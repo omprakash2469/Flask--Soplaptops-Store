@@ -1,101 +1,57 @@
 {% extends 'layout.html' %}
 {% block body %}
+<!-- MAIN SECTION  -->
+<main class="py-7">
+    <!-- CONTACT -->
 
-<section class="page-header">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-12">
-				<div class="content">
-					<h1 class="page-name">Contact Us</h1>
-					<ol class="breadcrumb">
-						<li><a href=".">Home</a></li>
-						<li class="active">Contact</li>
-					</ol>
-				</div>
-			</div>
-		</div>
-	</div>
-</section>
+    <!-- CONTACT HEADING -->
+    <div class="heading-box bg-gray-100 py-8 px-4 lg:py-12">
+        <h1 class="text-2xl md:w-[720px] md:m-auto lg:w-[90%] xl:w-[1200px]">CONTACT US</h1>
+    </div>
+
+    <div class="content-wrapper lg:flex lg:w-[90%] lg:m-auto xl:w-[1200px]">
+        <!-- CONTACT FORM -->
+        <div class="content-box md:w-[720px] md:m-auto lg:w-[55%]">
+            <form action="/contact" method="post" class="w-full px-4 md:px-0 py-10 my-6">
+                <input class="w-full border border-gray-300 px-4 py-3 mb-4 sm:text-left outline-none" type="text"
+                    name="name" id="name" placeholder="Your Name *">
+                <input class="w-full border border-gray-300 px-4 py-3 mb-4 sm:text-left outline-none" type="text"
+                    name="email" id="email" placeholder="Your Email *">
+                <input class="w-full border border-gray-300 px-4 py-3 mb-4 sm:text-left outline-none" type="text"
+                    name="location" id="location" placeholder="Your Location *">
+                <input class="w-full border border-gray-300 px-4 py-3 mb-4 sm:text-left outline-none" type="text"
+                    name="subject" id="subject" placeholder="Your Subject *">
+                <textarea name="message" id="message" cols="30" rows="7" placeholder="Enter Message *"
+                    class="w-full border border-gray-300 px-4 py-3 mb-3 sm:text-left outline-none"></textarea>
+                
+                {% with messages = get_flashed_messages(with_categories=True) %}
+                {% if messages %}
+                {% for category, msg in messages %}
+                <p class="{{category}} text-lg mb-2">{{msg}}</p>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+                <button
+                    class="bg-black text-white w-full py-4 text-xs transition-all hover:bg-gray-800 xl:py-5">SUBMIT</button>
+            </form>
+        </div>
 
 
-<section class="page-wrapper">
-	<div class="contact-section">
-		<div class="container">
-			<div class="row">
-				<!-- Contact Form -->
-				<div class="contact-form col-md-6 " >
-					<form id="contact-form" method="POST" action="/contact" role="form">
-					
-						<div class="form-group">
-							<input type="text" placeholder="Your Name" class="form-control" name="name" id="name">
-						</div>
-						
-						<div class="form-group">
-							<input type="email" placeholder="Your Email" class="form-control" name="email" id="email">
-						</div>
-						
-						<div class="form-group">
-							<input type="text" placeholder="Location" class="form-control" name="location" id="location">
-						</div>
+        <!-- CONTACT INFO -->
+        <div class="contact-info px-4 md:px-0 md:w-[720px] md:m-auto  lg:w-[45%] lg:ml-5 lg:my-0">
+            <ul class="bg-gray-100 py-6 px-5 list-outside lg:mt-16">
+                <li class="flex py-3"><img class="w-5 mr-3" src="/assets/images/icons/delivery.svg" alt="">Free Home
+                    delivery all over pune</li>
+                <li class="flex py-3"><img class="w-5 mr-3" src="/assets/images/icons/call.svg" alt="">+91
+                    9022365428
+                </li>
+                <li class="flex py-3"><img class="w-5 mr-3" src="/assets/images/icons/email.svg" alt=""><a
+                        class="hover:text-slate-600" href="mailto:soplaptops@gmail.com">soplaptops@gmail.com</a></li>
+            </ul>
+        </div>
+    </div>
 
-						<div class="form-group">
-							<input type="text" placeholder="Subject" class="form-control" name="subject" id="subject">
-						</div>
-						
-						<div class="form-group">
-							<textarea rows="6" placeholder="Message" class="form-control" name="message" id="message"></textarea>	
-						</div>
-						
-						<div id="mail-success" class="success">
-							Thank you. The Mailman is on His Way :)
-						</div>
-
-						<div id="mail-fail" class="error">
-							Sorry, don't know what happened. Try later :(
-						</div>
-						
-						<div id="cf-submit">
-							<input type="submit" id="contact-submit" class="btn btn-transparent" value="Submit">
-						</div>						
-						
-					</form>
-				</div>
-				<!-- ./End Contact Form -->
-				
-				<!-- Contact Details -->
-				<div class="contact-details col-md-6 " >
-					<ul class="contact-short-info" >
-						<li>
-							<i class="tf-ion-ios-home"></i>
-							<span>Home Delivery Available in Pune within 2-3 days.</span>
-						</li>
-						<li>
-							<i class="tf-ion-android-phone-portrait"></i>
-							<span>Phone: +91 9022365428</span>
-						</li>
-						<li>
-							<i class="tf-ion-android-mail"></i>
-							<span>Email: sop123@gmail.com</span>
-						</li>
-					</ul>
-					<!-- Footer Social Links -->
-					<div class="social-icon">
-						<ul>
-							<li><a class="fb-icon" href="{{params['fb_uri']}}"><i class="tf-ion-social-facebook"></i></a></li>
-							<li><a target="_blank" href="{{params['tw_uri']}}"><i class="tf-ion-social-twitter"></i></a></li>
-							<li><a target="_blank" href="{{params['inst_uri']}}"><i class="tf-ion-social-instagram"></i></a></li>
-							<li><a target="_blank" href="{{params['pn_uri']}}"><i class="tf-ion-social-pinterest-outline"></i></a></li>
-						</ul>
-					</div>
-					<!--/. End Footer Social Links -->
-				</div>
-				<!-- / End Contact Details -->
-					
-				
-			
-			</div> <!-- end row -->
-		</div> <!-- end container -->
-	</div>
-</section>
+</main>
+<!--/ MAIN SECTION  -->
 
 {% endblock %}

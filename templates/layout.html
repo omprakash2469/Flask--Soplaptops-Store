@@ -1,206 +1,122 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 
 <head>
-
-    <!-- Basic Page Needs
-  ================================================== -->
-    <meta charset="utf-8">
-    <title>S.O.P | Laptops store in Pune</title>
-
-    <!-- Mobile Specific Metas
-  ================================================== -->
+    <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="Construction Html5 Template">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="author" content="SOP Laptops">
-    <meta name="generator" content="Laptops and Computers store in Pune">
-
-    <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}" />
-
-    <!-- Themefisher Icon font -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/themefisher-font/style.css') }}">
-    <!-- bootstrap.min css -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/bootstrap/css/bootstrap.min.css') }}">
-
-    <!-- Animate css -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/animate/animate.css') }}">
-    <!-- Slick Carousel -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/slick/slick.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/slick/slick-theme.css') }}">
-
-    <!-- Main Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+        integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.jsdelivr.net/npm/tw-elements/dist/js/index.min.js"></script>
+    <link rel="icon" href="{{ url_for('static', filename='assets/images/favicon.png')}}" type="image/x-icon" />
+    <title>SOP Laptops Store</title>
 </head>
 
-<body id="body">
+<body>
+    <!-- NAVIGATION -->
+    <nav class="bg-white lg:w-11/12 mx-auto xl:w-[1200px]">
 
-    <!-- Start Top Header Bar -->
-    <section class="top-header">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 col-xs-12 col-sm-4">
-                    <div class="contact-number">
-                        <i class="tf-ion-ios-telephone"></i>
-                        <span>9022365428</span>
-                    </div>
-                </div>
-                <div class="col-md-4 col-xs-12 col-sm-4">
-                    <!-- Site Logo -->
-                    <div class="logo text-center">
-                        <a href="/">
-                            <img src="{{url_for('static', filename='/images/favicon.png')}}" alt="favicon png">
-                        </a>
-                    </div>
-                </div>
-                <div class="col-md-4 col-xs-12 col-sm-4">
-                    <!-- Cart -->
-                    <ul class="top-menu text-right list-inline">
-                        <li class="dropdown cart-nav dropdown-slide">
-                            <a href="/cart" class="dropdown-toggle"><i
-                                    class="tf-ion-android-cart"></i>Cart ({{session['shoppingCart']|count()}})</a>
-                        </li><!-- / Cart -->
+        <!-- TOP BAR -->
+        <div class="hidden lg:flex lg:justify-between lg:items-center lg:py-1 transition-all">
+            <!-- MOBILE NUMBER -->
+            <p class="lg:w-[15%]"><a href="#" class="2xl">+91 9022365428</a></p>
 
-                    </ul><!-- / .nav .navbar-nav .navbar-right -->
-                </div>
+            <!-- GIANT LOGO -->
+            <div class="giant-logo py-7 lg:w-[70%]">
+                <a href="/">
+                    <img src="{{ url_for('static', filename='assets/images/icons/logo.png') }}" class="block w-32 m-auto" alt="Sop laptops logo">
+                </a>
+            </div>
+
+            <!-- CART -->
+            <div class="lg:w-[15%] flex justify-end items-center">
+                <a href="/cart" class="block w-8">
+                    <img class="w-10 mx-auto" src="{{ url_for('static', filename='assets/images/icons/cart.svg') }}" alt="shopping cart">
+                </a>
             </div>
         </div>
-    </section><!-- End Top Header Bar -->
 
+        <!-- LINE -->
+        <hr class="hidden lg:block">
 
-    <!-- Main Menu Section -->
-    <section class="menu">
-        <nav class="navbar navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <h2 class="menu-title">Main Menu</h2>
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
-                        aria-expanded="false" aria-controls="navbar">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
+        <!-- BOTTOM BAR -->
+        <div
+            class="menu-bar flex justify-between items-center px-4 py-3 transition-all sm:py-5 sm:px-8 lg:justify-center">
+            <div class="menu-bar">
 
-                </div><!-- / .navbar-header -->
+                <!-- MENU ICON -->
+                <a href="#" class="block w-4 lg:hidden" onclick="navOpen()">
+                    <img class="w-full object-cover" src="{{ url_for('static', filename='assets/images/icons/equal.png') }}" alt="Menu icon">
+                </a>
 
-                <!-- Navbar Links -->
-                <div id="navbar" class="navbar-collapse collapse text-center">
-                    <ul class="nav navbar-nav">
-
-                        <!-- Home -->
-                        <li class="dropdown ">
-                            <a href="/">Home</a>
-                        </li><!-- / Home -->
-
-
-                        <!-- Brands -->
-                        <li class="dropdown dropdown-slide">
-                            <a href="#!" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"
-                                data-delay="350" role="button" aria-haspopup="true" aria-expanded="false">Brands <span
-                                    class="tf-ion-ios-arrow-down"></span></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="/dell">DELL</a></li>
-                                <li><a href="/hp">HP</a></li>
-                                <li><a href="/lenovo">LENOVO</a></li>
-                                <li><a href="/apple">APPLE</a></li>
-                                <li><a href="/asus">ASUS</a></li>
+                <!-- MENU LIST  -->
+                <div class="absolute bg-white inset-0 z-10 hidden lg:block lg:static" id="menu-list">
+                    <div class="flex justify-end p-4 lg:hidden">
+                        <a href="#" class="block" onclick="navClose()">
+                            <img class="w-6 p-1" src="{{ url_for('static', filename='assets/images/icons/multiply.png') }}" alt="Menu icon">
+                        </a>
+                    </div>
+                    <hr class="lg:hidden">
+                    <ul class="uppercase p-4 w-[95%] m-auto lg:flex lg:space-x-5 lg:py-2 lg:w-full">
+                        <li><a class="text-sm py-4 block lg:px-5 lg:py-2 xl:text-base hover:text-black/70 font-semibold"
+                                href="/">Home</a></li>
+                        <li class="relative group cursor-pointer"><a
+                                class="text-sm py-4 block lg:px-5 lg:py-2 xl:text-base hover:text-black/70 font-semibold">Laptops</a>
+                            <ul
+                                class="px-3 py-2 bg-gray-200 w-full hidden group-hover:block lg:absolute z-10 lg:bg-white lg:w-[200px] lg:shadow-xl text-sm -top-96 group-hover:top-10">
+                                {% for category in categories %}
+                                    <li><a class="py-2 px-3 text-sm block hover:bg-black hover:text-white font-semibold" href="{{url_for('shop', category=category.category)}}">{{category.category.capitalize()}}</a>
+                                    </li>
+                                {% endfor %}
                             </ul>
-                        </li><!-- / Brands -->
-
-                        <!-- Gallery -->
-                        <li class="dropdown ">
-                            <a href="/gallery">Gallery</a>
-                        </li><!-- / Gallery -->
-
-                        <!-- Contact -->
-                        <li class="dropdown ">
-                            <a href="/contact">Contact</a>
-                        </li><!-- / Contact -->
-
-                    </ul><!-- / .nav .navbar-nav -->
-
+                        </li>
+                        <li><a class="text-sm py-4 block lg:px-5 lg:py-2 xl:text-base hover:text-black/70 font-semibold"
+                                href="/about">About</a>
+                        </li>
+                        <li><a class="text-sm py-4 block lg:px-5 lg:py-2 xl:text-base hover:text-black/70 font-semibold"
+                                href="/contact">Contact</a></li>
+                    </ul>
                 </div>
-                <!--/.navbar-collapse -->
-            </div><!-- / .container -->
-        </nav>
-    </section>
+            </div>
+
+            <!-- LOGO ICON -->
+            <div class="lg:hidden">
+                <a href="/">
+                    <img src="{{ url_for('static', filename='assets/images/icons/logo.png') }}" class="block w-12 m-auto sm:w-14" alt="Sop laptops logo">
+                </a>
+            </div>
+
+            <!-- CART ICON -->
+            <div class="lg:hidden">
+                <a href="/cart.html" class="block w-5">
+                    <img class="w-10 mx-auto" src="{{ url_for('static', filename='assets/images/icons/cart.svg') }}" alt="shopping cart">
+                </a>
+            </div>
+        </div>
+    </nav>
+    <!-- / NAVIGATION END -->
 
     {% block body %} {% endblock %}
 
-    <footer class="footer section text-center">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <ul class="social-media">
-                        <li>
-                            <a href="{{params['fb_uri']}}" target="_blank">
-                                <i class="tf-ion-social-facebook"></i>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{params['inst_uri']}}" target="_blank">
-                                <i class="tf-ion-social-instagram"></i>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{params['tw_uri']}}" target="_blank">
-                                <i class="tf-ion-social-twitter"></i>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{params['pn_uri']}}" target="_blank">
-                                <i class="tf-ion-social-pinterest"></i>
-                            </a>
-                        </li>
-                    </ul>
-                    <ul class="footer-menu text-uppercase">
-                        <li>
-                            <a href="/contact">CONTACT</a>
-                        </li>
-                        <!-- <li>
-                            <a href="/blog">BLOG</a>
-                        </li> -->
-                        <li>
-                            <a href="/about">About</a>
-                        </li>
-                        <li>
-                            <a href="#">PRIVACY POLICY</a>
-                        </li>
-                    </ul>
-                    <p class="copyright-text">SOPLAPTOPS.in || Copyright &copy;2022 - All Rights Reserved</p>
-                </div>
-            </div>
+    
+    <!-- FOOTER SECTION -->
+    <footer class="footer-wrapper h-56 px-4 text-center bg-gray-100 flex justify-center items-center flex-col">
+        <div class="footer-1 text-xs mb-4 md:w-[768px]">
+            <a href="/contact" class="inline-block px-3 py-2">CONTACT</a>
+            <a href="/shop" class="inline-block px-3 py-2">SHOP</a>
+            <a href="/privacy-policy" class="inline-block px-3 py-2">PRIVACY POLICY</a>
+            <a href="/about" class="inline-block px-3 py-2">ABOUT US</a>
+        </div>
+        <div class="footer-2 md:w-[768px]">
+            <p>Copyright &copy; 2022 || Designed and Developed by <a href="/" class="font-semibold">SOP Laptops</a></p>
         </div>
     </footer>
+    <!--/ FOOTER SECTION -->
 
-    <!-- 
-Essential Scripts
-=====================================-->
-
-    <!-- Main jQuery -->
-    <script src="{{ url_for('static', filename='plugins/jquery/dist/jquery.min.js') }}"></script>
-    <!-- Bootstrap 3.1 -->
-    <script src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.min.js') }}"></script>
-    <!-- Bootstrap Touchpin -->
-    <script
-        src="{{ url_for('static', filename='plugins/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js') }}"></script>
-    <!-- Video Lightbox Plugin -->
-    <script src="{{ url_for('static', filename='plugins/ekko-lightbox/dist/ekko-lightbox.min.js') }}"></script>
-    <!-- Count Down Js -->
-    <script src="{{ url_for('static', filename='plugins/syo-timer/build/jquery.syotimer.min.js') }}"></script>
-
-    <!-- slick Carousel -->
-    <script src="{{ url_for('static', filename='plugins/slick/slick.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='plugins/slick/slick-animation.min.js') }}"></script>
-
-    <!-- Main Js File -->
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-
-
-
+    <!-- JS Scripts -->
+    <script src="{{ url_for('static', filename='assets/js/script.js') }}"></script>
 </body>
 
 </html>

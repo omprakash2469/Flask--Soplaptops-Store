@@ -1,158 +1,89 @@
 {% extends 'layout.html' %}
 {% block body %}
 
-<section class="page-header">
-   <div class="container">
-      <div class="row">
-         <div class="col-md-12">
-            <div class="content">
-               <h1 class="page-name">Checkout</h1>
-               <ol class="breadcrumb">
-                  <li><a href="/">Home</a></li>
-                  <li class="active">checkout</li>
-               </ol>
-            </div>
-         </div>
-      </div>
-   </div>
-</section>
+    <!-- MAIN SECTION  -->
+    <main class="py-7">
+        <!-- CHECKOUT PAGE -->
 
-<div class="page-wrapper">
-   <div class="checkout shopping">
-      <div class="container">
-         <div class="row">
-            <div class="col-md-8">
-               <div class="block billing-details">
-                  <h4 class="widget-title">Delivery Details</h4>
-                  <form class="checkout-form" method="POST" action="/orders">
-                     <!-- Alert if Details are incomplete -->
-                     {% if msg %}
-                     <div class="alert alert-danger alert-common alert-dismissible mt-20" role="alert">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                              aria-hidden="true">×</span></button>
-                        <i class="tf-ion-alert-circled"></i><span>Incomplete Details!</span> &nbsp; {{msg}}
-                     </div>
-                     {% endif %}
-                     <div class="form-group">
-                        <label for="name">Full Name</label>
-                        <input type="text" class="form-control" id="name" name="name" placeholder="">
-                     </div>
-                     <div class="checkout-country-code clearfix">
-                        <div class="form-group">
-                           <label for="phone">Phone</label>
-                           <input type="number" class="form-control" id="phone" name="phone" value="" min="0">
-                        </div>
-                        <div class="form-group">
-                           <label for="email">Email</label>
-                           <input type="email" class="form-control" id="email" name="email" value="">
-                        </div>
-                     </div>
-                     <div class="form-group">
-                        <label for="address">Address</label>
-                        <input type="text" class="form-control" id="address" name="address" placeholder="">
-                     </div>
-                     <div class="form-group">
-                        <label for="street">Street</label>
-                        <input type="text" class="form-control" id="street" name="street" placeholder="">
-                     </div>
-                     <div class="checkout-country-code clearfix">
-                        <div class="form-group">
-                           <label for="zipcode">Zip Code</label>
-                           <input type="number" class="form-control" id="zipcode" name="zipcode" value="" min="0">
-                        </div>
-                        <div class="form-group">
-                           <label for="city">City</label>
-                           <input type="text" class="form-control" id="city" name="city" value="">
-                        </div>
-                     </div>
-                     <div class="form-group">
-                        <label for="country">Country</label>
-                        <input type="text" class="form-control" id="country" name="country" value="INDIA" readonly>
-                     </div>
-                     <button type="submit" class="btn btn-main mt-20">place order</button>
-                  </form>
-               </div>
-            </div>
-            <div class="col-md-4">
-               <div class="product-checkout-details">
-                  <div class="block">
-                     <h4 class="widget-title">Order Summary</h4>
-                     {% for i in session['shoppingCart'] %}
-                     <div class="media product-card">
-                        <form action="/del" class="text-center pull-right" method="POST">
-                           <input type="hidden" name="category"
-                              value="{{session['shoppingCart'][i]['category'].lower()}}">
-                           <input type="hidden" name="product_id" value="{{i}}">
-                           <button class="product-remove" type="submit"><i class="tf-ion-ios-trash"></i></button>
+        <!-- CHECKOUT HEADING -->
+        <div class="heading-box bg-gray-100 py-8 px-4 lg:py-12">
+            <h1 class="text-2xl md:w-[720px] md:m-auto lg:w-[90%] xl:w-[1200px]">CHECKOUT</h1>
+        </div>
+
+        <div class="content-wrapper py-14 lg:flex lg:w-[90%] lg:m-auto xl:w-[1200px] xl:py-16">
+            <!-- CHECKOUT -->
+            <div class="checkout-info px-2 sm:px-4 md:px-0 md:w-[720px] md:mx-auto lg:w-full lg:flex lg:justify-between">
+                <!-- CHECKOUT FORM -->
+                <div class="py-6 px-2 sm:px-5 lg:mt-8 lg:px-0 lg:w-1/2">
+                    <h1 class="text-base mb-2">DELIVERY DETAILS</h1>
+                    <hr>
+                    <div class="para text-justify py-5 sm:text-left">
+                        <form action="/" method="post">
+                            <input type="text" name="username" id="username" placeholder="FULL NAME"
+                                class="text-xs border border-gray-400/75 py-4 px-3 w-full mb-2">
+                            <label for="cities" class="flex">
+                                <input type="number" name="zipcode" id="zipcode" placeholder="PHONE NUMBER"
+                                    class="text-xs border border-gray-400/75 py-4 px-3 w-full mb-2 mr-3">
+                                <input type="text" name="city" id="city" placeholder="EMAIL"
+                                    class="text-xs border border-gray-400/75 py-4 px-3 w-full mb-2">
+                            </label>
+                            <input type="text" name="address" id="address" placeholder="ADDRESS"
+                                class="text-xs border border-gray-400/75 py-4 px-3 w-full mb-2">
+                            <input type="text" name="address" id="address" placeholder="STREET"
+                                class="text-xs border border-gray-400/75 py-4 px-3 w-full mb-2">
+                            <label for="cities" class="flex">
+                                <input type="number" name="zipcode" id="zipcode" placeholder="ZIP CODE"
+                                    class="text-xs border border-gray-400/75 py-4 px-3 w-full mb-2 mr-3">
+                                <input type="text" name="city" id="city" placeholder="CITY"
+                                    class="text-xs border border-gray-400/75 py-4 px-3 w-full mb-2">
+                            </label>
+                            <input type="text" name="country" id="country" placeholder="COUNTRY" value="INDIA" readonly
+                                class="text-xs border border-gray-400/75 py-4 px-3 w-full mb-2 bg-gray-200">
+                            <button class="px-8 py-4 mt-5 bg-black text-white text-xs transition-all hover:bg-gray-800"
+                                type="submit">PLACE ORDER</button>
                         </form>
-                        <div class="media-body">
-                           <h4 class="media-heading"><a
-                                 href="/{{session['shoppingCart'][i]['category']}}/{{session['shoppingCart'][i]['name'].replace(' ', '-').lower()}}">{{session['shoppingCart'][i]['name'].capitalize()}}</a>
-                           </h4>
-                           <p class="price">{{session['shoppingCart'][i]['quantity']}} &nbsp; x &nbsp;
-                              Rs.{{session['shoppingCart'][i]['price']}}</p>
+                    </div>
+                </div>
+
+                <!-- ORDER SUMMARY -->
+                <div class="py-6 px-5 h-full lg:mt-8 lg:w-1/2 lg:pl-20">
+                    <h1 class="text-base mb-2">ORDER SUMMARY</h1>
+                    <hr>
+                    <div class="para text-justify py-5 sm:text-left">
+                        <div class="flex">
+                            <img class="w-20 object-cover mr-4"
+                                src="https://demo.themefisher.com/aviato/images/shop/cart/cart-1.jpg"
+                                alt="Order summary">
+                            <div class="order-info w-[65%]">
+                                <h4 class="text-lg leading-6 font-semibold mb-2 text-left">Product Heading goes here
+                                </h4>
+                                <p><span class="qty mb-4">1 x </span><span class="price">$249</span></p>
+                                <p><a href="#">Remove</a></p>
+                            </div>
                         </div>
-                     </div>
-                     {% endfor %}
-                     <div class="discount-code">
-                        <p>Delivery Within 1-2 Days - Cash on Delivery</p>
-                     </div>
-                     <ul class="summary-prices">
-                        <li>
-                           <span>Subtotal:</span>
-                           <span class="bracket-price">{% set points = [0] -%}
-                              {% for single_item in session['shoppingCart'] -%}
-                              {% if points.append(points.pop()+ session['shoppingCart'][single_item]["price"] *
-                              session['shoppingCart'][single_item]["quantity"] | int()) -%}{% endif %}
-                              {% endfor %}
-                              {{ points }}</span>
-                        </li>
-                        <li>
-                           <span>Shipping:</span>
-                           <span>Free</span>
-                        </li>
-                     </ul>
-                     <div class="summary-total">
-                        <span>Total</span>
-                        <span class="bracket-price">{% set points = [0] -%}
-                           {% for single_item in session['shoppingCart'] -%}
-                           {% if points.append(points.pop()+ session['shoppingCart'][single_item]["price"] *
-                           session['shoppingCart'][single_item]["quantity"] | int()) -%}{% endif %}
-                           {% endfor %}
-                           {{ points }}</span>
-                     </div>
-                     <div class="verified-icon">
-                        <img src="{{ url_for('static', filename='images/shop/verified.png') }}">
-                     </div>
-                  </div>
-               </div>
+                    </div>
+                    <hr>
+                    <div class="delivery flex items-center">
+                        <img class="w-6 object-cover py-4 mr-4" src="/assets/images/icons/delivery.svg"
+                            alt="Payment gateway">
+                        <p class="text-sm text-gray-700 py-4">FREE HOME DELIVERY</p>
+                    </div>
+                    <hr>
+                    <div class="total py-4">
+                        <p class="py-1 flex justify-between"><strong>Subtotal:</strong><span>$90</span></p>
+                        <p class="py-1 flex justify-between"><strong>Shipping:</strong><span>Free</span></p>
+                    </div>
+                    <hr>
+                    <p class="py-4 text-lg font-semibold"><span>Total</span> $250</p>
+                    <div class="payment-gateway">
+                        <img class="w-full object-cover py-4" src="/assets/images/payment-gateway.png"
+                            alt="Payment gateway">
+                    </div>
+                </div>
             </div>
-         </div>
-      </div>
-   </div>
-</div>
-<!-- Modal -->
-<div class="modal fade" id="coupon-modal" tabindex="-1" role="dialog">
-   <div class="modal-dialog" role="document">
-      <div class="modal-content">
-         <div class="modal-body">
-            <form>
-               <div class="form-group">
-                  <input class="form-control" type="text" placeholder="Enter Coupon Code">
-               </div>
-               <button type="submit" class="btn btn-main">Apply Coupon</button>
-            </form>
-         </div>
-      </div>
-   </div>
-</div>
+        </div>
 
-<Script>
-   let select_first = document.querySelectorAll('.bracket-price')
-   for (i = 0; i < select_first.length; i++) {
-      str = select_first[i].innerText.slice(1, -1)
-      select_first[i].innerText = "Rs. " + str
-   }
-</Script>
-
+    </main>
+    <!--/ MAIN SECTION  -->
+    
 {% endblock %}

@@ -1,18 +1,14 @@
 {% extends 'layout.html' %}
 {% block body %}
 
-<section class="empty-cart page-wrapper">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-6 col-md-offset-3">
-        <div class="block text-center">
-        	<i class="tf-ion-ios-cart-outline"></i>
-          	<h2 class="text-center">Your cart is currently empty.</h2>
-          	<p>Add to Cart some items to fill this space and order you favourites.</p>
-          	<a href="/" class="btn btn-main mt-20">Return to shop</a>
-      </div>
+<!-- EMPTY CART -->
+<section class="body-font">
+    <div class="w-2/5 px-5 py-20 mx-auto text-center">
+        <img class="w-10 mx-auto mb-5" src="{{ url_for('static', filename='assets/images/icons/cart.svg') }}" alt="shopping cart">
+        <h1 class="text-4xl mb-4">Your cart is currently empty</h1>
+        <p class="w-4/5 mx-auto mb-5">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ex cum, consectetur non repellendus sint harum voluptas deserunt debitis mollitia nisi!</p>
+        <a href="/" class="text-white bg-black px-6 py-3 text-xs hover:bg-black/80 transition-all">RETURN TO SHOP</a>
     </div>
-  </div>
 </section>
 
 {% endblock %}

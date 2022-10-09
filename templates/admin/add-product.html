@@ -1,51 +1,79 @@
 {% extends '/admin/layout.html' %}
 {% block body %}
 
-<!-- Content -->
-
 <div class="container-xxl flex-grow-1 container-p-y">
-    <h4 class="py-3 mb-4"><small>Add New Product</small></h4>
+    <h4 class="py-3 mb-4"><small>{{vars['title']}}</small></h4>
 
-    <div class="row">
-        <div class="col-xl">
-            <div class="card">
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert {{category}} alert-dismissible" role="alert">
+        {{message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+        </button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <div>
+        <form class="col-xl" action="{{vars['action']}}" method="POST" enctype="multipart/form-data">
+            <div class="card mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Product Information</h5>
-                    <small class="text-muted float-end">Add New Product</small>
+                    <small class="text-muted float-end">{{vars['title']}}</small>
                 </div>
                 <div class="card-body">
-                    <form>
-                        <div class="mb-3">
-                            <label class="form-label" for="basic-default-fullname">Product Name</label>
-                            <input type="text" class="form-control" id="basic-default-fullname"
-                                placeholder="Enter Name" />
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="basic-default-company">Product
-                                Description</label>
-                            <input type="text" class="form-control" id="basic-default-company"
-                                placeholder="Enter Description" />
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="basic-default-company">SKU</label>
-                            <input type="number" class="form-control" id="basic-default-company"
-                                placeholder="Available Stock" />
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="basic-default-company">Price</label>
-                            <input type="number" class="form-control" id="basic-default-company"
-                                placeholder="Product Price" />
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="basic-default-message">Details</label>
-                            <textarea id="basic-default-message" class="form-control"
-                                placeholder="Product Details"></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Add</button>
-                    </form>
+                    <div class="mb-3">
+                        {{form.product_name.label(class="form-label")}}
+                        {{form.product_name(class="form-control", placeholder="Enter Name", value=vars['product_name'])}}
+                    </div>
+                    <div class="mb-3">
+                        {{form.desc.label(class="form-label")}}
+                        {{form.desc(class="form-control", placeholder="Enter Description", default=vars['desc'])}}
+                    </div>
+                    <div class="mb-3">
+                        {{form.category.label(class="form-label")}}
+                        {{form.category(class="form-control text-capitalize", value=vars['category'])}}
+                    </div>
+                    <div class="mb-3">
+                        {{form.price.label(class="form-label")}}
+                        {{form.price(class="form-control", placeholder="Product Price", value=vars['price'])}}
+                    </div>
+                    <div class="mb-3">
+                        {{form.stock.label(class="form-label")}}
+                        {{form.stock(class="form-control", placeholder="Available Stock", value=vars['stock'])}}
+                    </div>
                 </div>
             </div>
-        </div>
+
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">{{form.details.label()}}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        {{form.details(class="form-control", placeholder="Product Details", value=vars['details'])}}
+                    </div>
+                </div>
+            </div>
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">{{form.image_file.label()}}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        {{form.image_file(class="form-control", placeholder="Product Details")}}
+                    </div>
+                    {{form.hidden_tag()}}
+                </div>
+            </div>
+            <div>
+                {{form.submit(class="btn btn-primary", value=vars['button'])}}
+            </div>
+        </form>
+        {{ckeditor.load()}}
+        {{ckeditor.config(name='details')}}
     </div>
 
 </div>

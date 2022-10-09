@@ -1,58 +1,43 @@
 {% extends 'layout.html' %}
 {% block body %}
 
-<section class="page-header">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-12">
-				<div class="content">
-					<h1 class="page-name">{{category}}</h1>
-					<ol class="breadcrumb">
-						<li><a href="/">Home</a></li>
-						<li class="active">{{category.capitalize()}}</li>
-					</ol>
-				</div>
-			</div>
-		</div>
-	</div>
-</section>
+<!-- MAIN SECTION  -->
+<main class="py-7">
+    <!-- BRAND HEADING -->
+    <div class="heading-box bg-gray-100 py-8 px-4 lg:py-12">
+        <h1 class="text-2xl md:w-[720px] md:m-auto lg:w-[90%] xl:w-[1200px]">{{category.upper()}}</h1>
+    </div>
 
-<section class="products section">
-	<div class="container">
-		<div class="row">
-			{% for i in products: %}
-			<div class="col-md-4">
-				<div class="product-item">
-					<div class="product-thumb">
-						<!-- <span class="bage">Sale</span> -->
-						<img class="img-responsive"
-							src="{{ url_for('static', filename='images/products/')}}{{category.lower()}}/{{products[i]['image']}}"
-							alt="product-img" />
-						<div class="preview-meta">
-							<ul>
-								<li>
-									<a href="/{{category.lower()}}/{{products[i]['name'].replace(' ', '-').lower()}}"><i class="tf-ion-ios-search-strong"></i></a>
-								</li>
-								<li>
-									<form action="/cart" method="POST">
-										<input type="hidden" name="product_id" value="{{products[i]['id']}}">
-										<input type="hidden" name="quantity" value="1">
-										<input type="hidden" name="category" value="{{category.lower()}}">
-										<button type="submit"><i class="tf-ion-android-cart"></i></button>
-									</form>
-								</li>
-							</ul>
-						</div>
-					</div>
-					<div class="product-content">
-						<h4><a href="/{{category.lower()}}/{{products[i]['name'].replace(' ', '-').lower()}}">{{products[i]['name']}}</a></h4>
-						<p class="price">{{products[i]['price']}}</p>
-					</div>
-				</div>
-			</div>
-			{% endfor %}
-		</div>
-	</div>
-</section>
+    <!-- BRAND PRODUCTS -->
+    <div class="px-4 py-8">
+        <!-- PRODUCTS -->
+        <div
+            class="categories pb-14 space-y-8 sm:w-4/6 sm:m-auto md:grid md:grid-cols-2 md:gap-8 md:w-11/12 xl:grid-cols-3 xl:gap-6 xl:w-[1200px]">
+            {% if products %}
+            {% for p in products %}
+            <div class="product-info md:mt-8">
+                <figure class="relative">
+                    <div class="relative">
+                        <a href="{{url_for('singleProductPage', category=category.lower(), slug=products[p]['name']|replace(' ', '-')|lower())}}"
+                            class="bg-black after:transition-all after:block after:absolute after:inset-0 hover:after:bg-black/30 after:w-full">
+                            <img class="w-full object-cover"
+                                src="{{ url_for('static', filename='assets/images/products/')}}{{category.lower()}}/{{products[p]['image'].image_name}}"
+                                alt="{{products[p]['image']}}">
+                        </a>
+                    </div>
+                    <figcaption class="text-center py-3">
+                        <h2 class="font-semibold mb-1">{{products[p]['name']|upper()}}</h2>
+                        <p>Rs. {{products[p]['price']}}</p>
+                    </figcaption>
+                </figure>
+            </div>
+            {% endfor %}
+            {% else %}
+            <h1 class="text-3xl font-semibold">Products Not Found</h1>
+            {% endif %}
+        </div>
+    </div>
+</main>
+<!--/ MAIN SECTION  -->
 
 {% endblock %}

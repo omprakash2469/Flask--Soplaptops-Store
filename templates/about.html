@@ -1,51 +1,33 @@
 {% extends 'layout.html' %}
 {% block body %}
 
-<section class="page-header">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-12">
-				<div class="content">
-					<h1 class="page-name">About Us</h1>
-					<ol class="breadcrumb">
-						<li><a href="/">Home</a></li>
-						<li class="active">About us</li>
-					</ol>
-				</div>
-			</div>
-		</div>
-	</div>
-</section>
+    <!-- MAIN SECTION  -->
+    <main class="py-7">
+        <!-- ABOUT HEADING -->
+        <div class="heading-box bg-gray-100 py-8 px-4 lg:py-12">
+            <h1 class="text-2xl md:w-[720px] md:m-auto lg:w-[90%] xl:w-[1200px]">ABOUT US</h1>
+        </div>
 
-<section class="about section">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-6">
-				<img class="img-responsive" src="{{ url_for('static', filename='images/about/about.jpg') }}">
-			</div>
-			<div class="col-md-6">
-				<h2 class="mt-40">About Our Business</h2>
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eius enim, accusantium repellat ex autem numquam iure officiis facere vitae itaque.</p>
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nam qui vel cupiditate exercitationem, ea fuga est velit nulla culpa modi quis iste tempora non, suscipit repellendus labore voluptatem dicta amet?</p>
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nam qui vel cupiditate exercitationem, ea fuga est velit nulla culpa modi quis iste tempora non, suscipit repellendus labore voluptatem dicta amet?</p>
-				<a href="#" class="btn btn-main mt-20">Download Company Profile</a>
-			</div>
-		</div>
-	</div>
-</section>
+        <div class="content-wrapper lg:flex lg:w-[90%] lg:m-auto xl:w-[1200px] xl:py-16">
+            <!-- ABOUT SECTION -->
+            <div class="content-box md:w-[720px] md:mx-auto lg:w-[55%]">
+                <img class="w-full px-4 md:px-0 py-10 my-6 lg:py-0 lg:my-0 lg:mt-16" src="https://demo.themefisher.com/aviato/images/about/about.jpg" alt="">
+            </div>
 
-
-<div class="section video-testimonial bg-1 overly-white text-center mt-50">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-12">
-				<h2>Video presentation</h2>
-				<a class="play-icon" href="https://www.youtube.com/watch?v=oyEuk8j8imI&amp;rel=0" data-toggle="lightbox">
-					<i class="tf-ion-ios-play"></i>
-				</a>
-			</div>
-		</div>
-	</div>
-</div>
+            <!-- ABOUT INFO -->
+            <div class="about-info px-4 md:px-0 md:w-[720px] md:m-auto lg:w-[45%] lg:ml-5 lg:my-0 overflow-hidden">
+                <div class="bg-gray-100 py-6 px-5 h-full lg:mt-16">
+                    <h1 class="text-xl mb-12 sm:text-2xl"><span
+                        class="underline underline-offset-8">ABO</span>UT OUR BUSINESS</h1>
+                    <div class="para text-justify sm:text-left">
+                        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Earum ipsam deleniti dolorem natus, suscipit perferendis doloribus facere minima tenetur, quibusdam minus numquam a corporis molestias ut, quos consectetur. Error, minima! <br></p>
+                        <br>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur officiis consequatur nulla nesciunt tempore consequuntur quos ea amet eligendi adipisci praesentium reiciendis rec exercitationem inventoreeniet libero! Recusandae, laborum optio! Omnis assumenda illum rerum explicabo, dolorem alias atque doloremque quasi quos, consectetur veritatis maxime numquam vero. Voluptatibus quasi magnam ratione laborum quod aut nobis assumenda vel rerum voluptate, ex porro numquam tenetur laudantium commodi omnis hic eaque expedita placeat.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!--/ MAIN SECTION  -->
 
 {% endblock %}
