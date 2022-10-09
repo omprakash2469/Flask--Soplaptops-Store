@@ -1,12 +1,9 @@
 {
     "params":
     {
-        "database_uri": "sqlite:///soplaptops.db",
         "blog_name" : "SOP Laptops",
-        "root_uri" : "https://soplaptops.in",
-        "secret_key": "this is my super secret key",
-        "category_images_upload_path": "D:/Programming and Projects/Projects/Flask/Soplaptops/static/assets/images/category/",
-        "product_images_upload_path": "D:/Programming and Projects/Projects/Flask/Soplaptops/static/assets/images/products/",
+        "category_images_upload_path": "D:/Programming and Projects/Projects/Flask/Soplaptops/sopapp/static/assets/images/category/",
+        "product_images_upload_path": "D:/Programming and Projects/Projects/Flask/Soplaptops/sopapp/static/assets/images/products/",
         "gallery_images_folder": "D:/Python/Flask/Flask Website Template/S.O.P Computers/static/images/gallery/",
         "fb_uri": "https://facebook.com/",
         "inst_uri": "https://instagram.com/",
