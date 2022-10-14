@@ -9,12 +9,12 @@
         <div class="d-flex align-items-end row">
           <div class="col-sm-7">
             <div class="card-body">
-              <h5 class="card-title text-primary">Welcome {{params['admin']}}! 🎉</h5>
+              <h5 class="card-title text-primary">Welcome {{current_user.name|title()}}! 🎉</h5>
               <p class="mb-4">
                 You are logged in now!
               </p>
 
-              <a href="{{url_for('admin.adminAccount')}}" class="btn btn-sm btn-outline-primary">View Profile</a>
+              <a href="{{url_for('auth.adminAccount')}}" class="btn btn-sm btn-outline-primary">View Account</a>
             </div>
           </div>
           <div class="col-sm-5 text-center text-sm-left">

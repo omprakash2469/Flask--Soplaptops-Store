@@ -1,9 +1,11 @@
+# ----------- Flask Modules ----------- #
 from flask_wtf import FlaskForm
-from wtforms import EmailField, SubmitField
+from wtforms import EmailField, SubmitField, StringField, TextAreaField, HiddenField
 from wtforms.validators import DataRequired, Email
 from ..extensions import db
 
-# ------------  Database Classes ------------ 
+
+# ------------  Database Classes ------------ #
 class Emails(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(250), nullable=False)
@@ -36,7 +38,15 @@ class Contacts(db.Model):
     subject = db.Column(db.String(255), nullable=False)
     message = db.Column(db.Text, nullable=False)
 
-# ------------ Form Classess ------------ 
+# ------------ Form Classess ------------ #
 class EmailForm(FlaskForm):
     email = EmailField("subscribe", validators=[DataRequired(), Email("Please Enter a Valid Email Address")])
-    submit = SubmitField("Login", validators=[DataRequired()])
+    submit = SubmitField("Subscribe", validators=[DataRequired()])
+
+class ContactForm(FlaskForm):
+    name = StringField("Enter Your Name", validators=[DataRequired()])
+    email = EmailField("Enter Your Email", validators=[DataRequired(), Email()])
+    location = StringField("Enter Your Location", validators=[DataRequired()])
+    subject = StringField("Your Subject", validators=[DataRequired()])
+    message = TextAreaField("Enter Your Message", validators=[DataRequired()])
+    submit = SubmitField("Submit")

@@ -1,12 +1,13 @@
-{% extends 'layout.html' %}
+{% extends '/main/layout.html' %}
 {% block body %}
 
 <!-- EMPTY CART -->
 <section class="body-font">
     <div class="w-2/5 px-5 py-20 mx-auto text-center">
+        {{session['shoppingCart']}}
         <img class="w-10 mx-auto mb-5" src="{{ url_for('static', filename='assets/images/icons/cart.svg') }}" alt="shopping cart">
         <h1 class="text-4xl mb-4">Your cart is currently empty</h1>
-        <p class="w-4/5 mx-auto mb-5">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ex cum, consectetur non repellendus sint harum voluptas deserunt debitis mollitia nisi!</p>
+        <p class="w-4/5 mx-auto mb-5">Your product added in cart will appear here. Purchase some product</p>
         <a href="/" class="text-white bg-black px-6 py-3 text-xs hover:bg-black/80 transition-all">RETURN TO SHOP</a>
     </div>
 </section>

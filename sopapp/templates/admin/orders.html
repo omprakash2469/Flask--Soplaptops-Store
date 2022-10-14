@@ -1,0 +1,65 @@
+{% extends '/admin/layout.html' %}
+{% block body %}
+
+{% if authAdminRole(current_user.id, 'site admin') %}
+<!-- Content -->
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4 d-flex justify-content-between align-items-center">All Orders</h4>
+
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert {{category}} alert-dismissible" role="alert">
+        {{message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+        </button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    
+    <!-- All Orders -->
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive text-nowrap">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>User Name</th>
+                            <th>Product Name</th>
+                            <th>Price</th>
+                            <th>Date of Order</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr>
+                            <td>{{order.id}}</td>
+                            <td class="cursor-pointer" data-bs-toggle="tooltip" data-bs-offset="0,4"
+                                data-bs-placement="right" data-bs-html="true" title=""
+                                data-bs-original-title="{{order.user_id}}">{{order.user_id[:20]|capitalize()}}...</td>
+                            <td class="cursor-pointer" data-bs-toggle="tooltip" data-bs-offset="0,4"
+                                data-bs-placement="right" data-bs-html="true" title=""
+                                data-bs-original-title="{{order.product_id}}">{{ order.product_id[:20]|capitalize()}}...</td>
+                            <td>Rs. 1000</td>
+                            <td>{{order.order_date}}</td>
+                            <td>{{order.status}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!--/ All Orders -->
+</div>
+<!-- / Content -->
+{% else %}
+<div class="container-xxl flex-grow-1 container-p-y">
+    <p>Page Not Found</p>
+</div>
+{% endif %}
+
+{% endblock %}

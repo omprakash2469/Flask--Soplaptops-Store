@@ -1,3 +1,4 @@
+{% if authAdminRole(current_user.id, 'content editor') %}
 {% extends '/admin/layout.html' %}
 {% block body %}
 
@@ -26,15 +27,17 @@
                 <div class="card-body">
                     <div class="mb-3">
                         {{form.product_name.label(class="form-label")}}
-                        {{form.product_name(class="form-control", placeholder="Enter Name", value=vars['product_name'])}}
+                        {{form.product_name(class="form-control", placeholder="Enter Name",
+                        value=vars['product_name'])}}
                     </div>
                     <div class="mb-3">
                         {{form.desc.label(class="form-label")}}
-                        {{form.desc(class="form-control", placeholder="Enter Description", default=vars['desc'])}}
+                        {{form.desc(class="form-control", placeholder="Enter Description", rows=10)}}
+
                     </div>
                     <div class="mb-3">
                         {{form.category.label(class="form-label")}}
-                        {{form.category(class="form-control text-capitalize", value=vars['category'])}}
+                        {{form.category(class="form-control text-capitalize")}}
                     </div>
                     <div class="mb-3">
                         {{form.price.label(class="form-label")}}
@@ -53,20 +56,26 @@
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
-                        {{form.details(class="form-control", placeholder="Product Details", value=vars['details'])}}
+                        {{form.details(class="form-control", placeholder="Product Details")}}
                     </div>
                 </div>
             </div>
             <div class="card mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">{{form.image_file.label()}}</h5>
+                    <h5 class="mb-0">{{form.image_file.label()}}  <span class="text-muted"> - 400x350 Image Size</span></h5>
+                    {% if vars['images'] %}
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exLargeModal">
+                        Uploaded Images
+                    </button>
+                    {% endif %}
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
-                        {{form.image_file(class="form-control", placeholder="Product Details")}}
+                        {{form.image_file(class="form-control")}}
                     </div>
                     {{form.hidden_tag()}}
                 </div>
+
             </div>
             <div>
                 {{form.submit(class="btn btn-primary", value=vars['button'])}}
@@ -76,7 +85,61 @@
         {{ckeditor.config(name='details')}}
     </div>
 
+    <!-- Images Modal -->
+    <div class="modal fade" id="exLargeModal" tabindex="-1" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel4">Update Product Images</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Uploaded Images -->
+                    {% if vars['images'] %}
+                    <div class="card-body images-div">
+                        {% for i in vars['images'] %}
+                        <div>
+                            <img src="{{url_for('static', filename='assets/images/products/')}}{{getCategoryById(vars['category'])}}/{{i.image_name}}"
+                                class="w-100">
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <!-- / Content -->
 
+<script>
+    // --------- Add and Editform of Product Section - Selecting Category Select Field ---------
+    category = document.getElementById('category')
+
+    if ("{{vars['category']}}") {
+        for (let i = 0; i < category.length; i++) {
+            if (category[i].value == "{{vars['category']}}") {
+                category[i].setAttribute('selected', true)
+            }
+        }
+    }
+    else {
+        console.log("This is else field")
+        element = document.createElement("option")
+        node = document.createTextNode("-- select --")
+        element.appendChild(node)
+        category.insertBefore(element, category.children[0])
+        category[0].setAttribute('selected', true)
+    }
+</script>
 {% endblock %}
+{% else %}
+{% extends '404.html' %}
+{% block content %}
+<p>Page Not Found</p>
+{% endblock %}
+{% endif %}

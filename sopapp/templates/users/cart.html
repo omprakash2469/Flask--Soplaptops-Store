@@ -1,4 +1,4 @@
-{% extends 'layout.html' %}
+{% extends '/main/layout.html' %}
 {% block body %}
 
     <!-- MAIN SECTION  -->
@@ -49,23 +49,26 @@
                 </thead>
 
                 <tbody class="text-center">
+                    {% for item in session['shoppingCart'] %}
                     <tr>
-                        <td class="border border-gray-200/50 py-4 xl:py-5">1</td>
-                        <td class="border border-gray-200/50 py-4 xl:py-5">DELL Laptop good </td>
-                        <td class="border border-gray-200/50 py-4 xl:py-5">Rs. 15,000</td>
-                        <td class="border border-gray-200/50 py-4 xl:py-5">2</td>
+                        <td class="border border-gray-200/50 py-4 xl:py-5">{{item}}</td>
+                        <td class="border border-gray-200/50 py-4 xl:py-5">{{session['shoppingCart'][item]['category']|title()}}</td>
+                        <td class="border border-gray-200/50 py-4 xl:py-5">Rs. {{session['shoppingCart'][item]['price']}}</td>
+                        <td class="border border-gray-200/50 py-4 xl:py-5">{{session['shoppingCart'][item]['quantity']}}</td>
                         <td class="border border-gray-200/50 py-4 xl:py-5">
                             <img class="block w-5 object-cover m-auto" src="{{ url_for('static', filename='assets/images/icons/trash.svg')}}" alt="Trash icon">
                         </td>
                     </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
 
         <!-- CHECKOUT BUTTON -->
         <div class="checkout px-4 text-right sm:w-[620px] sm:m-auto xl:w-[820px] sm:pr-0">
-            <button class="px-5 py-4 bg-black w-full text-white text-sm transition-all hover:bg-gray-800 sm:w-[30%]" type="submit">CHECKOUT</button>
+            <a href="{{url_for('users.checkout')}}" class="inline-block text-center px-5 py-4 bg-black w-full text-white text-sm transition-all hover:bg-gray-800 sm:w-[30%]">CHECKOUT</a>
         </div>
+
     </main>
     <!--/ MAIN SECTION  -->
 

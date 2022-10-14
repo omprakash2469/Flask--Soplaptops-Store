@@ -1,7 +1,13 @@
-from ..extensions import db
+# ----------- Flask Modules ----------- #
+from flask_wtf import FlaskForm
+from wtforms import SubmitField, HiddenField
+from wtforms.validators import DataRequired
 from datetime import datetime
 
-# ------------  Database Classes ------------ 
+# ----------- Application Modules ----------- #
+from ..extensions import db
+
+# ------------  Database Classes ------------ #
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250), nullable=False)
@@ -19,4 +25,8 @@ class Orders(db.Model):
     status = db.Column(db.Integer, default=0)
     order_date = db.Column(db.DateTime, default=datetime.now())
 
-# ------------ Form Classess ------------ 
+# ------------ Form Classess ------------ #
+class AddToCart(FlaskForm):
+    id = HiddenField('Product Id', validators=[DataRequired()])
+    quantity = HiddenField('Quantity', validators=[DataRequired()], default=1)
+    add = SubmitField('Add to Cart', validators=[DataRequired()])

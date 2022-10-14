@@ -1,15 +1,19 @@
+# ----------- Flask Modules ----------- #
 from flask import Blueprint, render_template, flash, redirect, url_for, request
-from werkzeug.exceptions import BadRequest
-from ..extensions import params, getCategories, db
-from ..models.main import EmailForm, Emails, Categories, Products, ProductsImages
 
+# ----------- Application Modules ----------- #
+from ..extensions import params, db
+from ..functions import getCategories
+from ..models.main import EmailForm, Emails, Categories, Products, ProductsImages, Contacts, ContactForm
+
+# ----------- Instiantiate Blueprint ----------- #
 main = Blueprint('main', __name__, template_folder='templates')
 
 # ----------- Home Page ----------- #
-@main.route('/')
+@main.route('/', methods=['GET', 'POST'])
 def index():
     form = EmailForm()
-    # Add Email to database
+    ### Add Email to database
     if form.validate_on_submit():
         email = form.email.data
         try:
@@ -21,8 +25,25 @@ def index():
         except:
             flash("Please Try Again!!", "text-red-500")
             return redirect('/#subscribe')
+    
+    ### Trending Products
+    products = {}
+    i = 0
+    for category in getCategories():
+        c = category.category.lower()
+        products[c] = {}
+        fetchProduct = Products.query.filter_by(category_id=category.id).limit(2)
+        for fp in fetchProduct:
+            products[c][i] = {}
+            image = ProductsImages.query.filter_by(product_id=fp.id).first()
+            products[c][i]['product'] = fp.product
+            products[c][i]['price'] = fp.price
+            products[c][i]['image'] = image.image_name
+            i+=1
+        if products[c] == {}:
+            products.pop(c)
 
-    return render_template('main/home.html', params=params, categories=getCategories(), form=form )
+    return render_template('main/home.html', params=params, categories=getCategories(), form=form, products=products)
 
 # ----------- Products Archives ----------- #
 @main.route('/products/<string:category>')
@@ -114,29 +135,26 @@ def privacyPolicy():
 # ----------- Contact ----------- #
 @main.route("/contact", methods = ['GET', 'POST'])
 def contact():
-    if(request.method=="POST"):
+    form = ContactForm()
+    if form.validate_on_submit():
         # Add Entry To Database
-        fname = request.form.get('name')
-        femail = request.form.get('email')
-        flocation = request.form.get('location')
-        fsubject = request.form.get('subject')
-        fmessage = request.form.get('message')
+        fname = form.name.data
+        femail = form.email.data
+        flocation = form.location.data
+        fsubject = form.subject.data
+        fmessage = form.message.data
 
-        if fname and femail and fsubject and flocation and fmessage :
-            try:
-                entry = Contact(name=fname, email=femail, location=flocation, subject=fsubject, message=fmessage)
-                db.session.add(entry)
-                db.session.commit()
-                flash("Successfully Send! We will contact you soon", "text-green-500")
-                return redirect(url_for('main.contact'))
-            except:
-                flash("Unexpected Error Occured", "text-red-600")
-                return redirect(url_for('main.contact'))
-        else:
-            flash("Please Enter Details", "text-red-600")
+        # Enter Record
+        try:
+            entry = Contacts(name=fname, email=femail, location=flocation, subject=fsubject, message=fmessage)
+            db.session.add(entry)
+            db.session.commit()
+            flash("Successfully Send! We will contact you soon", "text-green-500")
             return redirect(url_for('main.contact'))
-
-    return render_template('main/contact.html', params=params, categories=getCategories())
+        except:
+            flash("Unexpected Error Occured", "text-red-600")
+            return redirect(url_for('main.contact'))
+    return render_template('main/contact.html', params=params, categories=getCategories(), form=form)
 
 
 # ----------- Error Handling ----------- #

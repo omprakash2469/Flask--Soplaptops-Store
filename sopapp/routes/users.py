@@ -1,8 +1,13 @@
+# ----------- Flask Modules ----------- #
 from flask import Blueprint, render_template, request, flash, url_for, session, redirect
 
-from ..models.users import Orders
-from ..extensions import params, MergeDicts, getCategories, db
+# ----------- Application Modules ----------- #
+from ..models.main import Products
+from ..models.users import Orders, AddToCart
+from ..extensions import params, db
+from ..functions import MergeDicts, getCategories, getCategoryById
 
+# ----------- Instiantiate Blueprint ----------- #
 users = Blueprint('users', __name__, template_folder='templates')
 
 # ----------- User Dashboard ----------- #
@@ -13,31 +18,33 @@ def user():
 # ----------- Shopping Cart ----------- #
 ### Add Product to cart and Display Cart
 @users.route("/cart", methods=['GET', 'POST'])
-def addCart():
-    product_id = request.form.get('product_id')
-    category = request.form.get('category')
+def userCart():
+    id = request.form.get('pid')
     quantity = request.form.get('quantity')
-    if product_id and category and quantity and request.method == 'POST':
-        product = eval(category.capitalize()).query.filter_by(id=product_id).first()
+    if id and quantity:
+        ## Get Product Information by product id
+        product = Products.query.filter_by(id=id).first()
+        ## Add Product to Cart
         cartItems = {
-            product_id : {
-                'category': category,
-                'name': product.product_name,
+            id : {
+                'category': getCategoryById(product.category_id),
+                'name': product.product,
                 'price': product.price,
                 'quantity': quantity
             }
         }
-        # Store products in session
+        ## Store products in session
         if 'shoppingCart' in session:
-            print(session['shoppingCart'])
-            if product_id in session['shoppingCart']:
-                print("This product is already in cart")
+            if id in session['shoppingCart']:
+                flash("This product is already in cart", "red")
+                return redirect(request.referrer)
             else:
                 session['shoppingCart'] = MergeDicts(session['shoppingCart'], cartItems)
-                return redirect(request.referrer)
+                flash("Added Your Product in Cart", "green")
+                return redirect(url_for('users.userCart'))
         else:
             session['shoppingCart'] = cartItems
-            return redirect(request.referrer) 
+            return redirect(url_for('users.userCart'))
 
     if session.get('shoppingCart') == None:
         return render_template('users/empty-cart.html', params=params, categories=getCategories())
@@ -62,11 +69,10 @@ def delCartItem():
 @users.route("/checkout", methods=['GET', 'POST'])
 def checkout():
     # Check if product are added in cart
-    if session['shoppingCart'] == {}:
-        msg = "Please select product to proceed to checkout"
-        return render_template('cart.html', params=params, msg=msg)
+    if 'shoppingCart' not in session:
+        return redirect(url_for('users.userCart'))
     
-    return render_template('users/checkout.html', params=params)
+    return render_template('users/checkout.html', params=params, categories=getCategories())
 
 # ----------- Orders ----------- #
 @users.route("/orders", methods=['GET', 'POST'])

@@ -34,7 +34,9 @@
                             <th>Details</th>
                             <th>Category</th>
                             <th>Images</th>
+                            {% if authAdminRole(current_user.id, 'content editor') %}
                             <th>Actions</th>
+                            {% endif %}
                         </tr>
                     </thead>
                     <tbody>
@@ -55,6 +57,7 @@
                                     <a href="{{url_for('static', filename='assets/images/products/')}}{{category.lower()}}/{{image.image_name}}" target="_blank" class="text-primary cursor-pointer">{{image.image_name}}</a><br>
                                     {% endfor %}
                             </td>
+                            {% if authAdminRole(current_user.id, 'content editor') %}
                             <td>
                                 <div class="dropdown">
                                     <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
@@ -62,7 +65,7 @@
                                         <i class="bx bx-dots-vertical-rounded"></i>
                                     </button>
                                     <div class="dropdown-menu">
-                                        <form action="{{url_for('admin.adminEditProduct')}}" method="POST">
+                                        <form action="{{url_for('admin.adminEditProductForm')}}" method="POST">
                                             <input type="hidden" name="pid" value="{{products[p]['id']}}">
                                             <button class="dropdown-item" type="submit" name="action" value="editform">
                                                 <i class="bx bx-edit-alt me-1"></i> Edit
@@ -77,6 +80,7 @@
                                     </div>
                                 </div>
                             </td>
+                            {% endif %}
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -86,6 +90,7 @@
     </div>
     <!--/ All Products -->
 
+    {% if authAdminRole(current_user.id, 'content editor') %}
     <div class="modal fade" id="productImages" tabindex="-1" style="display: none;" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -102,11 +107,8 @@
             </div>
         </div>
     </div>
+    {% endif %}
 </div>
 <!-- / Content -->
-<script>
-    let modalBody = document.getElementById('modalBody')
-
-</script>
 
 {% endblock %}

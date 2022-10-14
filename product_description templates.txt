@@ -1,80 +1,79 @@
-[Processor] 
-{11th gen intel® core™ i5-1135g7 (8 mb cache, 4 cores, 8 threads, up to 4.20 ghz turbo)}
+Processor 
+11th gen intel® core™ i5-1135g7 (8 mb cache, 4 cores, 8 threads, up to 4.20 ghz turbo)
 
-[operating system] 
-{(dell technologies recommends windows 11 pro for business)
-windows 11 home single language, english}
+Operating System 
+(dell technologies recommends windows 11 pro for business)
+windows 11 home single language, english
 
-[video card] 
-{intel® uhd graphics }
+Video Card 
+intel® uhd graphics 
 
-display 
-{15.6", fhd 1920x1080, 60hz, non-touch, ag, wva, led-backlit, narrow border}
+Display 
+15.6', fhd 1920x1080, 60hz, non-touch, ag, wva, led-backlit, narrow border
 
-[memory] 
-{8 gb, 1 x 8 gb, ddr4, 3200 mhz}
+Memory 
+8 gb, 1 x 8 gb, ddr4, 3200 mhz
 
-[hard drive]
-{512 gb, m.2, pcie nvme, ssd}
+Hard Drive
+512 gb, m.2, pcie nvme, ssd
 
-[colour] 
-{carbon}
+Color 
+carbon
 
-[microsoft office] 
-{microsoft® office home and student 2021}
+Microsoft Office
+microsoft® office home and student 2021
 
-[security] 
-{software mcafee® multi device security 15-month subscription}
+Security 
+software mcafee® multi device security 15-month subscription
 
-[support] 
-{services 2y basic onsite service}
+Support 
+services 2y basic onsite service
 
-[accidental damage protection] 
-{none}
+Accidental Damage Protection 
+none
 
-[keyboard] 
-{english international backlit keyboard with numeric keypad - grey (icc)}
+Keyboard
+english international backlit keyboard with numeric keypad - grey (icc)
 
-[ports] 
-{1 usb 3.2 gen 1 port (on systems configured with discrete graphics)
+Ports 
+1 usb 3.2 gen 1 port (on systems configured with discrete graphics)
 1 usb 3.2 gen 1 type-c port (on systems configured with discrete graphics)
 1 usb 2.0 port
 1 audio jack
 1 hdmi 1.4 port
-1 flip-down rj-45 port 10/100/1000 mbps}
+1 flip-down rj-45 port 10/100/1000 mbps
 
-[slots] 
-{1 m.2 2230 slot for wifi and bluetooth card
+Slots 
+1 m.2 2230 slot for wifi and bluetooth card
 1 m.2 2230/2280 slot for solid-state drive/intel optane
-1 sd 3.0 card slot}
+1 sd 3.0 card slot
 
-[dimensions & weight height (front)] 
-{17.5 mm (0.69")}
+Dimensions & Weight Height (front) 
+17.5 mm (0.69')
 
-[height (rear)] 
-{18.9 mm (0.74")}
+Height (rear) 
+18.9 mm (0.74')
 
-[width] 
-{358.50 mm (14.11")}
+Width 
+358.50 mm (14.11')
 
-[depth] 
-{235.56 mm (9.27")}
+Depth 
+235.56 mm (9.27')
 
-[weight] 
-{1.69 kg (3.72 lb)}
+Weight 
+1.69 kg (3.72 lb)
 
-[camera] 
-{720p at 30 fps hd camera, single-integrated microphone}
+Camera 
+720p at 30 fps hd camera, single-integrated microphone
 
-[audio and speakers] 
-{stereo speakers, 2 w x 2 = 4 w total}
+Audio and Speakers 
+stereo speakers, 2 w x 2 = 4 w total
 
-[wireless] 
-{802.11ac 1x1 wifi and bluetooth}
+Wireless
+802.11ac 1x1 wifi and bluetooth
 
-[primary battery 3 cell, 41 wh, integrated] 
-{power 65 watt ac adapter}
+Primary Battery 3 cell, 41 wh, Integrated 
+Power 65 watt ac adapter
 
-[regulatory] 
-{energy star}
-
+Regulatory 
+Energy star

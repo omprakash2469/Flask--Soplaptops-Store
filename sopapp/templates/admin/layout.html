@@ -117,7 +117,7 @@
                 <ul class="menu-inner py-1" id="sideMenu">
                     <!-- Dashboard -->
                     <li class="menu-item active">
-                        <a href="{{url_for('admin.adminLogin')}}" class="menu-link">
+                        <a href="{{url_for('auth.dashboard')}}" class="menu-link">
                             <i class="menu-icon tf-icons bx bx-home-circle"></i>
                             <div data-i18n="Analytics">Dashboard</div>
                         </a>
@@ -130,7 +130,7 @@
                     <!-- Categories -->
                     <li class="menu-item">
                         <a href="{{url_for('admin.adminCategories')}}" class="menu-link">
-                            <i class="bx bx-cog me-2"></i>
+                            <i class='bx bx-category me-2'></i>
                             <div data-i18n="Tables">Categories</div>
                         </a>
                     </li>
@@ -138,29 +138,52 @@
                     <!-- Products -->
                     <li class="menu-item">
                         <a href="{{url_for('admin.adminProducts')}}" class="menu-link">
-                            <i class="bx bx-cog me-2"></i>
+                            <i class='bx bx-package me-2'></i>
                             <div data-i18n="Tables">Products</div>
                         </a>
                     </li>
 
+                    {% if authAdminRole(current_user.id, 'site admin') %}
+                    <!-- Operations -->
+                    <li class="menu-header small text-uppercase"><span class="menu-header-text">Operations</span></li>
+                    <li class="menu-item">
+                        <a href="{{url_for('admin.adminUsers')}}" class="menu-link">
+                            <i class='bx bx-user-circle me-1'></i>
+                            <div data-i18n="Tables">Users</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="{{url_for('admin.adminOrders')}}" class="menu-link">
+                            <i class='bx bx-cart-alt me-1'></i>
+                            <div data-i18n="Tables">Orders</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="{{url_for('admin.adminContact')}}" class="menu-link">
+                            <i class='bx bx-user-pin me-1'></i>
+                            <div data-i18n="Tables">Contact</div>
+                        </a>
+                    </li>
+                    {% endif %}
+
                     <!-- Settings -->
                     <li class="menu-header small text-uppercase"><span class="menu-header-text">Settings</span></li>
-                    <!-- Categories -->
+
                     <li class="menu-item">
-                        <a href="{{url_for('admin.adminAccount')}}" class="menu-link">
+                        <a href="{{url_for('auth.adminAccount')}}" class="menu-link">
                             <i class="bx bx-user me-1"></i>
                             <div data-i18n="Tables">Account</div>
                         </a>
                     </li>
                     <li class="menu-item">
-                        <a href="{{url_for('admin.adminLogout')}}" class="menu-link">
-                            <i class="bx bx-user me-1"></i>
+                        <a href="{{url_for('auth.adminLogout')}}" class="menu-link">
+                            <i class="bx bx-power-off me-2"></i>
                             <div data-i18n="Tables">Logout</div>
                         </a>
                     </li>
                     <li class="menu-item">
-                        <a href="/" class="menu-link" target="_blank">
-                            <i class="bx bx-user me-1"></i>
+                        <a href="/" class="menu-link bg-primary text-white" target="_blank">
+                            <i class='bx bx-bullseye me-1'></i>
                             <div data-i18n="Tables">View Site</div>
                         </a>
                     </li>
@@ -194,9 +217,8 @@
                         <ul class="navbar-nav flex-row align-items-center ms-auto">
                             <!-- Place this tag where you want the button to render. -->
                             <li class="nav-item lh-1 me-3">
-                                <a class="github-button"
-                                    href="https://github.com/themeselection/sneat-html-admin-template-free"
-                                    data-icon="octicon-star" data-size="large" data-show-count="true"
+                                <a class="github-button" data-icon="octicon-star" data-size="large"
+                                    data-show-count="true"
                                     aria-label="Star themeselection/sneat-html-admin-template-free on GitHub">Star</a>
                             </li>
 
@@ -211,7 +233,7 @@
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
-                                        <a class="dropdown-item" href="#">
+                                        <a class="dropdown-item" href="{{url_for('auth.adminAccount')}}">
                                             <div class="d-flex">
                                                 <div class="flex-shrink-0 me-3">
                                                     <div class="avatar avatar-online">
@@ -220,8 +242,10 @@
                                                     </div>
                                                 </div>
                                                 <div class="flex-grow-1">
-                                                    <span class="fw-semibold d-block">John Doe</span>
-                                                    <small class="text-muted">Admin</small>
+                                                    <span
+                                                        class="fw-semibold d-block">{{current_user.name|title()}}</span>
+                                                    <small
+                                                        class="text-muted">{{roleByAdminId(current_user.id)|title()}}</small>
                                                 </div>
                                             </div>
                                         </a>
@@ -230,32 +254,22 @@
                                         <div class="dropdown-divider"></div>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="{{url_for('admin.adminAccount')}}">
+                                        <a class="dropdown-item" href="{{url_for('auth.adminAccount')}}">
                                             <i class="bx bx-user me-2"></i>
                                             <span class="align-middle">My Profile</span>
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="#">
+                                        <a class="dropdown-item" href="{{url_for('admin.adminSettings')}}">
                                             <i class="bx bx-cog me-2"></i>
                                             <span class="align-middle">Settings</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="#">
-                                            <span class="d-flex align-items-center align-middle">
-                                                <i class="flex-shrink-0 bx bx-credit-card me-2"></i>
-                                                <span class="flex-grow-1 align-middle">Billing</span>
-                                                <span
-                                                    class="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">4</span>
-                                            </span>
                                         </a>
                                     </li>
                                     <li>
                                         <div class="dropdown-divider"></div>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="/admin/logout/">
+                                        <a class="dropdown-item" href="{{url_for('auth.adminLogout')}}">
                                             <i class="bx bx-power-off me-2"></i>
                                             <span class="align-middle">Log Out</span>
                                         </a>
@@ -275,36 +289,6 @@
 
 
                     {% block body %} {% endblock %}
-
-
-                    <!-- Footer -->
-                    <footer class="content-footer footer bg-footer-theme">
-                        <div
-                            class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
-                            <div class="mb-2 mb-md-0">
-                                ©
-                                <script>
-                                    document.write(new Date().getFullYear());
-                                </script>
-                                , made with ❤️ by
-                                <a href="https://themeselection.com" target="_blank"
-                                    class="footer-link fw-bolder">ThemeSelection</a>
-                            </div>
-                            <div>
-                                <a href="https://themeselection.com/license/" class="footer-link me-4"
-                                    target="_blank">License</a>
-                                <a href="https://themeselection.com/" target="_blank" class="footer-link me-4">More
-                                    Themes</a>
-
-                                <a href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/"
-                                    target="_blank" class="footer-link me-4">Documentation</a>
-
-                                <a href="https://github.com/themeselection/sneat-html-admin-template-free/issues"
-                                    target="_blank" class="footer-link me-4">Support</a>
-                            </div>
-                        </div>
-                    </footer>
-                    <!-- / Footer -->
 
                     <div class="content-backdrop fade"></div>
                 </div>
@@ -342,7 +326,7 @@
 
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
- 
+
 </body>
 
 </html>

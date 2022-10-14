@@ -1,36 +1,15 @@
+# ----------- Flask Modules ----------- #
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, HiddenField, IntegerField, FileField, TextAreaField, SelectField, MultipleFileField
+from wtforms import StringField, SubmitField, HiddenField, IntegerField, FileField, TextAreaField, SelectField, MultipleFileField
 from wtforms.validators import DataRequired
 from flask_wtf.file import FileField, FileAllowed
 from flask_ckeditor import CKEditorField
-from datetime import datetime
 
-from ..extensions import db
+# ----------- Application Modules ----------- #
 from .main import Categories
 
 
-class Admin(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(250), nullable=False)
-    email = db.Column(db.String(250), nullable=False)
-    number = db.Column(db.Integer, nullable=False)
-    date_added = db.Column(db.DateTime, default=datetime.now())
-
-class Role(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    role = db.Column(db.String(250), nullable=False)
-    desc = db.Column(db.String(500), nullable=False)
-
-class AdminRole(db.Model):
-    admin_id = db.Column(db.Integer, primary_key=True)
-    role_id = db.Column(db.Integer, nullable=False)
-
-# ------------ Form Classess ------------ 
-class LoginForm(FlaskForm):
-    username = StringField("Username", validators=[DataRequired()])
-    password = PasswordField("Password", validators=[DataRequired()])
-    submit = SubmitField("Login", validators=[DataRequired()])
-
+# ------------ Form Classess ------------ #
 class AddCategory(FlaskForm):
     category = StringField("Category", validators=[DataRequired()])
     tagline = StringField("Tagline", validators=[DataRequired()])
@@ -45,6 +24,7 @@ class AddProduct(FlaskForm):
     price = IntegerField("Price", validators=[DataRequired()])
     stock = IntegerField("Stock", validators=[DataRequired()])
     details = CKEditorField("Product Details", validators=[DataRequired()])
+    pid = HiddenField("product id")
     category = SelectField("Select Product Category", validators=[DataRequired()], choices=[(c.id, c.category) for c in Categories.query.all()])
     image_file = MultipleFileField("Upload Product Images", validators=[FileAllowed(['jpg', 'jpeg'], message="Please Upload jpg / jpeg Images")])
     submit = SubmitField("Save", validators=[DataRequired()])

@@ -14,7 +14,7 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
 
-    <title>Unexpected Error Occured</title>
+    <title>Site Under Maintainence</title>
 
     <meta name="description" content="" />
 
@@ -46,11 +46,12 @@
         {% with messages = get_flashed_messages() %}
         {% if messages %}
         {% for message in messages %}
-        <p class="mb-4 mx-2">Sorry for the inconvenience but we're performing some maintenance at the moment</p>
+        <p class="mb-4 mx-2">{{message}}</p>
         {% endfor %}
         {% endif %}
         {% endwith %}
-        <a href="index.html" class="btn btn-primary">Back to home</a>
+
+        <a href="{{url_for('auth.dashboard')}}" class="btn btn-primary">Back to home</a>
         <div class="mt-4">
           <img
             src="https://demos.themeselection.com/sneat-bootstrap-html-admin-template-free/assets/img/illustrations/girl-doing-yoga-light.png"

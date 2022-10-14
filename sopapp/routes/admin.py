@@ -1,51 +1,25 @@
-from itertools import count
-from flask import Blueprint, session, render_template, redirect, url_for, flash, request
+# ----------- Flask Modules ----------- #
+from flask import Blueprint, render_template, redirect, url_for, flash, request
 from werkzeug.utils import secure_filename
-
-from ..extensions import db
+from flask_login import current_user, login_required
 import os
 
-from ..models.admin import LoginForm, AddCategory, AddProduct
-from ..models.main import Categories, Products, ProductsImages
-from ..extensions import params, getCategories
+# ----------- Application Modules ----------- #
+from ..extensions import db
+from ..models.admin import AddCategory, AddProduct
+from ..models.main import Categories, Contacts, Products, ProductsImages
+from ..models.users import Users, Orders
+from ..extensions import params
+from ..functions import authAdminRole, getCategories
 
+# ----------- Instiantiate Blueprint ----------- #
 admin = Blueprint('admin', __name__, template_folder='templates', url_prefix='/admin')
 
-# ----------- Login and Dashboard ----------- #
-@admin.route('/', methods=['GET', 'POST'])
-def adminLogin():
-    form = LoginForm()
-    # Log in user
-    if 'user' in session and session['loggedin']:
-        return render_template('admin/index.html', params=params, categories=getCategories())
-
-    # Validate submission
-    if form.validate_on_submit():
-        username = form.username.data
-        password = form.password.data
-        if(username == params['admin'] and password == params['admin_password']):
-            # Setting session variable
-            session['user'] = username
-            session['loggedin'] = True
-            return redirect(url_for('admin.adminLogin'))
-
-    return render_template('admin/login.html', params=params, form=form)
-
-# ----------- Logout ----------- #
-@admin.route('/logout/')
-def adminLogout():
-    session.pop('user',None)
-    session.pop('loggedin',None)
-    return redirect(url_for('admin.adminLogin'))
-
-# ----------- Account ----------- #
-@admin.route('/account/')
-def adminAccount():
-    return render_template('admin/account.html', params=params, categories=getCategories())
 
 # ----------- Categories ----------- #
-@admin.route("/categories", methods = ['GET', 'POST'])
 #### Display Categories
+@admin.route("/categories", methods = ['GET', 'POST'])
+@login_required
 def adminCategories():
     form = AddCategory()
     vars = {
@@ -59,37 +33,51 @@ def adminCategories():
         categories=getCategories()
     )
 
-### Adding Categories
+#### Adding Categories
 @admin.route("/categories/add", methods = ['GET', 'POST'])
+@login_required
 def addCategories():
+    ### Check if user has permission
+    if not authAdminRole(current_user.id, 'site admin'):
+        flash('This page is not accessible', "alert-danger")
+        return redirect(url_for('admin.adminCategories'))
+
+    ### Check if User Has Role
     form = AddCategory()
     if form.validate_on_submit():
-        # Adding New Category
+        ## Adding New Category
         category = form.category.data
         tagline = form.tagline.data
         imgname = form.image.data
         imagefile = form.image_file.data
 
-        # -- Create Image filename
+        ## Create Image filename
         imageName = imgname.strip().lower().replace(' ', '-') + os.path.splitext(imagefile.filename)[1]
-        # -- Save Image file
+        ## Save Image file
         imagefile.save(os.path.join(params['category_images_upload_path'], secure_filename(imageName)))
-        # -- Add record in Table
+        ## Add record in Table
         entry = Categories(category=category.lower(), tagline=tagline, category_img=secure_filename(imageName))
         db.session.add(entry)
         db.session.commit()
         flash("Successfully! Added Category", "alert-success")
         return redirect(url_for('admin.adminCategories'))
     else:
+        ## Return Error if information is not returned
         flash("Try Again! Please Enter Required Details")
         return redirect(url_for('main.error'))
 
-### Editing Categories
+#### Editing Categories
 @admin.route("/categories/edit", methods = ['GET', 'POST'])
+@login_required
 def editCategories():
+    ### Check if user has permission
+    if not authAdminRole(current_user.id, 'site admin'):
+        flash('This page is not accessible', "alert-danger")
+        return redirect(url_for('admin.adminCategories'))
+
     form = AddCategory()
     if form.validate_on_submit():
-        # Update Category
+        ### Update Category
         cid = form.cid.data
         category = form.category.data
         tagline = form.tagline.data
@@ -97,26 +85,26 @@ def editCategories():
         imagefile = form.image_file.data
         data = Categories.query.filter_by(id=cid).first()
 
-       # ----- Check if Image is uploaded
+       ### Check if Image is uploaded
         if imagefile != None:
-            # Create Image filename
+            ## Create Image filename
             imageName = imgname.strip().lower().replace(' ', '-') + os.path.splitext(imagefile.filename)[1]
             oldImageName = data.category_img
-            # Check if file exists
+            ## Check if file exists
             imagePath = params['category_images_upload_path']+ oldImageName
             if os.path.exists(imagePath):
                 os.remove(imagePath) # Remove old image
-            # Upload Category Image
+            ## Upload Category Image
             imagefile.save(os.path.join(params['category_images_upload_path'], secure_filename(imageName))) # Upload New Image
         else:
-            # Create Image filename
+            ## Create Image filename
             ext = os.path.splitext(data.category_img)[1]
             imageName = imgname.strip().lower().replace(' ', '-') + ext
             src = params['category_images_upload_path'] + data.category_img
             dest = params['category_images_upload_path'] + imageName
             os.rename(src, dest)
  
-        # ----- Update record in Table
+        ### Update record in Table
         data.category = category
         data.tagline = tagline
         data.category_img = imageName
@@ -124,38 +112,48 @@ def editCategories():
         flash("Successfully! Updated Category", "alert-success")
         return redirect(url_for('admin.adminCategories'))
     else:
+        ### Return Error if form not filled
         flash("Unexpected Error Occured", "alert-danger")
         return redirect(url_for('admin.adminCategories'))
 
-### Deleting Categories
+#### Deleting Categories
 @admin.route("/categories/delete", methods = ['GET', 'POST'])
+@login_required
 def deleteCategories():
-    # Delete Categories
+    ### Check if user has permission
+    if not authAdminRole(current_user.id, 'site admin'):
+        flash('This page is not accessible', "alert-danger")
+        return redirect(url_for('admin.adminCategories'))
+
+    ### Delete Categories
     if request.method == "POST" and request.form.get('cid')!='':
         cid = request.form.get('cid')
         categories = Categories.query.filter_by(id=cid).first()
-        # Delete Category Image
+        ## Delete Category Image
         imagepath = os.path.join(params['category_images_upload_path'], categories.category_img)
         if os.path.exists(imagepath):
             os.remove(imagepath)
-        # Delete category from table
+        ## Delete category from table
         db.session.delete(categories)
         db.session.commit()
         flash('Deleted Successfully', 'alert-danger')
         return redirect(url_for('admin.adminCategories'))
     else:
+        ## Return Error if unable to delete category
         flash("Error Submitting Delete form")
         return redirect(url_for('main.error'))
 
 
 # ----------- Products ----------- #
-### Product Categories
+#### Display Product Categories
 @admin.route("/product")
+@login_required
 def adminProducts():
     return render_template('admin/product-categories.html',params=params, categories=getCategories())
 
-### Products Archives
+#### Products Archives Page
 @admin.route("/product/<string:category>")
+@login_required
 def adminProductPage(category):
     try:
         query = Categories.query.filter_by(category=category.lower()).first()
@@ -164,6 +162,7 @@ def adminProductPage(category):
         flash('Category Not Exists', 'alert-danger')
         return redirect(url_for('main.error'))
 
+    ### Fetch all products in a category
     queryProducts = Products.query.filter_by(category_id=cid).all()
     products = {}
     i = 0
@@ -182,12 +181,18 @@ def adminProductPage(category):
 
     return render_template('admin/product.html', params=params, categories=getCategories(), category=query.category, products=products)
 
-### Add New Product
+#### Add New Product
 @admin.route("/product/add", methods=['GET', 'POST'])
+@login_required
 def adminAddProduct():
+    ### Check if user has permission
+    if not authAdminRole(current_user.id, 'content editor'):
+        flash('This page is not accessible', "alert-danger")
+        return redirect(url_for('admin.adminProducts'))
+
     form = AddProduct()
     if form.validate_on_submit():
-        # Get form values
+        ### Get form values
         fproduct_name = form.product_name.data
         fdesc = form.desc.data
         fprice = form.price.data
@@ -196,44 +201,36 @@ def adminAddProduct():
         fcategory = form.category.data
         fimage_file = form.image_file.data
 
-        # Get category id by category
-        try:
-            category = Categories.query.filter_by(id=fcategory).first()
-            category = category.category
-        except Exception as e:
-            return redirect(url_for('main.error'))
-
-
-        # Insert into database
-        entry = Products(
-            product = fproduct_name.lower(),
-            product_desc = fdesc,
-            price = fprice,
-            stock = fstock,
-            details = fdetails,
-            category_id = fcategory
-        )
-        db.session.add(entry)
-        db.session.commit()
-        db.session.flush()
-        pid = entry.id
-
-        # Upload product images
-        for img in fimage_file:
-            # create folder if doesn't exists
-            if (os.path.isdir(params['product_images_upload_path'] + category + '/') == False):
-                os.makedirs(params['product_images_upload_path'] + category + '/', exist_ok=True)
-            image = secure_filename(img.filename)
-            img.save(os.path.join(params['product_images_upload_path'] + category + "/", image))
-            insertImage = ProductsImages(
-                image_name = image,
-                product_id = pid
-            )
-            db.session.add(insertImage)
+        ### Check if Images are Uploaded
+        if fimage_file[0]:
+            ## Insert product info into database
+            entry = Products(product = fproduct_name.lower(), product_desc = fdesc, price = fprice, stock = fstock, details = fdetails, category_id = fcategory)
+            db.session.add(entry)
             db.session.commit()
+            db.session.flush()
+            pid = entry.id
 
-        flash("Successfully! Added New Product", "alert-success")
-        return redirect(url_for('admin.adminProductPage', category=category))
+            ## Upload product images
+            category = getCategories(fcategory)
+            for img in fimage_file:
+                # create folder if doesn't exists
+                if (os.path.isdir(params['product_images_upload_path'] + category + '/') == False):
+                    os.makedirs(params['product_images_upload_path'] + category + '/', exist_ok=True)
+                image = secure_filename(str(pid) + "_" + img.filename)
+                img.save(os.path.join(params['product_images_upload_path'] + category + "/", image))
+                insertImage = ProductsImages(
+                    image_name = image,
+                    product_id = pid
+                )
+                db.session.add(insertImage)
+                db.session.commit()
+            flash("Successfully! Added New Product", "alert-success")
+            return redirect(url_for('admin.adminProductPage', category=category))
+        else:
+            flash("Please Upload Images", "alert-danger")
+            return redirect(request.referrer)
+
+    ### Set Form Values
     vars = {
         "title": "Add New Product",
         "action": url_for('admin.adminAddProduct'),
@@ -248,99 +245,175 @@ def adminAddProduct():
 
     return render_template('admin/add-product.html',params=params, categories=getCategories(), form=form, vars=vars)
 
-### Edit Product Form
+#### Edit Product
 @admin.route("/product/editform", methods=['GET', 'POST'])
+@login_required
 def adminEditProductForm():
+    ### Check if user has permission
+    if not authAdminRole(current_user.id, 'content editor'):
+        flash('This page is not accessible', "alert-danger")
+        return redirect(url_for('admin.adminProducts'))
+
     form = AddProduct()
+    ### Display Product Edit Form
     if request.method == "POST" and request.form.get('action') == 'editform' and request.form.get('pid'):
         pid = request.form.get('pid')
         query = Products.query.filter_by(id=pid).first()
+        form.desc.data = query.product_desc # Populate textarea field
+        form.details.data = query.details # Populate ckeditor field
+        ## Note = Textarea cannot be populated through below mentioned format. That's why you have to do it like form.desc.data = value
+        ## Note = Ckeditor field cannot be populated through below mentioned format. That's why you have to do it like form.details.data = value
         vars = {
         "title": "Update Product",
         "action": url_for('admin.adminEditProductForm'),
         "product_name": query.product,
-        "desc": query.product_desc,
         "price": query.price,
         "stock": query.stock,
-        "details": query.details,
         "category": query.category_id,
+        "images": ProductsImages.query.filter_by(product_id=query.id).all(),
         "button": "Update"
         }
         return render_template('admin/add-product.html',params=params, categories=getCategories(), form=form, vars=vars)
-
-    return redirect(url_for('main.error'))
-
-### Edit Product
-@admin.route("/product/edit", methods=['GET', 'POST'])
-def adminEditProduct():
-    # if(request.method == "POST" and request.form.get('action') == 'edit'  and request.form.get('fId') != ''):
-    #     fId = request.form.get('fId')
-    #     product = eval(cTable).query.filter_by(id=fId).first()
-
-    #     fproduct_name = request.form.get('product_name')
-    #     fproduct_desc = request.form.get('product_desc')
-    #     fprice = request.form.get('price')
-    #     fsku = request.form.get('sku')
-    #     fdetails = request.form.get('product_details')
-
-    #     product.product_name = fproduct_name,
-    #     product.product_desc = fproduct_desc,
-    #     product.price = fprice,
-    #     product.sku = fsku,
-    #     product.details = fdetails
-
-    #     db.session.commit()
-
-    #     # Upload product images
-    #     if(request.files['productImg'].filename != ""):
-    #         for f in request.files.getlist('productImg'):
-    #             # create folder if doesn't exists
-    #             f.save(os.path.join(params['product_images_upload_path'] + cTable.lower() + "/", secure_filename(f.filename)))
-    #             insertImage = eval(iTable)(
-    #                 image_name = f.filename,
-    #                 product_id = fId
-    #             )
-    #             db.session.add(insertImage)
-    #             db.session.commit()
-
-    return "Feature in Progress"
-
-### Delete Product
-@admin.route("/product/delete", methods=['GET', 'POST'])
-def adminDeleteProduct():
-    if(request.method == "POST" and request.form.get('action') == 'delete'  and request.form.get('pid') != 0):
+    
+    ### Edit Product Information
+    if  form.validate_on_submit() and request.form.get('pid'):
+        ## Get Product Id
         pid = request.form.get('pid')
-        # Get category by product id
+        ## Get form values
+        fproduct_name = form.product_name.data
+        fdesc = form.desc.data
+        fprice = form.price.data
+        fstock = form.stock.data
+        fdetails = form.details.data
+        fcategory = form.category.data
+        fimage_file = form.image_file.data
+        ## Get category by id
+        category = getCategories(fcategory)
+
+        ## Delete Old Product
+        try:
+            # Delete old product entry
+            query = Products.query.filter_by(id=pid).first()
+            db.session.delete(query)
+            db.session.commit()
+        except Exception as e:
+            flash("Refresh and Try Again! Unable to Delete Product", "alert-danger")
+            return redirect(url_for('admin.adminProductPage', category=category))
+
+        ## Insert new product info into database
+        entry = Products(product = fproduct_name.lower(), product_desc = fdesc, price = fprice, stock = fstock, details = fdetails, category_id = fcategory)
+        db.session.add(entry)
+        db.session.commit()
+        db.session.flush()
+        newPid = entry.id
+
+        ## Update old product images
+        oldImages = ProductsImages.query.filter_by(product_id=pid).all()
+        for img in oldImages:
+            img.product_id = newPid
+            db.session.commit()
+
+        ## Upload product images
+        if fimage_file[0]:
+            for img in fimage_file:
+                image = secure_filename(img.filename)
+                img.save(os.path.join(params['product_images_upload_path'] + category + "/", image))
+                insertImage = ProductsImages(
+                    image_name = image,
+                    product_id = newPid
+                )
+                db.session.add(insertImage)
+                db.session.commit()
+        flash("Successfully! Update Product", "alert-success")
+        return redirect(url_for('admin.adminProductPage', category=category))
+    
+    flash("Unexpected Error Occured, while updating product", "alert-danger")
+    return redirect(request.referrer)
+
+#### Delete Product
+@admin.route("/product/delete", methods=['GET', 'POST'])
+@login_required
+def adminDeleteProduct():
+    ### Check if user has permission
+    if not authAdminRole(current_user.id, 'content editor'):
+        flash('This page is not accessible', "alert-danger")
+        return redirect(url_for('admin.adminProducts'))
+
+    ### Validate if required values are set
+    if(request.method == "POST" and request.form.get('action') == 'delete'  and request.form.get('pid')):
+        pid = request.form.get('pid')
+        ### Get category by product id
         query = Products.query.filter_by(id=pid).first()
         cid  = query.category_id
         category = getCategories(*[cid])
 
-        # Fetch and remove images from folder
-        images = ProductsImages.query.filter_by(product_id=pid).all()
-        for img in images : 
-            os.remove(os.path.join(params['product_images_upload_path'] + category.lower() + '/', img.image_name))
-            # Delete images from database
-            deleteImages = ProductsImages.query.filter_by(product_id=pid).first()
-            db.session.delete(deleteImages)
-            db.session.commit()
+        ### Fetch and remove images from folder
+        try:
+            images = ProductsImages.query.filter_by(product_id=pid).all()
+            for img in images : 
+                os.remove(os.path.join(params['product_images_upload_path'] + category + '/', img.image_name))
+                ## Delete images from database
+                db.session.delete(img)
+                db.session.commit()
+        except Exception as e:
+            flash("Unable to delete images", "alert-danger")
 
-        # # Delete product details from table
-        product = Products.query.filter_by(id=pid).first()
-        db.session.delete(product)
-        db.session.commit()
-        flash("Deleted Product! Successfully", "alert-danger")
-        return redirect(url_for('admin.adminProductPage', category=category.lower()))
+        ### Delete product details from table
+        try:
+            product = Products.query.filter_by(id=pid).first()
+            db.session.delete(product)
+            db.session.commit()
+            flash("Deleted Product! Successfully", "alert-danger")
+            return redirect(url_for('admin.adminProductPage', category=category))
+        except Exception as e:
+            flash("Error Deleting Product!", "alert-danger")
+            return redirect(url_for('admin.adminProductPage', category=category))
 
     flash("Unexpected Error Occured", "alert-danger")
-    return redirect(url_for('main.error'))
+    return redirect(url_for('admin.adminProductPage', category=category))
+    
+# ----------- Settings ----------- #
+#### Display Settings
+@admin.route("/settings")
+@login_required
+def adminSettings():
+    return render_template('error.html')
+    
+# ----------- Orders ----------- #
+#### Display Orders
+@admin.route("/orders")
+@login_required
+def adminOrders():
+    ### Check if user has permission
+    if not authAdminRole(current_user.id, 'site admin'):
+        flash('This page is not accessible', "alert-danger")
+        return render_template('404.html')
 
-# ----------- Context Processor ----------- #
-@admin.context_processor
-def context_processor():
-    def NumberOfProducts(id):
-        try:
-            query = Products.query.filter_by(category_id=id).count()
-            return query
-        except:
-            return False
-    return dict(count=NumberOfProducts)
+    orders = Orders.query.all()
+    return render_template('admin/orders.html', orders=orders)
+
+# ----------- Users ----------- #
+#### Display Users
+@admin.route("/users")
+@login_required
+def adminUsers():
+    ### Check if user has permission
+    if not authAdminRole(current_user.id, 'site admin'):
+        flash('This page is not accessible', "alert-danger")
+        return render_template('404.html')
+
+    users = Users.query.all()
+    return render_template('admin/users.html', users=users)
+    
+# ----------- Contact Us ----------- #
+#### Display Contacts
+@admin.route("/contact")
+@login_required
+def adminContact():
+    ### Check if user has permission
+    if not authAdminRole(current_user.id, 'site admin'):
+        flash('This page is not accessible', "alert-danger")
+        return render_template('404.html')
+
+    contacts = Contacts.query.all()
+    return render_template('admin/contact.html', contacts=contacts)

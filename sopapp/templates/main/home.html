@@ -120,14 +120,14 @@
         <div class="product-info md:mt-8">
             <figure class="relative">
                 <div class="relative">
-                    <a href="/"
+                    <a href="{{url_for('main.singleProductPage', category=p, slug=products[p][i]['product']|replace(' ', '-')|lower())}}"
                         class="bg-black after:transition-all after:block after:absolute after:inset-0 hover:after:bg-black/30 after:w-full">
                         <img class="w-full object-cover" src="{{url_for('static', filename='assets/images/products/')}}{{p}}/{{products[p][i]['image']}}"
                             alt="apple category image">
                     </a>
                 </div>
                 <figcaption class="text-center py-3">
-                    <h2 class="font-semibold mb-1">{{products[p][i]['name']|title}}</h2>
+                    <h2 class="font-semibold mb-1">{{products[p][i]['product']|title}}</h2>
                     <p>Rs. {{products[p][i]['price']}}</p>
                 </figcaption>
             </figure>

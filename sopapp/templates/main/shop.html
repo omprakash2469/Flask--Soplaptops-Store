@@ -18,7 +18,7 @@
             <div class="product-info md:mt-8">
                 <figure class="relative">
                     <div class="relative">
-                        <a href="{{url_for('singleProductPage', category=category.lower(), slug=products[p]['name']|replace(' ', '-')|lower())}}"
+                        <a href="{{url_for('main.singleProductPage', category=category.lower(), slug=products[p]['name']|replace(' ', '-')|lower())}}"
                             class="bg-black after:transition-all after:block after:absolute after:inset-0 hover:after:bg-black/30 after:w-full">
                             <img class="w-full object-cover"
                                 src="{{ url_for('static', filename='assets/images/products/')}}{{category.lower()}}/{{products[p]['image'].image_name}}"
