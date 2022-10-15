@@ -81,8 +81,8 @@ def MergeDicts(dict1, dict2):
 # Subtotal at checkout
 def returnSum(dict):
     sum = 0
-    for i in dict.values():
-        sum = sum + i
+    for key in dict:
+        sum = sum + dict[key]['price']
     return sum
 
 func_dict = {
@@ -92,6 +92,6 @@ func_dict = {
     "authAdminRole":  authAdminRole,
     "getCategories": getCategories,
     "MergeDicts": MergeDicts,
-    "returnSum": returnSum,
-    "roleByAdminId": roleByAdminId
+    "roleByAdminId": roleByAdminId,
+    "returnSum": returnSum
 }

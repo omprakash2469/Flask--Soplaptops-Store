@@ -2,8 +2,8 @@
 from flask import Blueprint, render_template, request, flash, url_for, session, redirect
 
 # ----------- Application Modules ----------- #
-from ..models.main import Products
-from ..models.users import Orders, AddToCart
+from ..models.main import Products, ProductsImages
+from ..models.users import Orders, OrdersForm
 from ..extensions import params, db
 from ..functions import MergeDicts, getCategories, getCategoryById
 
@@ -19,67 +19,89 @@ def user():
 ### Add Product to cart and Display Cart
 @users.route("/cart", methods=['GET', 'POST'])
 def userCart():
-    id = request.form.get('pid')
-    quantity = request.form.get('quantity')
-    if id and quantity:
-        ## Get Product Information by product id
-        product = Products.query.filter_by(id=id).first()
-        ## Add Product to Cart
-        cartItems = {
-            id : {
-                'category': getCategoryById(product.category_id),
-                'name': product.product,
-                'price': product.price,
-                'quantity': quantity
+    if request.method == "POST":
+        data = request.get_json()
+        pid = data['pid']
+        quantity = data['quantity']
+        
+        ## Validate required values
+        if pid and quantity:
+            ## Get Product Information by product id
+            product = Products.query.filter_by(id=pid).first()
+            category = getCategoryById(product.category_id) # Get category of product
+            image = ProductsImages.query.filter_by(product_id=pid).first()
+            url = url_for('static', filename=f"assets/images/{category}/{image.image_name}") # Get product image
+
+            ## Add Product to Cart
+            cartItems = {
+                pid : {
+                    'category': category,
+                    'name': product.product,
+                    'price': product.price,
+                    'quantity': quantity,
+                    'image': url
+                }
             }
-        }
-        ## Store products in session
-        if 'shoppingCart' in session:
-            if id in session['shoppingCart']:
-                flash("This product is already in cart", "red")
-                return redirect(request.referrer)
-            else:
+
+            ## Check if cart session is started
+            if 'shoppingCart' in session:
+                ## Check if product exists in cart
+                if pid in session['shoppingCart']:
+                    return {"state": "bg-red-200", "message":"Product Already Added in cart"}
+
+                ## Add product in cart if not exits
                 session['shoppingCart'] = MergeDicts(session['shoppingCart'], cartItems)
-                flash("Added Your Product in Cart", "green")
-                return redirect(url_for('users.userCart'))
+                return {"state": "bg-green-200", "message":"Added Your Product in Cart"}
+            else:
+                session['shoppingCart'] = cartItems
+                return {"state": "bg-green-200", "message":"Added Your Product in Cart"}
         else:
-            session['shoppingCart'] = cartItems
-            return redirect(url_for('users.userCart'))
+            return {"state": "bg-red-200", "message":"Refresh! And Try Again"}
 
-    if session.get('shoppingCart') == None:
-        return render_template('users/empty-cart.html', params=params, categories=getCategories())
 
-    return render_template('users/cart.html', params=params, categories=getCategories())
+    return render_template('users/empty-cart.html', params=params, categories=getCategories())
 
 ### Remove Cart Item
-@users.route("/del", methods=['GET', 'POST'])
-def delCartItem():
-    pid = request.form.get('product_id')
-    category = request.form.get('category')
-    if pid and category and session['shoppingCart'][pid]['category'] == category:
+@users.route("/removeitem", methods=['GET', 'POST'])
+def removeCartItem():
+    if request.method == "POST":
+        data = request.get_json()
+        pid = data['value']
         session['shoppingCart'].pop(pid, None)
         session.modified = True
+        return {"state": "bg-green-200", "message":"Removed Cart Item!"}
     else:
-        return render_template('error.html', msg="Internal Server Error")
-
-    return redirect(request.referrer)
-    
+        return {"state": "bg-red-200", "message":"Refresh! And Try Again"}
 
 # ----------- Checkout ----------- #
 @users.route("/checkout", methods=['GET', 'POST'])
 def checkout():
-    # Check if product are added in cart
-    if 'shoppingCart' not in session:
+    # Check if product are there in cart
+    if session['shoppingCart'] == {}:
+        flash("Please make a purchase", "bg-green-200")
         return redirect(url_for('users.userCart'))
-    
-    return render_template('users/checkout.html', params=params, categories=getCategories())
+
+    form = OrdersForm()
+    if form.validate_on_submit():
+        name = form.name.data
+        number = form.number.data
+        email = form.email.data
+        street = form.street.data
+        address = form.address.data
+        zipcode = form.zipcode.data
+        place_order = form.place_order.data
+
+        ## Register User - unique email
+        ## Place Order
+    return render_template('users/checkout.html', params=params, categories=getCategories(), form=form)
 
 # ----------- Orders ----------- #
 @users.route("/orders", methods=['GET', 'POST'])
 ### Receive Orders
 def orders():
     if session['shoppingCart'] == {}:
-        return redirect("/cart")
+        flash("Please make a purchase", "bg-green-200")
+        return redirect(url_for('users.userCart'))
 
     fname = request.form.get('name')
     fphone = request.form.get('phone')
@@ -120,8 +142,8 @@ def orders():
         msg = "Please Enter Delivery Details"
         return render_template('users/checkout.html', params=params, msg=msg, categories=getCategories())
 
-### Track Orders
-@users.route("/trackorder")
-def trackorder():
+# ----------- User Dashboard ----------- #
+@users.route("/dashboard")
+def dashboard():
     trackid = request.form.get('trackid')
     return render_template('users/order.html', params=params)

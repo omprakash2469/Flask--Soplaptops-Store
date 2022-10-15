@@ -1,3 +1,4 @@
+// ---------- Navigation Bar Toggle ----------
 // Navigation Bar
 let navbar = document.getElementById('menu-list')
 function navOpen() {
@@ -8,38 +9,79 @@ function navClose() {
     console.log(navbar.classList.add('hidden'))
 }
 
-// Slider
-const slides = document.getElementById('slider').children
-const leftArrow = document.getElementById('leftarrow')
-const rightArrow = document.getElementById('rightarrow')
+// Toggle Checkout Sidebar
+let checkoutBar = document.getElementById('checkoutBar')
 
-let currSlide = 0
+// ---------- Cart Sidebar Toggle ----------
+function openCheckoutBar() {
+    checkoutBar.classList.remove('hidden')
+}
+function closeCheckoutBar() {
+    checkoutBar.classList.add('hidden')
+}
+// Open Cart and Add Item
+function addAndOpenCart(){
+    openCheckoutBar()
+    sendCart()
+}
 
-rightArrow.addEventListener('click', () => {
-    currSlide++
-    if (currSlide > slides.length - 1){
-        currSlide = 0
-        
+// ---------- Add to Cart ----------
+// Send Request to add product in cart
+const makeRequest = (action, item) => {
+    let config = {
+        method : "POST",
+        headers : {
+            "Content-type": "application/json"
+        },
+        body : JSON.stringify(item)
     }
-    setActiveSlide()
-    // console.log(currSlide)
-})
 
-leftArrow.addEventListener('click', () => {
-    currSlide--
-    if (currSlide < 0){
-        currSlide = slides.length - 1
-        
-    }
-    setActiveSlide()
-    // console.log(currSlide)
-})
+    let response = fetch(action, config)
+        .then((response) => response.json())
+        .then((json) => {
+            alert(json)
+        });
+}
 
-function setActiveSlide() {
-    //remove active class from all
-    for(const slide of slides){
-        slide.classList.add('hidden')
+// Fetch all values and create a request
+const sendCart = ()=>{
+    let item = {
+        pid: document.getElementById('pid').value,
+        quantity: document.getElementById('quantity').value
     }
-    //only adding active class to the currently active slide
-    slides[currSlide].classList.remove('hidden')
+    makeRequest("/cart", item)
+}
+
+// Display Alert Message in checkout
+const alert = (state) =>{
+    let alert = document.getElementById('addtocartalert')
+    alert.classList.remove('hidden') // Display alert
+    alert.classList.add(state['state'])
+    alert.innerText = state['message']
+    
+    // Display Message for 5s
+    setInterval(() => {
+        alert.classList.add('hidden') 
+        alert.classList.remove(state['state'])
+        alert.innerText = ""
+    }, 4000);
+}
+
+// Remove Cart Item
+let cartItems = document.getElementsByClassName('removecartitem')
+for (let i = 0; i < cartItems.length; i++) {
+    cartItems[i].addEventListener('click', ()=>{
+        cartpid = {"value": cartItems[i].value}
+        makeRequest("/removeitem", cartpid)
+    })
+}
+
+// Remove Checkout Item
+let checkoutItems = document.getElementsByClassName('removecheckoutitem')
+for (let i = 0; i < checkoutItems.length; i++) {
+    checkoutItems[i].addEventListener('click', ()=>{
+        checkoutpid = {"value": checkoutItems[i].value}
+        makeRequest("/removeitem", checkoutpid)
+        openCheckoutBar()
+    })
 }

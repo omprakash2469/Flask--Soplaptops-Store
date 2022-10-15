@@ -1,0 +1,26 @@
+{
+  "name": "soplaptops",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watchcss": "npx tailwindcss -i ./sopapp/static/assets/css/input.css -o ./sopapp/static/assets/css/style.css --watch",
+    "minifycss": "npx tailwindcss -i ./sopapp/static/assets/css/input.css -o ./sopapp/static/assets/css/style.css --minify"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/omprakash2469/Flask--Soplaptops-Store.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/omprakash2469/Flask--Soplaptops-Store/issues"
+  },
+  "homepage": "https://github.com/omprakash2469/Flask--Soplaptops-Store#readme",
+  "devDependencies": {
+    "autoprefixer": "^10.4.12",
+    "postcss": "^8.4.18",
+    "tailwindcss": "^3.1.8"
+  }
+}
