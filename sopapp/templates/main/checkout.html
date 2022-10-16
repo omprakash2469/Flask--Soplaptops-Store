@@ -18,7 +18,7 @@
                 <h1 class="text-base mb-2">DELIVERY DETAILS</h1>
                 <hr>
                 <div class="para text-justify py-5 sm:text-left">
-                    <form action="/" method="post">
+                    <form action="{{url_for('users.checkout')}}" method="post">
                         <div class="my-2">
                             {{form.name.label(class="text-gray-500 my-2 block")}}
                             {{form.name(class="text-xs border border-gray-400/75 py-4 px-3 w-full mb-2",
@@ -69,7 +69,7 @@
                         {% for item in session['shoppingCart'] %}
                         <li class="flex py-6">
                             <div class="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                                <img src="https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-01.jpg"
+                                <img src="{{session['shoppingCart'][item]['image']}}"
                                     alt="Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt."
                                     class="h-full w-full object-cover object-center">
                             </div>
@@ -78,7 +78,7 @@
                                 <div>
                                     <div class="flex justify-between text-base font-medium text-gray-900">
                                         <h3 class="w-4/6">
-                                            <a href="#">{{session['shoppingCart'][item]['name']|title()}}</a>
+                                            <a href="{{session['shoppingCart'][item]['product_url']}}">{{session['shoppingCart'][item]['name']|title()}}</a>
                                         </h3>
                                         <p class="ml-4 w-1/3 text-right ">Rs. <span
                                                 class="cart_item_price">{{session['shoppingCart'][item]['price']}}</span>

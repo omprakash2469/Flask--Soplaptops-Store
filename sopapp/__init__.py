@@ -42,6 +42,17 @@ def create_app():
     def context_processor():
         return dict(authAdminRole=func_dict['authAdminRole'], getCategoryById=func_dict['getCategoryById'], roleIdByAdminId=func_dict['roleIdByAdminId'], NumberOfProducts=func_dict['NumberOfProducts'], roleByAdminId=func_dict['roleByAdminId'], returnSum=func_dict['returnSum'])
 
+    # ----------- Database Configuration ----------- #
+    def configure_database(app):
+        @app.before_first_request
+        def initialize_database():
+            db.create_all()
+
+        @app.teardown_request
+        def shutdown_session(exception=None):
+            db.session.remove()
+    
+
     # ----------- Set App Context ----------- #
     with app.app_context():
         # Import Our Routes
@@ -56,4 +67,6 @@ def create_app():
         app.register_blueprint(users)
         app.register_blueprint(admin)
 
+        # Database Configuration
+        configure_database(app)
         return app

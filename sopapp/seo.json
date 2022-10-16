@@ -1,11 +1,23 @@
 {
-    "homepage":{
+    "home":{
         "title": "SOPLaptops || Best Laptops in Pune",
         "desc": "We provide best laptops in pune and top leader in computers in pune",
         "keyword": ["best laptops price in pune", "laptops in pune", "budget laptop in pune"]
     },
-    "aboutpage":{
-        
+    "about":{
+        "title": "About Us || SOPLaptops",
+        "desc": "About soplaptops and their working and services processes"
+    },
+    "contact":{
+        "title": "Contact Us || SOPLaptops",
+        "desc": "Feel Free to contact and we will provide best possible service for you"
+    },
+    "login":{
+        "title": "Login || SOPLaptops",
+        "desc": "Please Login to complete your purchase"
+    },
+    "signup":{
+        "title": "Sign Up || SOPLaptops",
+        "desc": "Please Signup to complete your purchase"
     }
-    
 }

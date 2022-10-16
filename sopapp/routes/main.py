@@ -45,6 +45,11 @@ def index():
 
     return render_template('main/home.html', params=params, categories=getCategories(), form=form, products=products)
 
+# ----------- Blogs Archives ----------- #
+@main.route('/blogs')
+def blogs():
+    return render_template('main/blogs.html', params=params, categories=getCategories())
+    
 # ----------- Products Archives ----------- #
 @main.route('/products/<string:category>')
 def productArchives(category):

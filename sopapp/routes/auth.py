@@ -22,6 +22,10 @@ def dashboard():
 @auth.route('/login', methods=['GET', 'POST'])
 #### Login User
 def adminLogin():
+    # Redirect User if logged in
+    if current_user.is_authenticated:
+        return redirect(url_for('auth.dashboard'))
+
     form = LoginForm()
     ### Validate submission
     if form.validate_on_submit():

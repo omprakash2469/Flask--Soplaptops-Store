@@ -1,0 +1,11 @@
+{% extends '/main/layout.html' %}
+{% block body %}
+<div class="content-wrapper py-14 lg:w-[90%] lg:m-auto xl:w-[1200px] xl:py-16">
+    <p class="text-5xl block text-center py-7"><i class="fa-solid fa-circle-check text-green-500"></i></p>
+    <h2 class="text-4xl font-semibold text-center text-gray-700">Thank you! Your Order has Placed</h2>
+    <p class="text-center text-xl py-3">You have successfully placed your order. It will be delivered within 2-3 Business Days</p>
+    <div class="text-center my-6">
+        <a href="{{url_for('main.index')}}" class="inline-block text-white bg-black px-6 py-4 text-xs hover:bg-black/80 transition-all">RETURN TO SHOP</a>
+    </div>
+</div>
+{% endblock %}

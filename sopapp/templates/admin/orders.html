@@ -36,16 +36,16 @@
                     <tbody>
                         {% for order in orders %}
                         <tr>
-                            <td>{{order.id}}</td>
+                            <td>{{order}}</td>
                             <td class="cursor-pointer" data-bs-toggle="tooltip" data-bs-offset="0,4"
                                 data-bs-placement="right" data-bs-html="true" title=""
-                                data-bs-original-title="{{order.user_id}}">{{order.user_id[:20]|capitalize()}}...</td>
+                                data-bs-original-title="{{order.user_id}}">{{orders[order]['username']}}</td>
                             <td class="cursor-pointer" data-bs-toggle="tooltip" data-bs-offset="0,4"
                                 data-bs-placement="right" data-bs-html="true" title=""
-                                data-bs-original-title="{{order.product_id}}">{{ order.product_id[:20]|capitalize()}}...</td>
-                            <td>Rs. 1000</td>
-                            <td>{{order.order_date}}</td>
-                            <td>{{order.status}}</td>
+                                data-bs-original-title="{{order.product_id}}">{{orders[order]['product']|title()}}</td>
+                            <td>Rs. {{orders[order]['price']}}</td>
+                            <td>{{orders[order]['doo']}}</td>
+                            <td class="{{orders[order]['status']}}"></td>
                         </tr>
                         {% endfor %}
                     </tbody>

@@ -33,28 +33,30 @@
                             <th>Password</th>
                             {% endif %}
                             <th>Address</th>
-                            <th>City</th>
-                            <th>State</th>
+                            <th>Number</th>
+                            <th>Street</th>
                             <th>Zipcode</th>
                         </tr>
                     </thead>
                     <tbody>
+                        {% if users %}
                         {% for user in users %}
                         <tr>
                             <td>{{user.id}}</td>
                             <td>{{user.name}}</td>
                             <td>{{user.email}}</td>
                             {% if authAdminRole(current_user.id, 'site admin') %}
-                            <td>{{user.password}}</td>
+                            <td>{{user.password[:20]}}..</td>
                             {% endif %}
                             <td class="cursor-pointer" data-bs-toggle="tooltip" data-bs-offset="0,4"
                                 data-bs-placement="right" data-bs-html="true" title=""
-                                data-bs-original-title="{{user.address}}">{{user.address}}...</td>
-                            <td>{{user.city}}</td>
-                            <td>{{user.state}}</td>
+                                data-bs-original-title="{{user.address}}">{{user.address[:20]}}..</td>
+                            <td>{{user.number}}</td>
+                            <td>{{user.street}}</td>
                             <td>{{user.zipcode}}</td>
                         </tr>
                         {% endfor %}
+                        {% endif %}
                     </tbody>
                 </table>
             </div>

@@ -1,8 +1,9 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_ckeditor import CKEditor
+import json
+
 db = SQLAlchemy()
 ckeditor = CKEditor()
-import json
 
 ### Project Configuration
 with open('D:\Programming and Projects\Projects\Flask\Soplaptops\config.json') as c:

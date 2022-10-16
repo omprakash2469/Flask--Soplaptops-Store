@@ -4,12 +4,6 @@
         "blog_name" : "SOP Laptops",
         "category_images_upload_path": "D:/Programming and Projects/Projects/Flask/Soplaptops/sopapp/static/assets/images/category/",
         "product_images_upload_path": "D:/Programming and Projects/Projects/Flask/Soplaptops/sopapp/static/assets/images/products/",
-        "gallery_images_folder": "D:/Python/Flask/Flask Website Template/S.O.P Computers/static/images/gallery/",
-        "fb_uri": "https://facebook.com/",
-        "inst_uri": "https://instagram.com/",
-        "tw_uri": "https://twitter.com/",
-        "pn_uri": "https://pinterest.com/",
-        "admin": "Omprakash",
-        "admin_password": "123"
+        "gallery_images_folder": "D:/Python/Flask/Flask Website Template/S.O.P Computers/static/images/gallery/"
     }
 }
