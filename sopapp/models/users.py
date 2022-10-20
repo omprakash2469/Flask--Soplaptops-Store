@@ -1,8 +1,8 @@
 # ----------- Flask Modules ----------- #
-from enum import unique
-from turtle import Turtle
+from email.policy import default
+from flask import session
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, StringField, EmailField, PasswordField
+from wtforms import SubmitField, StringField, EmailField, PasswordField, HiddenField
 from wtforms.validators import DataRequired, Email
 from datetime import datetime
 
@@ -17,8 +17,8 @@ class Users(db.Model):
     email = db.Column(db.String(250), nullable=False, unique=True)
     password = db.Column(db.String(250), nullable=False)
     address = db.Column(db.String(500), nullable=False)
-    street = db.Column(db.String(500), nullable=True)
-    zipcode = db.Column(db.Integer, nullable=True)
+    street = db.Column(db.String(500), default='')
+    zipcode = db.Column(db.Integer, default=0)
 
 class Orders(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -31,8 +31,7 @@ class Orders(db.Model):
 # ------------ Form Classess ------------ #
 class OrdersForm(FlaskForm):
     name = StringField("Your Full Name", validators=[DataRequired()])
-    number = StringField("Phone Numebr", validators=[DataRequired()])
-    email = EmailField("Email", validators=[DataRequired(), Email()])
+    number = StringField("Phone Number", validators=[DataRequired()])
     street = StringField("Street", validators=[DataRequired()])
     address = StringField("Address", validators=[DataRequired()])
     zipcode = StringField("zipcode", validators=[DataRequired()])
@@ -46,3 +45,13 @@ class UserRegisterForm(FlaskForm):
     cpassword = PasswordField("Confirm Password", validators=[DataRequired()])
     address = StringField("Address", validators=[DataRequired()])
     signup = SubmitField("Sign Up", validators=[DataRequired()])
+
+class UserUpdateForm(FlaskForm):
+    id = HiddenField('uid', validators=[DataRequired()])
+    name = StringField("Full Name", validators=[DataRequired()])
+    number = StringField("Contact", validators=[DataRequired()])
+    email = EmailField("Email", validators=[DataRequired(), Email()])
+    address = StringField("Address", validators=[DataRequired()])
+    street = StringField("Street")
+    zipcode = StringField("zipcode")
+    update = SubmitField("Update", validators=[DataRequired()])

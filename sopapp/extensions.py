@@ -1,9 +1,12 @@
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
 from flask_ckeditor import CKEditor
 import json
 
 db = SQLAlchemy()
 ckeditor = CKEditor()
+login_manager = LoginManager()
+
 
 ### Project Configuration
 with open('D:\Programming and Projects\Projects\Flask\Soplaptops\config.json') as c:

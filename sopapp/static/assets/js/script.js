@@ -1,4 +1,4 @@
-// ---------- Navigation Bar Toggle ----------
+// ---------- Navigation Bar Toggle For Mobile ----------
 // Navigation Bar
 let navbar = document.getElementById('menu-list')
 function navOpen() {
@@ -40,10 +40,13 @@ const makeRequest = (action, item) => {
         .then((response) => response.json())
         .then((json) => {
             alert(json)
+            setInterval(() => {
+                location.reload()
+            }, 800);
         });
 }
 
-// Fetch all values and create a request
+// ---------- Fetch all values and create a product add request ----------
 const sendCart = ()=>{
     let item = {
         pid: document.getElementById('pid').value,
@@ -67,6 +70,7 @@ const alert = (state) =>{
     }, 4000);
 }
 
+// ---------- Remove Items ----------
 // Remove Cart Item
 let cartItems = document.getElementsByClassName('removecartitem')
 for (let i = 0; i < cartItems.length; i++) {
@@ -82,6 +86,11 @@ for (let i = 0; i < checkoutItems.length; i++) {
     checkoutItems[i].addEventListener('click', ()=>{
         checkoutpid = {"value": checkoutItems[i].value}
         makeRequest("/removeitem", checkoutpid)
-        openCheckoutBar()
     })
+}
+
+// Display Checkout Error if cart is empty and checkout is clicked
+function checkoutError() {
+    let error = {"state": "bg-red-200", "message":"Please make a purchase to proceed!"}
+    alert(error)
 }

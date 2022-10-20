@@ -1,22 +1,105 @@
 # ----------- Flask Modules ----------- #
-from flask import Blueprint, render_template, request, flash, url_for, session, redirect, jsonify
+from ast import Param
+from flask import Blueprint, render_template, request, flash, url_for, session, redirect
 from werkzeug.security import generate_password_hash, check_password_hash
-import secrets
 
 # ----------- Application Modules ----------- #
-from ..models.users import Orders, OrdersForm, Users, UserRegisterForm
+from ..models.users import Orders, OrdersForm, Users, UserRegisterForm, UserUpdateForm
 from ..models.main import Products, ProductsImages
 from ..models.auth import LoginForm
 from ..extensions import params, db
-from ..functions import MergeDicts, getCategories, getCategoryById
+from ..functions import MergeDicts, getCategories, getCategoryById, returnMeta
 
 # ----------- Instiantiate Blueprint ----------- #
 users = Blueprint('users', __name__, template_folder='templates')
 
 # ----------- User Dashboard ----------- #
-@users.route('/users')
-def user():
-    return "Welcome to your dashbaord"
+@users.route("/dashboard", methods=['GET', 'POST'])
+def dashboard():
+    # Redirect User if not logged in
+    if not 'user_logged_in' in session and not 'username' in session:
+        flash("Please login to continue", "text-red-500")
+        return redirect(url_for('users.login'))
+    
+    ### User information update form
+    form = UserUpdateForm()
+    if form.validate_on_submit():
+        id = form.id.data
+        name = form.name.data
+        number = form.number.data
+        email = form.email.data
+        address = form.address.data
+        street = form.street.data
+        zipcode = form.zipcode.data
+
+        # Validate user
+        if int(id) != int(session['id']):
+            flash("Refresh Page and Try Again", "text-red-500")
+            return redirect(url_for('users.dashboard'))
+
+        userExist = Users.query.filter_by(email=email).first()
+        if userExist:
+            flash("Account Already Exists! Try using other email", "text-red-500")
+            return redirect(url_for('users.dashboard'))
+
+        ## Update user in database
+        query = Users.query.filter_by(id=id).first()
+        if query:
+            query.name = name
+            query.number = number
+            query.email = email
+            query.address = address
+            query.street = street
+            query.zipcode = zipcode
+            db.session.commit()
+                    
+            ## Update session values
+            session['username'] = name
+        
+            flash("Successfully! Updated your information", "text-green-500")
+            return redirect(url_for('users.dashboard'))
+
+    ### Get current loggedin's user orders
+    orders = {}
+    userOrders = Orders.query.filter_by(user_id=session['id']).all()
+    for order in userOrders:
+        ## Get Product Information by product id
+        product = Products.query.filter_by(id=order.product_id).first()
+        category = getCategoryById(product.category_id) # Get category of product
+        image = ProductsImages.query.filter_by(product_id=product.id).first()
+        url = url_for('static', filename=f"assets/images/products/{category}/{image.image_name}") # Get product image
+        ## Add Product to Cart
+        item = {
+            order.id : {
+                'pid': product.id,
+                'category': category,
+                'name': product.product,
+                'product_url': url_for('main.singleProductPage', category=category, slug=product.product.replace(' ', '-').lower()),
+                'price': int(product.price) * int(order.quantity),
+                'order_date': order.order_date.strftime("%d/%m/%Y"),
+                'quantity': int(order.quantity),
+                'image': url
+            }
+        }
+        orders.update(item)
+
+    
+    ### Get User Details of current logged in user
+    currentUser = Users.query.filter_by(id=session['id']).first() ## Get loggedin user
+    user = {
+        'name': session['username'].capitalize(),
+        "number": currentUser.number,
+        "email": currentUser.email,
+        "address": currentUser.address.capitalize(),
+        "street": currentUser.street,
+        "zipcode": currentUser.zipcode
+    }
+
+    # SEO Meta data
+    meta = returnMeta('user')
+    meta['title'] = session['username'] + " || Dashboard - " + params['blog_name']
+    return render_template('users/index.html', params=params, meta=meta, categories=getCategories(), orders=orders, user=user, form=form, uo=userOrders)
+
 
 # ----------- Shopping Cart ----------- #
 ### Add Product to cart and Display Cart
@@ -41,8 +124,8 @@ def userCart():
                     'category': category,
                     'name': product.product,
                     'product_url': url_for('main.singleProductPage', category=category, slug=product.product.replace(' ', '-').lower()),
-                    'price': product.price,
-                    'quantity': quantity,
+                    'price': int(product.price) * int(quantity),
+                    'quantity': int(quantity),
                     'image': url
                 }
             }
@@ -63,13 +146,7 @@ def userCart():
             return {"state": "bg-red-200", "message":"Refresh! And Try Again"}
 
 
-    return render_template('main/empty-cart.html', params=params, categories=getCategories())
-
-### Return Cart Item
-@users.route("/returnitems", methods=['GET', 'POST'])
-def returnItems():
-    items = jsonify(session['shoppingCart'])
-    return items
+    return redirect(url_for('main.index'))
 
 ### Remove Cart Item
 @users.route("/removeitem", methods=['GET', 'POST'])
@@ -87,59 +164,58 @@ def removeCartItem():
 @users.route("/checkout", methods=['GET', 'POST'])
 def checkout():
     # Check if product are there in cart
-    if session['shoppingCart'] == {}:
-        flash("Please make a purchase", "bg-green-200")
-        return redirect(url_for('users.userCart'))
+    if 'shoppingCart' not in session:
+        return redirect(url_for('main.index'))
+
+    if 'id' not in session and 'username' not in session and 'user_logged_in' not in session:
+        flash("Please Login To Proceed to Checkout", "text-red-500")
+        return redirect(url_for('users.login'))
+
+    # Get Current User info
+    loggedinUser = Users.query.filter_by(id=session['id']).first()
 
     form = OrdersForm()
     if form.validate_on_submit():
         fname = form.name.data
         fnumber = form.number.data
-        femail = form.email.data
         fstreet = form.street.data
         faddress = form.address.data
         fzipcode = form.zipcode.data
 
         ## User Authentication
-        # Check if User Exists
-        userExist = Users.query.filter_by(email=femail).first()
-        if not userExist:
-            # Create User Password
-            password = generate_password_hash(secrets.token_urlsafe(14), method="sha256")
-            # Register User if user not exists
-            try:
-                register = Users(
-                    name = fname,
-                    number = fnumber,
-                    email = femail,
-                    password = password,
-                    street = fstreet,
-                    address = faddress,
-                    zipcode = fzipcode
-                )
-                db.session.add(register)
-                db.session.commit()
-                db.session.flush
-                uid = register.id
-            except Exception as e:
-                flash("Refresh Page! And Try Again")
-                return redirect(url_for('users.checkout'))
-        else:
-            uid = userExist.id
+        # Update user street, address and zipcode
+        try:
+            loggedinUser.name = fname,
+            loggedinUser.number = fnumber,
+            loggedinUser.street = fstreet,
+            loggedinUser.address = faddress,
+            loggedinUser.zipcode = fzipcode
+            db.session.commit()
+            db.session.flush
+            uid = loggedinUser.id ## Get User id
+            # Update Username in session
+            session['username'] = fname
+        except Exception as e:
+            flash("Refresh Page! And Try Again")
+            return redirect(url_for('users.checkout'))
 
         ## Place Order
         try:
             for item in session['shoppingCart']:
-                order = Orders(user_id=uid, product_id=item)
+                order = Orders(user_id=uid, product_id=item, quantity=int(session['shoppingCart'][item]['quantity']))
                 db.session.add(order)
                 db.session.commit()
-
-            return render_template('main/confirmation.html', params=params, categories=getCategories())
+                # SEO Meta data
+                meta = returnMeta('orderConfirm')
+            return render_template('main/confirmation.html', params=params, meta=meta, categories=getCategories())
         except Exception as e:
-            flash("Error Placing Your Order", "bg-red-200")
+            flash(f"Error Placing Your Order {str(e)}", "bg-red-200")
             return redirect(url_for('users.checkout'))
 
-    return render_template('main/checkout.html', params=params, categories=getCategories(), form=form)
+    # SEO Meta data
+    meta = returnMeta('checkout')
+    meta['title'] = "Checkout - " + session['username'] + " || " + params['blog_name']    
+    return render_template('main/checkout.html', params=params, meta=meta, categories=getCategories(), form=form, user=loggedinUser)
 
 
 # ----------- User Login ----------- #
@@ -153,7 +229,6 @@ def login():
     if form.validate_on_submit():
         email = form.email.data
         password = form.password.data
-        remember = True if request.form.get('remember') else False
 
         # Check If User Exists
         try:
@@ -175,8 +250,10 @@ def login():
         except Exception as e:
             flash(f"Incorrect Information! Try Again {str(e)}", "text-red-500")
             return redirect(url_for('users.login'))
-            
-    return render_template('users/login.html', params=params, categories=getCategories(), form=form)
+
+    # SEO Meta data
+    meta = returnMeta('login')
+    return render_template('users/login.html', meta=meta, params=params, categories=getCategories(), form=form)
 
 # ----------- User Signup ----------- #
 @users.route("/signup", methods=['GET', 'POST'])
@@ -218,49 +295,27 @@ def signup():
             flash("Incorrect Information! Try Again", "text-red-500")
             return redirect(url_for('users.signup'))
 
-    return render_template('users/signup.html', params=params, categories=getCategories(), form=form)
+    # SEO Meta data
+    meta = returnMeta('signup')
+    return render_template('users/signup.html', params=params, meta=meta, categories=getCategories(), form=form)
 
-# ----------- User Dashboard ----------- #
-@users.route("/dashboard")
-def dashboard():
-    # Redirect User if not logged in
-    if not 'user_logged_in' in session and not 'username' in session:
-        flash("Please login to continue", "text-red-300")
-        return redirect(url_for('users.login'))
-    
-    ### Get current loggedin's user orders
-    userOrders = Orders.query.filter_by(user_id=session['id']).all()
-    for order in userOrders:
-        ## Get Product Information by product id
-        product = Products.query.filter_by(id=order.product_id).first()
-        category = getCategoryById(product.category_id) # Get category of product
-        image = ProductsImages.query.filter_by(product_id=product.id).first()
-        url = url_for('static', filename=f"assets/images/products/{category}/{image.image_name}") # Get product image
 
-        ## Add Product to Cart
-        orders = {
-            product.id : {
-                'category': category,
-                'name': product.product,
-                'product_url': url_for('main.singleProductPage', category=category, slug=product.product.replace(' ', '-').lower()),
-                'price': product.price,
-                'quantity': product.quantity,
-                'image': url
-            }
-        }
-    
-    ### Get User Details of current logged in user
-    currentUser = Users.query.filter_by(id=session['id']).first() ## Get loggedin user
-    user = {
-        'name': session['username'].capitalize(),
-        "number": currentUser.number,
-        "email": currentUser.email,
-        "address": currentUser.address.capitalize(),
-        "street": currentUser.street,
-        "zipcode": currentUser.zipcode
-    }
+## Cancel Order
+@users.route("/cancelOrder", methods=['GET', 'POST'])
+def cancelOrder():
+    if request.method == "POST" and request.form.get('orderid'):
+        id = request.form.get('orderid')
+        try:
+            order = Orders.query.filter_by(id=id).first()
+            db.session.delete(order)
+            db.session.commit()
+            flash("Successfully! Cancelled your order", "text-red-500")
+            return redirect(url_for('users.dashboard'))
+        except Exception as e:
+            flash("Refresh Page! And Try Again", "text-red-500")
+            return redirect(url_for('users.dashboard'))
 
-    return render_template('users/index.html', params=params, categories=getCategories(), orders=orders, user=user)
+    return render_template('404.html')
 
 # ----------- User Logout ----------- #
 @users.route("/logout")

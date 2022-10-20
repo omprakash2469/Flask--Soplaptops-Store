@@ -1,0 +1,60 @@
+{% extends 'main/layout.html' %}
+{% block body %}
+
+<!-- MAIN SECTION  -->
+<main class="py-7">
+    <!-- PRIVACY-POLICY HEADING -->
+    <div class="heading-box bg-gray-100 py-8 px-4 lg:py-12">
+        <h1 class="text-2xl md:w-[720px] md:m-auto lg:w-[90%] xl:w-[1200px]">PRIVACY POLICY</h1>
+    </div>
+
+    <div class="content-wrapper lg:flex lg:w-[90%] lg:m-auto xl:w-[1200px] xl:py-16">
+        <!-- PRIVACY-POLICY SIDEBARS -->
+        <div class="content-box md:w-[720px] md:mx-auto lg:w-1/4">
+            <ul class="bg-gray-100" id="policyTabs">
+                <li class="cursor-pointer block p-5 hover:bg-gray-200 transition-all font-semibold bg-gray-200">
+                    Privacy Policies</li>
+                <li class="cursor-pointer block p-5 hover:bg-gray-200 transition-all font-semibold">Refund Policy</li>
+                <li class="cursor-pointer block p-5 hover:bg-gray-200 transition-all font-semibold">Guidelines</li>
+            </ul>
+        </div>
+
+        <!-- PRIVACY-POLICY CONTENT -->
+        <div class="about-info px-4 md:px-0 md:w-[720px] md:m-auto lg:w-3/4 lg:ml-5 lg:my-0 overflow-hidden"
+            id="policyBlocks">
+            <div class="bg-gray-100 py-6 px-5">
+                <p>User Data is private</p>
+            </div>
+            <div class="bg-gray-100 py-6 px-5 hidden">
+                <p>Refund within 7 days</p>
+            </div>
+            <div class="bg-gray-100 py-6 px-5 hidden">
+                <p>We are updating our Guidelines</p>
+            </div>
+        </div>
+    </div>
+</main>
+<!--/ MAIN SECTION  -->
+
+<script>
+    let policyTabs = document.getElementById('policyTabs').children
+    let policyBlocks = document.getElementById('policyBlocks').children
+    // Reset Active state
+    const resetActive = () => {
+        for (let i = 0; i < policyTabs.length; i++) {
+            policyTabs[i].classList.remove('bg-gray-200')
+            policyBlocks[i].classList.add('hidden')
+        }
+    }
+
+    // Toggle Tabs Bar
+    for (let i = 0; i < policyTabs.length; i++) {
+        policyTabs[i].addEventListener('click', () => {
+            resetActive()
+            policyTabs[i].classList.add('bg-gray-200')
+            policyBlocks[i].classList.remove('hidden')
+        })
+    }
+</script>
+
+{% endblock %}

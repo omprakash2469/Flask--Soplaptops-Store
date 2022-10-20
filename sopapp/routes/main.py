@@ -1,9 +1,9 @@
 # ----------- Flask Modules ----------- #
-from flask import Blueprint, render_template, flash, redirect, url_for, request
+from flask import Blueprint, render_template, flash, redirect, url_for, session
 
 # ----------- Application Modules ----------- #
 from ..extensions import params, db
-from ..functions import getCategories
+from ..functions import getCategories, returnMeta
 from ..models.main import EmailForm, Emails, Categories, Products, ProductsImages, Contacts, ContactForm
 
 # ----------- Instiantiate Blueprint ----------- #
@@ -43,99 +43,122 @@ def index():
         if products[c] == {}:
             products.pop(c)
 
-    return render_template('main/home.html', params=params, categories=getCategories(), form=form, products=products)
+    # SEO Meta data
+    meta = returnMeta('home')
+    return render_template('main/home.html', params=params, categories=getCategories(), form=form, products=products, meta=meta)
 
 # ----------- Blogs Archives ----------- #
 @main.route('/blogs')
 def blogs():
-    return render_template('main/blogs.html', params=params, categories=getCategories())
+    # SEO Meta data
+    meta = returnMeta('blogs')
+    return render_template('main/blogs.html', params=params, meta=meta, categories=getCategories())
     
 # ----------- Products Archives ----------- #
-@main.route('/products/<string:category>')
+@main.route('/category/<string:category>')
 def productArchives(category):
     # Validate if category exists
-    try:
-        query = Categories.query.filter_by(category=category.lower()).first()
-        if query:
-            cid = query.id
-    except Exception as e:
-        flash("Unexpected Error Occured")
-        return redirect(url_for('main.error'))
+    query = Categories.query.filter_by(category=category.lower()).first()
+    if not query:
+        flash("Category Doesn't exists")
+        return render_template('404.html')
 
-    # Get Products
-    try:
-        query = Products.query.filter_by(category_id=cid).all()
-    except:
-        flash("Products Not Found")
-        return redirect(url_for('main.error'))
+    # Get All Products
+    allProducts = Products.query.filter_by(category_id=query.id).all()
 
     products = {}
-    k = 0
-    for i in query:
-        k += 1
-        products[k] = {}
-        products[k] = {
-            "id": i.id,
-            "name": i.product,
+    for i in allProducts:
+        products[i.id] = {}
+        image = ProductsImages.query.filter_by(product_id=i.id).first()
+        products[i.id] = {
+            "product": i.product,
+            "product_url": url_for('main.singleProductPage', category=category.lower(), slug=i.product.replace(' ', '-').lower()),
             "price": i.price,
-            "image": ProductsImages.query.filter_by(product_id=i.id).first()
+            "image": url_for('static', filename=f"assets/images/products/{category.lower()}/{image.image_name}")
         }
-    
-    if products=={}: products = False
-
-    return render_template('main/shop.html', params=params, categories=getCategories(), category=category, products=products)
+   
+    # SEO Meta data
+    meta = returnMeta('category')
+    meta['title'] = category.capitalize() + " Laptops in Pune | " + params['blog_name']
+    return render_template('main/shop.html', params=params, meta=meta, categories=getCategories(), category=category, products=products)
 
 # ----------- Single Product Page ----------- #
-@main.route("/products/<string:category>/<string:slug>")
+@main.route("/category/<string:category>/<string:slug>")
 def singleProductPage(category, slug):
-    category = category.capitalize()
+    # Validate if category exists
+    query = Categories.query.filter_by(category=category.lower()).first()
+    if not query:
+        flash("Category Doesn't exists")
+        return render_template('404.html')
+
+    ## Validate if product exists
     product_name = slug.replace('-', ' ').lower()
+    products = Products.query.filter_by(product=product_name).first()
+    if not products:
+        flash("Product Not Found")
+        return render_template('404.html')
 
-    try:
-        # Fetch product details
-        slug = slug.replace('-', ' ').lower()
-        products = Products.query.filter_by(product=product_name).first()
-        images = ProductsImages.query.filter_by(product_id=products.id).all()
-        details = {
-                "id": products.id,
-                "product": products.product,
-                "desc": products.product_desc,
-                "price": products.price,
-                "stock": products.stock,
-                "details": products.details,
-                "category": category.lower(),
-                "urls": images
-        }
-    except:
-        flash("Product Not Found", "text-red-500")
-        return redirect(url_for('main.error'))
+    # Fetch product details
+    category = category.capitalize()
+    slug = slug.replace('-', ' ').lower()
+    images = ProductsImages.query.filter_by(product_id=products.id).all()
 
-    # Fetch related product details
-    related = Products.query.limit(5)
-    rProducts = {}
-    k = 0
+    # Check if product is added in shopping cart
+    button = ["false", "Add to Cart"]
+    if 'shoppingCart' in session:
+        for item in session['shoppingCart']:
+            if int(products.id) == int(item):
+                button = ["true", "Added to Cart"]
+                break
+
+    details = {
+            "id": products.id,
+            "product": products.product,
+            "desc": products.product_desc,
+            "price": products.price,
+            "stock": products.stock,
+            "details": products.details,
+            "category": category.lower(),
+            "urls": images,
+            "button": button
+    }
+
+    # Fetch related product of current category
+    related = Products.query.filter_by(category_id=products.category_id).limit(6)
+    products = {}
     for i in related:
-        k += 1
-        rProducts[k] = {}
+        products[i.id] = {}
         image = ProductsImages.query.filter_by(product_id=i.id).first()
-        rProducts[k] = {
-                "id": i.id,
-                "name": i.product,
-                "price": i.price,
-                "image": image.image_name
-            }
-    
-    return render_template('main/product.html', params=params, details=details, rProducts=rProducts, categories=getCategories())
+        products[i.id] = {
+            "product": i.product,
+            "product_url": url_for('main.singleProductPage', category=category.lower(), slug=i.product.replace(' ', '-').lower()),
+            "price": i.price,
+            "image": url_for('static', filename=f"assets/images/products/{category.lower()}/{image.image_name}")
+        }
+
+        # Don't include current product in related product
+        if i.id == details['id']:
+            products.pop(i.id)
+
+    # SEO Meta data
+    meta = returnMeta('products')
+    meta['title'] = slug.title() + f" | {category.upper()} | " + params['blog_name']
+    return render_template('main/product.html', params=params, meta=meta, details=details, products=products, categories=getCategories())
 
 # ----------- About ----------- #
 @main.route("/about")
 def about():
-    return render_template('main/about.html', params=params, categories=getCategories())
+
+    # SEO Meta data
+    meta = returnMeta('about')
+    return render_template('main/about.html', params=params, categories=getCategories(), meta=meta)
 
 # ----------- Privacy Policies ----------- #
 @main.route("/privacy-policy")
 def privacyPolicy():
-    return "Updating our policies soon"
+    # SEO Meta data
+    meta = returnMeta('privacy-policy')
+    return render_template('main/privacy-policy.html', params=params, categories=getCategories(), meta=meta)
 
 # ----------- Contact ----------- #
 @main.route("/contact", methods = ['GET', 'POST'])
@@ -159,7 +182,10 @@ def contact():
         except:
             flash("Unexpected Error Occured", "text-red-600")
             return redirect(url_for('main.contact'))
-    return render_template('main/contact.html', params=params, categories=getCategories(), form=form)
+    
+    # SEO Meta data
+    meta = returnMeta('contact')
+    return render_template('main/contact.html', params=params, categories=getCategories(), form=form, meta=meta)
 
 
 # ----------- Error Handling ----------- #

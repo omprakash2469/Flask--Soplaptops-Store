@@ -1,8 +1,24 @@
 from flask import redirect, url_for, render_template
+import json
 from .models.main import Products, Categories
-from .models.auth import AdminRole
+from .models.auth import AdminRole, Admin
 from .extensions import roles
+from sopapp import login_manager
 
+
+# ----------- Login Manager ----------- #
+login_manager.login_view = 'auth.adminLogin'
+@login_manager.user_loader
+def load_user(user_id):
+    return Admin.query.get(int(user_id))
+
+# ----------- Return SEO Titles ----------- #
+def returnMeta(page):
+    with open('D:\Programming and Projects\Projects\Flask\Soplaptops\seo.json') as c:
+        meta = json.load(c)["meta"][page]
+    return meta
+
+# ----------- Function for Jinja ----------- #
 ## Get Number of products by category id
 def NumberOfProducts(id):
     try:
@@ -82,7 +98,7 @@ def MergeDicts(dict1, dict2):
 def returnSum(dict):
     sum = 0
     for key in dict:
-        sum = sum + dict[key]['price']
+        sum = sum + int(dict[key]['price'])
     return sum
 
 func_dict = {

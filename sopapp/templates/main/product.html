@@ -24,14 +24,17 @@
             {% endfor %}
             {% endif %}
             {% endwith %}
+
             <div class="lg:w-full xl:w-[1200px] mx-auto flex flex-wrap">
                 <div class="images lg:w-1/2 w-full lg:h-autoobject-center rounded">
+                    <!-- Active Product Image -->
                     <img alt="ecommerce" class="object-cover  md:h-[450px] h-[350px] w-full"
                         src="https://dummyimage.com/400x400" id="active_image">
+                    <!-- Other Product Images -->
                     <div class="product-images grid grid-cols-4 gap-3 my-2 py-4" id="product_images">
                         {% for image in details['urls'] %}
                         <img src="{{url_for('static', filename='assets/images/products/')}}{{details['category']}}/{{image.image_name}}"
-                            class="w-full" alt="Great Laptops images">
+                            class="w-full border-gray-300 cursor-pointer" alt="Great Laptops images">
                         {% endfor %}
                     </div>
                 </div>
@@ -79,7 +82,6 @@
                         </span>
                     </div>
                     <p class="leading-relaxed text-gray-500">{{details['desc']|title()}}</p>
-                    <!-- <form action="{{url_for('users.userCart')}}" method="post"> -->
                     <div class="flex mt-6 items-center pb-5 border-b-2 border-gray-200 mb-5">
                         <div class="flex items-center">
                             <span class="mr-3">Quantity</span>
@@ -92,11 +94,14 @@
                     </div>
                     <div class="flex">
                         <span class="title-font font-medium text-2xl text-black">Rs. {{details['price']}}</span>
-                        <button onclick="addAndOpenCart()"
-                            class="flex ml-auto text-white bg-gray-800 border-0 py-2 px-6 focus:outline-none hover:bg-gray-700 rounded">Add
-                            to Cart</button>
+                        <button
+                        {% if details['button'][0] == 'true' %}
+                        onclick="openCheckoutBar()"
+                        {% else %}
+                        onclick="addAndOpenCart()"
+                        {% endif %}
+                            class="flex ml-auto text-white bg-gray-800 border-0 py-2 px-6 focus:outline-none hover:bg-gray-700 rounded">{{details['button'][1]}}</button>
                     </div>
-                    <!-- </form> -->
                 </div>
             </div>
             <div class="product-details mt-12 xl:w-[1200px] xl:mx-auto">
@@ -123,19 +128,18 @@
             <!-- RELATED -->
             <div
                 class="pb-14 space-y-8 sm:w-4/6 sm:m-auto md:grid md:grid-cols-2 md:gap-8 md:w-11/12 xl:grid-cols-3 xl:gap-6 xl:w-[1200px]">
-                {% for i in range(1, 4) %}
+                {% for p in products %}
                 <div class="product-info md:mt-8">
                     <figure class="relative">
                         <div class="relative">
-                            <a href="/"
+                            <a href="{{products[p].product_url}}"
                                 class="bg-black after:transition-all after:block after:absolute after:inset-0 hover:after:bg-black/30 after:w-full">
-                                <img class="w-full object-cover" src="https://dummyimage.com/400x400"
-                                    alt="apple category image">
+                                <img class="w-full object-cover" src="{{products[p].image}}" alt="apple category image">
                             </a>
                         </div>
                         <figcaption class="text-center py-3">
-                            <h2 class="font-semibold mb-1">Intel i5-4th GEN | 4GB RAM</h2>
-                            <p>Rs. 12000</p>
+                            <h2 class="font-semibold mb-1 capitalize">{{products[p].product}}</h2>
+                            <p>Rs. {{products[p].price}}</p>
                         </figcaption>
                     </figure>
                 </div>
@@ -144,7 +148,25 @@
         </div>
     </section>
     <script>
-        document.getElementById('active_image').src = document.getElementById('product_images').children[0].src
+        let activeImage = document.getElementById('active_image')
+        let allImages = document.getElementById('product_images').children
+
+        const resetActiveImages = () => {
+            for (let i = 0; i < allImages.length; i++) {
+                allImages[i].classList.add('opacity-50')
+                activeImage.src = allImages[0].src
+            }
+        }
+        for (let i = 0; i < allImages.length; i++) {
+            allImages[i].addEventListener('click', () => {
+                resetActiveImages()
+                activeImage.src = allImages[i].src
+                allImages[i].classList.remove('opacity-50')
+
+            })
+        }
+        resetActiveImages()
+        allImages[0].classList.remove('opacity-50')
     </script>
 </main>
 <!--/ MAIN SECTION  -->

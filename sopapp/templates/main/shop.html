@@ -18,22 +18,20 @@
             <div class="product-info md:mt-8">
                 <figure class="relative">
                     <div class="relative">
-                        <a href="{{url_for('main.singleProductPage', category=category.lower(), slug=products[p]['name']|replace(' ', '-')|lower())}}"
+                        <a href="{{products[p].product_url}}"
                             class="bg-black after:transition-all after:block after:absolute after:inset-0 hover:after:bg-black/30 after:w-full">
-                            <img class="w-full object-cover"
-                                src="{{ url_for('static', filename='assets/images/products/')}}{{category.lower()}}/{{products[p]['image'].image_name}}"
-                                alt="{{products[p]['image']}}">
+                            <img class="w-full object-cover" src="{{products[p].image}}" alt="{{products[p].image}}">
                         </a>
                     </div>
                     <figcaption class="text-center py-3">
-                        <h2 class="font-semibold mb-1">{{products[p]['name']|upper()}}</h2>
-                        <p>Rs. {{products[p]['price']}}</p>
+                        <h2 class="font-semibold mb-1 capitalize">{{products[p].product}}</h2>
+                        <p>{{products[p].price}}</p>
                     </figcaption>
                 </figure>
             </div>
             {% endfor %}
             {% else %}
-            <h1 class="text-3xl font-semibold">Products Not Found</h1>
+            <p class="font-semibold text-2xl">Products Not Found</p>
             {% endif %}
         </div>
     </div>

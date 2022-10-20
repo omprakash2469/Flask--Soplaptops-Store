@@ -5,10 +5,10 @@ from flask_login import current_user, login_required
 import os
 
 # ----------- Application Modules ----------- #
-from ..extensions import db, params
 from ..models.admin import AddCategory, AddProduct
 from ..models.main import Categories, Contacts, Products, ProductsImages
 from ..models.users import Users, Orders
+from ..extensions import db, params
 from ..functions import authAdminRole, getCategories
 
 # ----------- Instiantiate Blueprint ----------- #
@@ -392,8 +392,8 @@ def adminOrders():
     for fo in fetchOrders:
         orders[fo.id] = {}
         # Get Details
-        username = Users.query.filter_by(id=fo.user_id).first()
-        product = Products.query.filter_by(id=fo.product_id).first()
+        username = Users.query.filter_by(id=fo.user_id).first() ## Get username by id
+        product = Products.query.filter_by(id=fo.product_id).first() ## Get products by id
         if fo.status == 0:
             status = "bg-red-300"
         else: 
@@ -402,7 +402,8 @@ def adminOrders():
         orders[fo.id] = {
             "username": username.name.capitalize(),
             "product": product.product,
-            "price": product.price,
+            "price": product.price * fo.quantity,
+            "quantity": fo.quantity,
             "doo": fo.order_date,
             "status": status
         }
@@ -424,13 +425,22 @@ def adminUsers():
     
 # ----------- Contact Us ----------- #
 #### Display Contacts
-@admin.route("/contact")
+@admin.route("/contact", methods=['GET', 'POST'])
 @login_required
 def adminContact():
     ### Check if user has permission
     if not authAdminRole(current_user.id, 'site admin'):
         flash('This page is not accessible', "alert-danger")
         return render_template('404.html')
+    
+    ### Delete User
+    if request.method == "POST" and request.form.get("userid"):
+        id = request.form.get("userid")
+        query = Contacts.query.filter_by(id=id).first()
+        db.session.delete(query)
+        db.session.commit()
+        flash("Deleted Contacted User", "alert-danger")
+        return redirect(url_for('admin.adminContact'))
 
     contacts = Contacts.query.all()
     return render_template('admin/contact.html', contacts=contacts)

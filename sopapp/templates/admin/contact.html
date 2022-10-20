@@ -4,44 +4,51 @@
 {% if authAdminRole(current_user.id, 'site admin') %}
 <!-- Content -->
 <div class="container-xxl flex-grow-1 container-p-y">
-    <h4 class="fw-bold py-3 mb-4 d-flex justify-content-between align-items-center">All Contacts</h4>
+  <h4 class="fw-bold py-3 mb-4 d-flex justify-content-between align-items-center">All Contacts</h4>
 
-    {% with messages = get_flashed_messages(with_categories=True) %}
-    {% if messages %}
-    {% for category, message in messages %}
-    <div class="alert {{category}} alert-dismissible" role="alert">
-        {{message}}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-        </button>
-    </div>
-    {% endfor %}
-    {% endif %}
-    {% endwith %}
+  {% with messages = get_flashed_messages(with_categories=True) %}
+  {% if messages %}
+  {% for category, message in messages %}
+  <div class="alert {{category}} alert-dismissible" role="alert">
+    {{message}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+    </button>
+  </div>
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
 
-    <!-- All Contacts -->
-    <div class="row">
-        {% for contact in contacts %}
-        <div class="col-md-6 col-xl-4">
-          <div class="card mb-4">
-            <div class="card-body">
-              <h5 class="card-title">{{contact.name}}</h5>
-              <div class="card-subtitle text-muted mb-3">{{contact.email}}</div>
-              <p class="card-text">{{contact.subject}}</p>
-              <span class="card-link cursor-pointer text-primary">{{contact.location}}</span>
-              <span class="card-link cursor-pointer text-primary"  data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="bottom" data-bs-html="true" title="" data-bs-original-title="{{contact.message}}">View Message</span>
-              <span class="card-link cursor-pointer text-primary">Delete</span>
-            </div>
+  <!-- All Contacts -->
+  <div class="row">
+    {% for contact in contacts %}
+    <div class="col-md-6 col-xl-4">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title">{{contact.name}}</h5>
+          <div class="card-subtitle text-muted mb-3">{{contact.email}}</div>
+          <p class="card-text">{{contact.subject}}</p>
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="card-link cursor-pointer text-primary">{{contact.location}}</span>
+            <span class="card-link cursor-pointer text-primary" data-bs-toggle="tooltip" data-bs-offset="0,4"
+              data-bs-placement="bottom" data-bs-html="true" title="" data-bs-original-title="{{contact.message}}">View
+              Message</span>
+            <form action="" method="post">
+              <input type="hidden" name="userid" value="{{contact.id}}">
+              <input type="submit" class="card-link cursor-pointer text-white btn btn-primary" value="Delete">
+            </form>
           </div>
         </div>
-        {% endfor %}
       </div>
-    <!--/ All Contacts -->
+    </div>
+    {% endfor %}
+  </div>
+  <!--/ All Contacts -->
 
 </div>
 <!-- / Content -->
 {% else %}
 <div class="container-xxl flex-grow-1 container-p-y">
-    <p>Page Not Found</p>
+  <p>Page Not Found</p>
 </div>
 {% endif %}
 

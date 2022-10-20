@@ -6,7 +6,7 @@ from flask_wtf.file import FileField, FileAllowed
 from flask_ckeditor import CKEditorField
 
 # ----------- Application Modules ----------- #
-from .main import Categories
+# from .main import Categories
 
 
 # ------------ Form Classess ------------ #
@@ -25,6 +25,6 @@ class AddProduct(FlaskForm):
     stock = IntegerField("Stock", validators=[DataRequired()])
     details = CKEditorField("Product Details", validators=[DataRequired()])
     pid = HiddenField("product id")
-    category = SelectField("Select Product Category", validators=[DataRequired()], choices=[(c.id, c.category) for c in Categories.query.all()])
+    category = SelectField("Select Product Category", validators=[DataRequired()])
     image_file = MultipleFileField("Upload Product Images", validators=[FileAllowed(['jpg', 'jpeg'], message="Please Upload jpg / jpeg Images")])
     submit = SubmitField("Save", validators=[DataRequired()])

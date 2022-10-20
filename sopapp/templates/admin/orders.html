@@ -28,6 +28,7 @@
                             <th>Id</th>
                             <th>User Name</th>
                             <th>Product Name</th>
+                            <th>Quantity</th>
                             <th>Price</th>
                             <th>Date of Order</th>
                             <th>Status</th>
@@ -43,6 +44,7 @@
                             <td class="cursor-pointer" data-bs-toggle="tooltip" data-bs-offset="0,4"
                                 data-bs-placement="right" data-bs-html="true" title=""
                                 data-bs-original-title="{{order.product_id}}">{{orders[order]['product']|title()}}</td>
+                            <td>{{orders[order]['quantity']}}</td>
                             <td>Rs. {{orders[order]['price']}}</td>
                             <td>{{orders[order]['doo']}}</td>
                             <td class="{{orders[order]['status']}}"></td>

@@ -9,7 +9,15 @@
     <div class="heading-box bg-gray-100 py-8 px-4 lg:py-12">
         <h1 class="text-2xl md:w-[720px] md:m-auto lg:w-[90%] xl:w-[1200px]">CHECKOUT</h1>
     </div>
-
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div>
+        <p class="{{category}} font-semibold mt-5">{{message}}</p>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
     <div class="content-wrapper py-14 lg:flex lg:w-[90%] lg:m-auto xl:w-[1200px] xl:py-16">
         <!-- CHECKOUT -->
         <div class="checkout-info px-2 sm:px-4 md:px-0 md:w-[720px] md:mx-auto lg:w-full lg:flex lg:justify-between">
@@ -22,34 +30,29 @@
                         <div class="my-2">
                             {{form.name.label(class="text-gray-500 my-2 block")}}
                             {{form.name(class="text-xs border border-gray-400/75 py-4 px-3 w-full mb-2",
-                            placeholder="FULL NAME")}}
+                            placeholder="FULL NAME", value=user.name)}}
                         </div>
                         <div class="my-2">
                             {{form.number.label(class="text-gray-500 my-2 block")}}
                             {{form.number(class="text-xs border border-gray-400/75 py-4 px-3 w-full mb-2",
-                            placeholder="+91 00000 00000")}}
-                        </div>
-                        <div class="my-2">
-                            {{form.email.label(class="text-gray-500 my-2 block")}}
-                            {{form.email(class="text-xs border border-gray-400/75 py-4 px-3 w-full mb-2",
-                            placeholder="xyz123@gmail.com")}}
+                            placeholder="+91 00000 00000", value=user.number)}}
                         </div>
                         <div class="my-2">
                             {{form.street.label(class="text-gray-500 my-2 block")}}
                             {{form.street(class="text-xs border border-gray-400/75 py-4 px-3 w-full mb-2",
-                            placeholder="Street")}}
+                            placeholder="Street", value=user.street)}}
                         </div>
                         <div class="my-2">
 
                             {{form.address.label(class="text-gray-500 my-2 block")}}
                             {{form.address(class="text-xs border border-gray-400/75 py-4 px-3 w-full mb-2",
-                            placeholder="Address")}}
+                            placeholder="Address", value=user.address)}}
                         </div>
                         <div class="my-2">
 
                             {{form.zipcode.label(class="text-gray-500 my-2 block")}}
                             {{form.zipcode(class="text-xs border border-gray-400/75 py-4 px-3 w-full mb-2",
-                            placeholder="000 000")}}
+                            placeholder="000 000", value=user.zipcode)}}
                         </div>
                         <div class="my-2">
                             {{form.hidden_tag()}}
@@ -76,7 +79,7 @@
 
                             <div class="ml-4 flex flex-1 flex-col">
                                 <div>
-                                    <div class="flex justify-between text-base font-medium text-gray-900">
+                                    <div class="flex justify-between text-base font-medium text-gray-90 0">
                                         <h3 class="w-4/6">
                                             <a href="{{session['shoppingCart'][item]['product_url']}}">{{session['shoppingCart'][item]['name']|title()}}</a>
                                         </h3>
