@@ -143,6 +143,14 @@
                         </a>
                     </li>
 
+                    <!-- Tools -->
+                    <li class="menu-item">
+                        <a href="{{url_for('admin.adminTools')}}" class="menu-link">
+                            <i class='bx bx-package me-2'></i>
+                            <div data-i18n="Tables">Tools</div>
+                        </a>
+                    </li>
+
                     {% if authAdminRole(current_user.id, 'site admin') %}
                     <!-- Operations -->
                     <li class="menu-header small text-uppercase"><span class="menu-header-text">Operations</span></li>

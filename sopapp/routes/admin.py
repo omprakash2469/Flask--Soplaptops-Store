@@ -8,7 +8,7 @@ import os
 from ..models.admin import AddCategory, AddProduct
 from ..models.main import Categories, Contacts, Products, ProductsImages
 from ..models.users import Users, Orders
-from ..extensions import db, params
+from ..extensions import ROOT_DIR, db, params
 from ..functions import authAdminRole, getCategories
 
 # ----------- Instiantiate Blueprint ----------- #
@@ -26,7 +26,6 @@ def adminCategories():
         "action": url_for('admin.addCategories')
     }
     return render_template('admin/category.html',
-        params=params,
         form=form,
         vars=vars,
         categories=getCategories()
@@ -148,7 +147,7 @@ def deleteCategories():
 @admin.route("/product")
 @login_required
 def adminProducts():
-    return render_template('admin/product-categories.html',params=params, categories=getCategories())
+    return render_template('admin/product-categories.html', categories=getCategories())
 
 #### Products Archives Page
 @admin.route("/product/<string:category>")
@@ -178,7 +177,7 @@ def adminProductPage(category):
         }
         i+=1
 
-    return render_template('admin/product.html', params=params, categories=getCategories(), category=query.category, products=products)
+    return render_template('admin/product.html', categories=getCategories(), category=query.category, products=products)
 
 #### Add New Product
 @admin.route("/product/add", methods=['GET', 'POST'])
@@ -190,6 +189,7 @@ def adminAddProduct():
         return redirect(url_for('admin.adminProducts'))
 
     form = AddProduct()
+    form.category.choices = [(c.id, c.category) for c in getCategories()]
     if form.validate_on_submit():
         ### Get form values
         fproduct_name = form.product_name.data
@@ -242,7 +242,7 @@ def adminAddProduct():
         "button": "Submit"
     }
 
-    return render_template('admin/add-product.html',params=params, categories=getCategories(), form=form, vars=vars)
+    return render_template('admin/add-product.html', categories=getCategories(), form=form, vars=vars)
 
 #### Edit Product
 @admin.route("/product/editform", methods=['GET', 'POST'])
@@ -254,6 +254,7 @@ def adminEditProductForm():
         return redirect(url_for('admin.adminProducts'))
 
     form = AddProduct()
+    form.category.choices = [(c.id, c.category) for c in getCategories()]
     ### Display Product Edit Form
     if request.method == "POST" and request.form.get('action') == 'editform' and request.form.get('pid'):
         pid = request.form.get('pid')
@@ -272,7 +273,7 @@ def adminEditProductForm():
         "images": ProductsImages.query.filter_by(product_id=query.id).all(),
         "button": "Update"
         }
-        return render_template('admin/add-product.html',params=params, categories=getCategories(), form=form, vars=vars)
+        return render_template('admin/add-product.html', categories=getCategories(), form=form, vars=vars)
     
     ### Edit Product Information
     if  form.validate_on_submit() and request.form.get('pid'):
@@ -444,3 +445,47 @@ def adminContact():
 
     contacts = Contacts.query.all()
     return render_template('admin/contact.html', contacts=contacts)
+    
+# ----------- Tools ----------- #
+@admin.route("/tools", methods=['GET', 'POST'])
+@login_required
+def adminTools():
+    ### Check if user has permission
+    if not authAdminRole(current_user.id, 'site admin'):
+        flash('This page is not accessible', "alert-danger")
+        return render_template('404.html')
+    
+    if request.method == "POST":
+        ### Upload Sitemap.xml file
+        if request.form.get('action') == 'sitemap':
+            file = request.files['sitemap']
+            if file.filename != 'sitemap.xml':
+                flash('Please upload sitemap.xml file only', "alert-danger")
+                return redirect(url_for('admin.adminTools'))
+
+            ## Save sitemap.xml file
+            path = ROOT_DIR + "\\static\\sitemap.xml"
+            if os.path.exists(path):
+                os.remove(path)
+            file.save(path)
+            flash('Successfully! Uploaded sitemap', "alert-success")
+            return redirect(url_for('admin.adminTools'))
+        ### Upload Robots.txt file
+        elif request.form.get('action') == 'robots':
+            file = request.files['robots']
+            if file.filename != 'robots.txt':
+                flash('Please upload robots.txt file only', "alert-danger")
+                return redirect(url_for('admin.adminTools'))
+
+            ## Save srobots.txt file
+            path = ROOT_DIR + "\\static\\robots.txt"
+            if os.path.exists(path):
+                os.remove(path)
+            file.save(path)
+            flash('Successfully! Uploaded Robots.txt', "alert-success")
+            return redirect(url_for('admin.adminTools'))
+        else:
+            flash('Unexpected Error Occured', "alert-danger")
+            return redirect(url_for('admin.adminTools'))
+
+    return render_template('admin/tools.html')

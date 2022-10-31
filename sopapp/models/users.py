@@ -47,7 +47,6 @@ class UserRegisterForm(FlaskForm):
     signup = SubmitField("Sign Up", validators=[DataRequired()])
 
 class UserUpdateForm(FlaskForm):
-    id = HiddenField('uid', validators=[DataRequired()])
     name = StringField("Full Name", validators=[DataRequired()])
     number = StringField("Contact", validators=[DataRequired()])
     email = EmailField("Email", validators=[DataRequired(), Email()])

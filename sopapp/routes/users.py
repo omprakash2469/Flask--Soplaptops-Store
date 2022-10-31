@@ -7,7 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from ..models.users import Orders, OrdersForm, Users, UserRegisterForm, UserUpdateForm
 from ..models.main import Products, ProductsImages
 from ..models.auth import LoginForm
-from ..extensions import params, db
+from ..extensions import db, params
 from ..functions import MergeDicts, getCategories, getCategoryById, returnMeta
 
 # ----------- Instiantiate Blueprint ----------- #
@@ -24,7 +24,6 @@ def dashboard():
     ### User information update form
     form = UserUpdateForm()
     if form.validate_on_submit():
-        id = form.id.data
         name = form.name.data
         number = form.number.data
         email = form.email.data
@@ -32,22 +31,19 @@ def dashboard():
         street = form.street.data
         zipcode = form.zipcode.data
 
-        # Validate user
-        if int(id) != int(session['id']):
-            flash("Refresh Page and Try Again", "text-red-500")
-            return redirect(url_for('users.dashboard'))
-
-        userExist = Users.query.filter_by(email=email).first()
-        if userExist:
-            flash("Account Already Exists! Try using other email", "text-red-500")
-            return redirect(url_for('users.dashboard'))
-
         ## Update user in database
-        query = Users.query.filter_by(id=id).first()
+        query = Users.query.filter_by(id=session['id']).first()
         if query:
+            # Validate and check for duplicate entry of email
+            if query.email != email:
+                emailExist = Users.query.filter_by(email=email).first()
+                if emailExist:
+                    flash("Email Already Exists! Please Login", "text-red-500")
+                    return redirect(url_for('users.dashboard'))
+                else:
+                    query.email = email
             query.name = name
             query.number = number
-            query.email = email
             query.address = address
             query.street = street
             query.zipcode = zipcode
@@ -98,7 +94,7 @@ def dashboard():
     # SEO Meta data
     meta = returnMeta('user')
     meta['title'] = session['username'] + " || Dashboard - " + params['blog_name']
-    return render_template('users/index.html', params=params, meta=meta, categories=getCategories(), orders=orders, user=user, form=form, uo=userOrders)
+    return render_template('users/index.html', meta=meta, categories=getCategories(), orders=orders, user=user, form=form, uo=userOrders)
 
 
 # ----------- Shopping Cart ----------- #
@@ -207,7 +203,7 @@ def checkout():
                 db.session.commit()
                 # SEO Meta data
                 meta = returnMeta('orderConfirm')
-            return render_template('main/confirmation.html', params=params, meta=meta, categories=getCategories())
+            return render_template('main/confirmation.html', meta=meta, categories=getCategories())
         except Exception as e:
             flash(f"Error Placing Your Order {str(e)}", "bg-red-200")
             return redirect(url_for('users.checkout'))
@@ -215,7 +211,7 @@ def checkout():
     # SEO Meta data
     meta = returnMeta('checkout')
     meta['title'] = "Checkout - " + session['username'] + " || " + params['blog_name']    
-    return render_template('main/checkout.html', params=params, meta=meta, categories=getCategories(), form=form, user=loggedinUser)
+    return render_template('main/checkout.html', meta=meta, categories=getCategories(), form=form, user=loggedinUser)
 
 
 # ----------- User Login ----------- #
@@ -253,7 +249,7 @@ def login():
 
     # SEO Meta data
     meta = returnMeta('login')
-    return render_template('users/login.html', meta=meta, params=params, categories=getCategories(), form=form)
+    return render_template('users/login.html', meta=meta, categories=getCategories(), form=form)
 
 # ----------- User Signup ----------- #
 @users.route("/signup", methods=['GET', 'POST'])
@@ -297,7 +293,7 @@ def signup():
 
     # SEO Meta data
     meta = returnMeta('signup')
-    return render_template('users/signup.html', params=params, meta=meta, categories=getCategories(), form=form)
+    return render_template('users/signup.html', meta=meta, categories=getCategories(), form=form)
 
 
 ## Cancel Order

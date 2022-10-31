@@ -1,79 +1,34 @@
-Processor 
-11th gen intel® core™ i5-1135g7 (8 mb cache, 4 cores, 8 threads, up to 4.20 ghz turbo)
+500x500 Image Size
 
-Operating System 
-(dell technologies recommends windows 11 pro for business)
-windows 11 home single language, english
+Processor 
+Intel i5 7th Generation
 
-Video Card 
-intel® uhd graphics 
+Operating System 
+Windows 10 Home 
 
-Display 
-15.6', fhd 1920x1080, 60hz, non-touch, ag, wva, led-backlit, narrow border
+Video Card 
+intel® uhd graphics 
 
-Memory 
-8 gb, 1 x 8 gb, ddr4, 3200 mhz
+Display 
+Screen Size14 Inch Touch Screen
 
-Hard Drive
-512 gb, m.2, pcie nvme, ssd
+Memory 
+8GB RAM DDR4
 
-Color 
-carbon
+Storage
+SSD 256GB M.2
 
-Microsoft Office
-microsoft® office home and student 2021
+Color
+Black
 
-Security 
-software mcafee® multi device security 15-month subscription
-
-Support 
-services 2y basic onsite service
-
-Accidental Damage Protection 
+Accidental Damage Protection 
 none
 
 Keyboard
-english international backlit keyboard with numeric keypad - grey (icc)
+English International backlit keyboard
 
-Ports 
-1 usb 3.2 gen 1 port (on systems configured with discrete graphics)
-1 usb 3.2 gen 1 type-c port (on systems configured with discrete graphics)
-1 usb 2.0 port
-1 audio jack
-1 hdmi 1.4 port
-1 flip-down rj-45 port 10/100/1000 mbps
+Battery Back Up
+Good
 
-Slots 
-1 m.2 2230 slot for wifi and bluetooth card
-1 m.2 2230/2280 slot for solid-state drive/intel optane
-1 sd 3.0 card slot
-
-Dimensions & Weight Height (front) 
-17.5 mm (0.69')
-
-Height (rear) 
-18.9 mm (0.74')
-
-Width 
-358.50 mm (14.11')
-
-Depth 
-235.56 mm (9.27')
-
-Weight 
-1.69 kg (3.72 lb)
-
-Camera 
-720p at 30 fps hd camera, single-integrated microphone
-
-Audio and Speakers 
-stereo speakers, 2 w x 2 = 4 w total
-
-Wireless
-802.11ac 1x1 wifi and bluetooth
-
-Primary Battery 3 cell, 41 wh, Integrated 
-Power 65 watt ac adapter
-
-Regulatory 
-Energy star
+Warranty
+1 Year

@@ -4,9 +4,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, current_user, logout_user
 
 # ----------- Application Modules ----------- #
-from ..extensions import db, roles
+from ..models.main import Contacts, Products, Categories
+from ..models.users import Users, Orders
 from ..models.auth import LoginForm, AdminAdd, Admin, AdminRole
-from ..extensions import params
+from ..extensions import db, roles
 from ..functions import getCategories, authAdminRole
 
 # ----------- Instiantiate Blueprint ----------- #
@@ -16,7 +17,14 @@ auth = Blueprint('auth', __name__, template_folder='templates', url_prefix='/adm
 @auth.route('/')
 @login_required
 def dashboard():
-    return render_template('admin/index.html', params=params, categories=getCategories())
+    data = {
+        "totalCategories": Categories.query.count(),
+        "totalProducts": Products.query.count(),
+        "totalUsers": Users.query.count(),
+        "contactedUsers": Contacts.query.count(),
+        "totalOrders": Orders.query.count()
+    }
+    return render_template('admin/index.html', data=data, categories=getCategories())
 
 # ----------- Login ----------- #
 @auth.route('/login', methods=['GET', 'POST'])
@@ -47,7 +55,7 @@ def adminLogin():
             flash("Try Again! Incorrect Password", "text-danger")
             return redirect(url_for('auth.adminLogin'))
 
-    return render_template('admin/login.html', params=params, form=form)
+    return render_template('admin/login.html', form=form)
 
 # ----------- Logout ----------- #
 @auth.route('/logout')
@@ -65,7 +73,7 @@ def adminAccount():
     adminRoles = roles # Admin Roles
     admins = Admin.query.all() # Admin Database
 
-    return render_template('admin/account.html', params=params, categories=getCategories(), adminForm=adminForm, adminRoles=adminRoles, admins=admins)
+    return render_template('admin/account.html', categories=getCategories(), adminForm=adminForm, adminRoles=adminRoles, admins=admins)
 
 #### Add Admin
 @auth.route('/account/add', methods=['GET', 'POST'])

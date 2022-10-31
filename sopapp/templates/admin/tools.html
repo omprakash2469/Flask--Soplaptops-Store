@@ -1,0 +1,38 @@
+{% extends '/admin/layout.html' %}
+{% block body %}
+
+<!-- Content -->
+<div class="container-xxl flex-grow-1 container-p-y">
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert {{category}} alert-dismissible" role="alert">
+        {{message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+        </button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <div class="fw-bold py-3 mb-4 d-flex justify-content-between align-items-center"><a target="_blank" href="{{url_for('main.index')}}sitemap.xml">Sitemap</a>
+        {% if authAdminRole(current_user.id, 'site admin') %}
+        <form action="{{url_for('admin.adminTools')}}" method="post" enctype="multipart/form-data">
+            <input type="file" name="sitemap" id="sitemap">
+            <input type="hidden" name="action" value="sitemap">
+            <button class="btn btn-primary">Upload Sitemap</button>
+        </form>
+        {% endif %}
+    </div>
+    <div class="fw-bold py-3 mb-4 d-flex justify-content-between align-items-center"><a target="_blank" href="{{url_for('main.index')}}robots.txt">Robots.txt</a>
+        {% if authAdminRole(current_user.id, 'site admin') %}
+        <form action="{{url_for('admin.adminTools')}}" method="post" enctype="multipart/form-data">
+            <input type="file" name="robots" id="robots">
+            <input type="hidden" name="action" value="robots">
+            <button class="btn btn-primary">Upload Robots.txt</button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+<!-- / Content -->
+
+{% endblock %}

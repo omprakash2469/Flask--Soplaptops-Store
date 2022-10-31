@@ -1,13 +1,20 @@
 # ----------- Flask Modules ----------- #
-from flask import Blueprint, render_template, flash, redirect, url_for, session
+from flask import Blueprint, render_template, flash, redirect, url_for, session, send_from_directory, request
 
 # ----------- Application Modules ----------- #
-from ..extensions import params, db
+from ..extensions import ROOT_DIR, db, params
 from ..functions import getCategories, returnMeta
 from ..models.main import EmailForm, Emails, Categories, Products, ProductsImages, Contacts, ContactForm
 
 # ----------- Instiantiate Blueprint ----------- #
 main = Blueprint('main', __name__, template_folder='templates')
+
+# ----------- Sitemap ----------- #
+@main.route('/robots.txt')
+@main.route('/sitemap.xml')
+def sitemap():
+    path = ROOT_DIR + "\\static"
+    return send_from_directory(path, request.path[1:])
 
 # ----------- Home Page ----------- #
 @main.route('/', methods=['GET', 'POST'])
@@ -45,14 +52,14 @@ def index():
 
     # SEO Meta data
     meta = returnMeta('home')
-    return render_template('main/home.html', params=params, categories=getCategories(), form=form, products=products, meta=meta)
+    return render_template('main/home.html', categories=getCategories(), form=form, products=products, meta=meta)
 
 # ----------- Blogs Archives ----------- #
 @main.route('/blogs')
 def blogs():
     # SEO Meta data
     meta = returnMeta('blogs')
-    return render_template('main/blogs.html', params=params, meta=meta, categories=getCategories())
+    return render_template('main/blogs.html', meta=meta, categories=getCategories())
     
 # ----------- Products Archives ----------- #
 @main.route('/category/<string:category>')
@@ -80,7 +87,7 @@ def productArchives(category):
     # SEO Meta data
     meta = returnMeta('category')
     meta['title'] = category.capitalize() + " Laptops in Pune | " + params['blog_name']
-    return render_template('main/shop.html', params=params, meta=meta, categories=getCategories(), category=category, products=products)
+    return render_template('main/shop.html', meta=meta, categories=getCategories(), category=category, products=products)
 
 # ----------- Single Product Page ----------- #
 @main.route("/category/<string:category>/<string:slug>")
@@ -143,7 +150,7 @@ def singleProductPage(category, slug):
     # SEO Meta data
     meta = returnMeta('products')
     meta['title'] = slug.title() + f" | {category.upper()} | " + params['blog_name']
-    return render_template('main/product.html', params=params, meta=meta, details=details, products=products, categories=getCategories())
+    return render_template('main/product.html', meta=meta, details=details, products=products, categories=getCategories())
 
 # ----------- About ----------- #
 @main.route("/about")
@@ -151,14 +158,14 @@ def about():
 
     # SEO Meta data
     meta = returnMeta('about')
-    return render_template('main/about.html', params=params, categories=getCategories(), meta=meta)
+    return render_template('main/about.html', categories=getCategories(), meta=meta)
 
 # ----------- Privacy Policies ----------- #
 @main.route("/privacy-policy")
 def privacyPolicy():
     # SEO Meta data
     meta = returnMeta('privacy-policy')
-    return render_template('main/privacy-policy.html', params=params, categories=getCategories(), meta=meta)
+    return render_template('main/privacy-policy.html', categories=getCategories(), meta=meta)
 
 # ----------- Contact ----------- #
 @main.route("/contact", methods = ['GET', 'POST'])
@@ -185,7 +192,7 @@ def contact():
     
     # SEO Meta data
     meta = returnMeta('contact')
-    return render_template('main/contact.html', params=params, categories=getCategories(), form=form, meta=meta)
+    return render_template('main/contact.html', categories=getCategories(), form=form, meta=meta)
 
 
 # ----------- Error Handling ----------- #

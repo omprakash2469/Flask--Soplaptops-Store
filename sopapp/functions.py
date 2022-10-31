@@ -2,9 +2,8 @@ from flask import redirect, url_for, render_template
 import json
 from .models.main import Products, Categories
 from .models.auth import AdminRole, Admin
-from .extensions import roles
+from .extensions import roles, params
 from sopapp import login_manager
-
 
 # ----------- Login Manager ----------- #
 login_manager.login_view = 'auth.adminLogin'
@@ -14,7 +13,7 @@ def load_user(user_id):
 
 # ----------- Return SEO Titles ----------- #
 def returnMeta(page):
-    with open('D:\Programming and Projects\Projects\Flask\Soplaptops\seo.json') as c:
+    with open(params['seo']) as c:
         meta = json.load(c)["meta"][page]
     return meta
 

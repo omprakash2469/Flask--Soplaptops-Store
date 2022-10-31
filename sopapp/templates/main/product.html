@@ -28,7 +28,7 @@
             <div class="lg:w-full xl:w-[1200px] mx-auto flex flex-wrap">
                 <div class="images lg:w-1/2 w-full lg:h-autoobject-center rounded">
                     <!-- Active Product Image -->
-                    <img alt="ecommerce" class="object-cover  md:h-[450px] h-[350px] w-full"
+                    <img alt="ecommerce" class="object-cover w-full"
                         src="https://dummyimage.com/400x400" id="active_image">
                     <!-- Other Product Images -->
                     <div class="product-images grid grid-cols-4 gap-3 my-2 py-4" id="product_images">
@@ -81,7 +81,7 @@
                             <span class="ml-3">4 Reviews</span>
                         </span>
                     </div>
-                    <p class="leading-relaxed text-gray-500">{{details['desc']|title()}}</p>
+                    <p class="leading-relaxed text-gray-500">{{details['desc']|safe()}}</p>
                     <div class="flex mt-6 items-center pb-5 border-b-2 border-gray-200 mb-5">
                         <div class="flex items-center">
                             <span class="mr-3">Quantity</span>
@@ -109,7 +109,7 @@
                     <h2 class="md:w-fit md:px-5 text-white bg-gray-800 border-0 py-2 pl-3 focus:outline-none">
                         Product Details</h2>
                 </div>
-                <div class="specifications md:columns-2 p-3 border border-gray-200 text-gray-500">
+                <div class="md:columns-2 p-3 border border-gray-200 text-gray-500" id="detailinfo">
                     {{details['details']|safe()}}
                 </div>
             </div>
