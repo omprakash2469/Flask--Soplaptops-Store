@@ -51,6 +51,10 @@ def addCategories():
 
         ## Create Image filename
         imageName = imgname.strip().lower().replace(' ', '-') + os.path.splitext(imagefile.filename)[1]
+        # Check if category folder exists
+        if not os.path.exists(params['category_images_upload_path']):
+            os.mkdir(params['category_images_upload_path'])
+
         ## Save Image file
         imagefile.save(os.path.join(params['category_images_upload_path'], secure_filename(imageName)))
         ## Add record in Table
@@ -209,9 +213,14 @@ def adminAddProduct():
             db.session.flush()
             pid = entry.id
 
+            # Check if products folder exists
+            if not os.path.exists(params['product_images_upload_path']):
+                os.mkdir(params['product_images_upload_path'])
+                
             ## Upload product images
             category = getCategories(fcategory)
             for img in fimage_file:
+
                 # create folder if doesn't exists
                 if (os.path.isdir(params['product_images_upload_path'] + category + '/') == False):
                     os.makedirs(params['product_images_upload_path'] + category + '/', exist_ok=True)
