@@ -473,7 +473,7 @@ def adminTools():
                 return redirect(url_for('admin.adminTools'))
 
             ## Save sitemap.xml file
-            path = ROOT_DIR + "\\static\\sitemap.xml"
+            path = ROOT_DIR + "/static/sitemap.xml"
             if os.path.exists(path):
                 os.remove(path)
             file.save(path)
@@ -487,7 +487,7 @@ def adminTools():
                 return redirect(url_for('admin.adminTools'))
 
             ## Save srobots.txt file
-            path = ROOT_DIR + "\\static\\robots.txt"
+            path = ROOT_DIR + "/static/robots.txt"
             if os.path.exists(path):
                 os.remove(path)
             file.save(path)
