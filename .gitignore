@@ -2,5 +2,7 @@ __pycache__
 /node_modules
 /sopenv
 fullconf
-/sopapp/static/assets/images/category/*
-/sopapp/static/assets/images/products/*
+/sopapp/static/assets/images/category/*.jpg
+/sopapp/static/assets/images/category/*.png
+/sopapp/static/assets/images/products/**/*.png
+/sopapp/static/assets/images/products/**/*.jpg
