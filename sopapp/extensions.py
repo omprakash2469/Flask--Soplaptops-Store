@@ -31,7 +31,7 @@ roles = {
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 params = {
         "blog_name": "SOP Laptops",
-        "category_images_upload_path": os.path.join(ROOT_DIR, "static\\assets\\images\\category\\"),
-        "product_images_upload_path": os.path.join(ROOT_DIR, 'static\\assets\\images\\products\\'),
+        "category_images_upload_path": os.path.join(ROOT_DIR, "static/assets/images/category/"),
+        "product_images_upload_path": os.path.join(ROOT_DIR, 'static/assets/images/products/'),
         "seo": os.path.join(ROOT_DIR, 'seo.json')
     }

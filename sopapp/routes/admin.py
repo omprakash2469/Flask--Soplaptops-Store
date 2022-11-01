@@ -216,7 +216,7 @@ def adminAddProduct():
             # Check if products folder exists
             if not os.path.exists(params['product_images_upload_path']):
                 os.mkdir(params['product_images_upload_path'])
-                
+
             ## Upload product images
             category = getCategories(fcategory)
             for img in fimage_file:

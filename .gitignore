@@ -1,6 +1,7 @@
 __pycache__
-/node_modules
-/sopenv
+node_modules
+sopenv
 fullconf
-/sopapp/static/assets/images/category/
-/sopapp/static/assets/images/products/
+sopapp/static/assets/images/category/
+sopapp/static/assets/images/products/
+*.db
