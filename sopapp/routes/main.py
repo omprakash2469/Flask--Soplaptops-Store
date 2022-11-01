@@ -13,7 +13,7 @@ main = Blueprint('main', __name__, template_folder='templates')
 @main.route('/robots.txt')
 @main.route('/sitemap.xml')
 def sitemap():
-    path = ROOT_DIR + "\\static"
+    path = ROOT_DIR + "/static"
     return send_from_directory(path, request.path[1:])
 
 # ----------- Home Page ----------- #
