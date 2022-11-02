@@ -30,7 +30,7 @@ def NumberOfProducts(id):
 def getCategoryById(id):
     try:
         categories = Categories.query.filter_by(id=id).first()
-        return categories.category # return category name
+        return categories.category.lower() # return category name
     except:
         return redirect(url_for('main.error'))
 
@@ -74,7 +74,7 @@ def getCategories(*args):
     if args:
         try:
             categories = Categories.query.filter_by(id=args[0]).first()
-            return categories.category # return category name
+            return categories.category.lower() # return category name
         except:
             return False
     else:

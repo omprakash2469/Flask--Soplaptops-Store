@@ -43,7 +43,7 @@
                         {% for p in products %}
                         <tr>
                             <td>{{products[p]['id']}}</td>
-                            <td>{{products[p]['product']|title()}}</td>
+                            <td>{{products[p]['product']}}</td>
                             <td class="cursor-pointer" data-bs-toggle="tooltip" data-bs-offset="0,4"
                                 data-bs-placement="right" data-bs-html="true" title=""
                                 data-bs-original-title="{{products[p]['desc']}}">{{ products[p]['desc'][:20]|capitalize()}}...</td>

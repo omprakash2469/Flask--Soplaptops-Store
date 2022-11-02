@@ -2,6 +2,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from werkzeug.utils import secure_filename
 from flask_login import current_user, login_required
+import shutil
 import os
 
 # ----------- Application Modules ----------- #
@@ -207,25 +208,26 @@ def adminAddProduct():
         ### Check if Images are Uploaded
         if fimage_file[0]:
             ## Insert product info into database
-            entry = Products(product = fproduct_name.lower(), product_desc = fdesc, price = fprice, stock = fstock, details = fdetails, category_id = fcategory)
+            entry = Products(product = fproduct_name, product_desc = fdesc, price = fprice, stock = fstock, details = fdetails, category_id = fcategory)
             db.session.add(entry)
             db.session.commit()
             db.session.flush()
             pid = entry.id
+            category = getCategories(fcategory)
 
             # Check if products folder exists
             if not os.path.exists(params['product_images_upload_path']):
                 os.mkdir(params['product_images_upload_path'])
 
-            ## Upload product images
-            category = getCategories(fcategory)
-            for img in fimage_file:
+            # Create folder if doesn't exists
+            categoryFolderPath = params['product_images_upload_path'] + category + '/'
+            if not os.path.exists(categoryFolderPath):
+                os.mkdir(categoryFolderPath)
 
-                # create folder if doesn't exists
-                if (os.path.isdir(params['product_images_upload_path'] + category + '/') == False):
-                    os.makedirs(params['product_images_upload_path'] + category + '/', exist_ok=True)
+            ## Upload product images
+            for img in fimage_file:
                 image = secure_filename(str(pid) + "_" + img.filename)
-                img.save(os.path.join(params['product_images_upload_path'] + category + "/", image))
+                img.save(os.path.join(categoryFolderPath, image))
                 insertImage = ProductsImages(
                     image_name = image,
                     product_id = pid
@@ -299,40 +301,67 @@ def adminEditProductForm():
         ## Get category by id
         category = getCategories(fcategory)
 
-        ## Delete Old Product
+        # Fetch product information 
+        product = Products.query.filter_by(id=pid).first()
+
+        # Check if category of product is changed
+        categoryChanged = False
+        oldImageCategoryId = getCategories([product.category_id])
+        if int(product.category_id) != int(fcategory):
+            categoryChanged = True
+
+        ## Update Product Information
         try:
-            # Delete old product entry
-            query = Products.query.filter_by(id=pid).first()
-            db.session.delete(query)
+            # Update product
+            product.product = fproduct_name
+            product.product_desc = fdesc
+            product.details = fdetails
+            product.price = fprice
+            product.stock = fstock
+            if categoryChanged:
+                product.category_id = fcategory
             db.session.commit()
         except Exception as e:
-            flash("Refresh and Try Again! Unable to Delete Product", "alert-danger")
+            flash("Refresh and Try Again! Unable to Update Product", "alert-danger")
             return redirect(url_for('admin.adminProductPage', category=category))
 
-        ## Insert new product info into database
-        entry = Products(product = fproduct_name.lower(), product_desc = fdesc, price = fprice, stock = fstock, details = fdetails, category_id = fcategory)
-        db.session.add(entry)
-        db.session.commit()
-        db.session.flush()
-        newPid = entry.id
-
-        ## Update old product images
-        oldImages = ProductsImages.query.filter_by(product_id=pid).all()
-        for img in oldImages:
-            img.product_id = newPid
-            db.session.commit()
-
-        ## Upload product images
+        ## If new images are uploaded then delete old images and upload new images
         if fimage_file[0]:
+            productFolderPath = params['product_images_upload_path'] + oldImageCategoryId + "/"
+            ## Delete old product images
+            oldImages = ProductsImages.query.filter_by(product_id=pid).all()
+            for oimg in oldImages:
+                os.remove(os.path.join(productFolderPath, oimg.image_name))
+                db.session.delete(oimg)
+                db.session.commit()
+
+            productFolderPath = params['product_images_upload_path'] + category + "/"
+            if not os.path.exists(productFolderPath):
+                os.mkdir(productFolderPath)
+                
+            ## Add New Images
             for img in fimage_file:
-                image = secure_filename(img.filename)
-                img.save(os.path.join(params['product_images_upload_path'] + category + "/", image))
+                image = secure_filename(str(pid) + "_" + img.filename)
+                img.save(os.path.join(productFolderPath, image))
                 insertImage = ProductsImages(
                     image_name = image,
-                    product_id = newPid
+                    product_id = pid
                 )
                 db.session.add(insertImage)
                 db.session.commit()
+        else:
+            # Move images from old category to new category folder
+            if categoryChanged:
+                images = ProductsImages.query.filter_by(product_id=pid).all()
+                src = params['product_images_upload_path'] + oldImageCategoryId + "/"
+                dest = params['product_images_upload_path'] + category + "/"
+                # Check if destination folder exists
+                if not os.path.exists(dest):
+                    os.mkdir(dest)
+                # Move Files from source to destination
+                for img in images:
+                    shutil.move(src + img.image_name, dest + img.image_name)
+            
         flash("Successfully! Update Product", "alert-success")
         return redirect(url_for('admin.adminProductPage', category=category))
     

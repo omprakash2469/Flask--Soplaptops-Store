@@ -6,7 +6,7 @@
     <!-- Single Product Page -->
     <div class="heading-box bg-gray-100 py-8 px-4 lg:py-12 flex">
         <h1 class="text-2xl lg:text-3xl md:w-[720px] md:m-auto lg:w-[90%] xl:w-[1200px]">
-            <span class="text-gray-400 text-xl">{{details['category']|upper()}} </span>/ {{details['product']|title()}}
+            <span class="text-gray-400 text-xl">{{details['category']|upper()}} </span>/ {{details['product']}}
         </h1>
     </div>
 
@@ -41,7 +41,7 @@
                 <div class="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
                     <h2 class="text-sm title-font text-gray-500 tracking-widest font-semibold">
                         {{details['category'].upper()}}</h2>
-                    <h1 class="text-black text-3xl title-font font-medium mb-1">{{details['product']|title()}}</h1>
+                    <h1 class="text-black text-3xl title-font font-medium mb-1">{{details['product']}}</h1>
                     <div class="flex mb-4">
                         <span class="flex items-center">
                             <svg fill="currentColor" stroke="currentColor" stroke-linecap="round"
