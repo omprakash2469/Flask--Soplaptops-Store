@@ -5,14 +5,13 @@ from werkzeug.security import generate_password_hash
 # ----------- Application Modules ----------- #
 from .models.auth import Admin, AdminRole
 from .config import Config
-from .extensions import db, ckeditor, login_manager
+from .extensions import db, login_manager
 from .functions import func_dict
 
 
 # ----------- Register Extensions ----------- #
 def register_extensions(app):
     db.init_app(app)
-    ckeditor.init_app(app)
     login_manager.init_app(app)
 
 # ----------- Register Blueprints ----------- #

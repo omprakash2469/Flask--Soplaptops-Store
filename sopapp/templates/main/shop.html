@@ -5,7 +5,7 @@
 <main class="py-7">
     <!-- BRAND HEADING -->
     <div class="heading-box bg-gray-100 py-8 px-4 lg:py-12">
-        <h1 class="text-2xl md:w-[720px] md:m-auto lg:w-[90%] xl:w-[1200px]">{{category.upper()}}</h1>
+        <h1 class="text-2xl md:w-[720px] md:m-auto lg:w-[90%] xl:w-[1200px] font-lato"><span class="text-gray-400 text-lg">Home </span>/ {{category.upper()}}</h1>
     </div>
 
     <!-- BRAND PRODUCTS -->
@@ -24,8 +24,8 @@
                         </a>
                     </div>
                     <figcaption class="text-center py-3">
-                        <h2 class="font-semibold mb-1 capitalize">{{products[p].product}}</h2>
-                        <p>Rs. {{products[p].price}}</p>
+                        <h2 class="font-semibold text-xl mb-1 capitalize font-lato"><a href="{{products[p].product_url}}">{{products[p].product}}</a></h2>
+                        <p class="font-source">Rs. {{products[p].price}}</p>
                     </figcaption>
                 </figure>
             </div>

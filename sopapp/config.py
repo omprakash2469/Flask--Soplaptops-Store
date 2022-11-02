@@ -7,7 +7,8 @@ if development:
         DEBUG = True
         DEVELOPMENT = True
         SECRET_KEY = "This is my secret key"
-        SQLALCHEMY_DATABASE_URI = "mysql://root:@localhost/soplaptops"
+        # SQLALCHEMY_DATABASE_URI = "mysql://root:@localhost/soplaptops"
+        SQLALCHEMY_DATABASE_URI = "sqlite:///soplaptops.db"
         SQLALCHEMY_TRACK_MODIFICATIONS = False
 else:
     # --------------- Production Config ---------------

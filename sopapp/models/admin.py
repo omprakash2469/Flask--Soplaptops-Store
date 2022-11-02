@@ -3,12 +3,41 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, HiddenField, IntegerField, FileField, TextAreaField, SelectField, MultipleFileField
 from wtforms.validators import DataRequired
 from flask_wtf.file import FileField, FileAllowed
-from flask_ckeditor import CKEditorField
 
 # ----------- Application Modules ----------- #
 # from .main import Categories
 
+details = """
+[Processor]
+(PROCESSOR_NAME)
 
+[Operating System]
+(Windows 10 Home)
+
+[Video Card]
+(intel® UHD graphics)
+
+[Display]
+(Screen Size 14 Inch Touch Screen)
+
+[Memory]
+(8GB RAM DDR4)
+
+[Storage]
+(SSD 256GB M.2)
+
+[Color]
+(Black)
+
+[Keyboard]
+(English International backlit keyboard)
+
+[Battery Back Up]
+(Good)
+
+[Warranty]
+(1 Year)
+"""
 # ------------ Form Classess ------------ #
 class AddCategory(FlaskForm):
     category = StringField("Category", validators=[DataRequired()])
@@ -23,7 +52,7 @@ class AddProduct(FlaskForm):
     desc = TextAreaField("Product Description", validators=[DataRequired()])
     price = IntegerField("Price", validators=[DataRequired()])
     stock = IntegerField("Stock", validators=[DataRequired()])
-    details = CKEditorField("Product Details", validators=[DataRequired()])
+    details = TextAreaField("Product Details", validators=[DataRequired()], default=details)
     pid = HiddenField("product id")
     category = SelectField("Select Product Category", validators=[DataRequired()])
     image_file = MultipleFileField("Upload Product Images", validators=[FileAllowed(['jpg', 'jpeg'], message="Please Upload jpg / jpeg Images")])

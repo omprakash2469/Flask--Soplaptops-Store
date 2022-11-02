@@ -10,7 +10,7 @@ from ..models.admin import AddCategory, AddProduct
 from ..models.main import Categories, Contacts, Products, ProductsImages
 from ..models.users import Users, Orders
 from ..extensions import ROOT_DIR, db, params
-from ..functions import authAdminRole, getCategories
+from ..functions import authAdminRole, getCategories, productDetailsFormat, getCategoryById
 
 # ----------- Instiantiate Blueprint ----------- #
 admin = Blueprint('admin', __name__, template_folder='templates', url_prefix='/admin')
@@ -201,7 +201,7 @@ def adminAddProduct():
         fdesc = form.desc.data
         fprice = form.price.data
         fstock = form.stock.data
-        fdetails = form.details.data
+        fdetails = productDetailsFormat(form.details.data, True)
         fcategory = form.category.data
         fimage_file = form.image_file.data
 
@@ -271,9 +271,8 @@ def adminEditProductForm():
         pid = request.form.get('pid')
         query = Products.query.filter_by(id=pid).first()
         form.desc.data = query.product_desc # Populate textarea field
-        form.details.data = query.details # Populate ckeditor field
+        form.details.data = productDetailsFormat(query.details, False) # Populate textarea field
         ## Note = Textarea cannot be populated through below mentioned format. That's why you have to do it like form.desc.data = value
-        ## Note = Ckeditor field cannot be populated through below mentioned format. That's why you have to do it like form.details.data = value
         vars = {
         "title": "Update Product",
         "action": url_for('admin.adminEditProductForm'),
@@ -295,7 +294,7 @@ def adminEditProductForm():
         fdesc = form.desc.data
         fprice = form.price.data
         fstock = form.stock.data
-        fdetails = form.details.data
+        fdetails = productDetailsFormat(form.details.data, True)
         fcategory = form.category.data
         fimage_file = form.image_file.data
         ## Get category by id
@@ -306,7 +305,7 @@ def adminEditProductForm():
 
         # Check if category of product is changed
         categoryChanged = False
-        oldImageCategoryId = getCategories([product.category_id])
+        oldImageCategoryId = getCategoryById(product.category_id)
         if int(product.category_id) != int(fcategory):
             categoryChanged = True
 

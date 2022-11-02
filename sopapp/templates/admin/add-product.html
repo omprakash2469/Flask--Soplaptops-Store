@@ -33,7 +33,7 @@
                     <div class="mb-3">
                         {{form.desc.label(class="form-label")}}
                         <span style="font-weight: bold;">Add &lt;br&gt; for line break</span>
-                        {{form.desc(class="form-control", placeholder="Enter Description", rows=10)}}
+                        {{form.desc(class="form-control", placeholder="Enter Description", rows=6)}}
 
                     </div>
                     <div class="mb-3">
@@ -53,11 +53,12 @@
 
             <div class="card mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">{{form.details.label()}}</h5>
+                    <h5 class="mb-0">{{form.details.label()}} </h5>
+                    <em>"Enter Details in Given Brackets"</em>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
-                        {{form.details(class="form-control", placeholder="Product Details")}}
+                        {{form.details(class="form-control", placeholder="Product Details", rows=20)}}
                     </div>
                 </div>
             </div>
@@ -82,8 +83,6 @@
                 {{form.submit(class="btn btn-primary", value=vars['button'])}}
             </div>
         </form>
-        {{ckeditor.load()}}
-        {{ckeditor.config(name='details')}}
     </div>
 
     <!-- Images Modal -->

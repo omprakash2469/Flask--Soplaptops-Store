@@ -1,8 +1,6 @@
 # ----------- Flask Modules ----------- #
-from email.policy import default
-from flask import session
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, StringField, EmailField, PasswordField, HiddenField
+from wtforms import SubmitField, StringField, EmailField, PasswordField, IntegerField
 from wtforms.validators import DataRequired, Email
 from datetime import datetime
 
@@ -34,7 +32,7 @@ class OrdersForm(FlaskForm):
     number = StringField("Phone Number", validators=[DataRequired()])
     street = StringField("Street", validators=[DataRequired()])
     address = StringField("Address", validators=[DataRequired()])
-    zipcode = StringField("zipcode", validators=[DataRequired()])
+    zipcode = IntegerField("zipcode", validators=[DataRequired()])
     place_order = SubmitField("Place Order")
 
 class UserRegisterForm(FlaskForm):
@@ -52,5 +50,5 @@ class UserUpdateForm(FlaskForm):
     email = EmailField("Email", validators=[DataRequired(), Email()])
     address = StringField("Address", validators=[DataRequired()])
     street = StringField("Street")
-    zipcode = StringField("zipcode")
+    zipcode = IntegerField("zipcode")
     update = SubmitField("Update", validators=[DataRequired()])

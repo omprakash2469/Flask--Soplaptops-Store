@@ -1,5 +1,8 @@
 # ----------- Flask Modules ----------- #
+from ast import And
+from itertools import product
 from flask import Blueprint, render_template, flash, redirect, url_for, session, send_from_directory, request
+from sqlalchemy import func
 
 # ----------- Application Modules ----------- #
 from ..extensions import ROOT_DIR, db, params
@@ -100,7 +103,7 @@ def singleProductPage(category, slug):
 
     ## Validate if product exists
     product_name = slug.replace('-', ' ').lower()
-    products = Products.query.filter_by(product=product_name).first()
+    products = Products.query.filter(Products.product.ilike(product_name)).first()
     if not products:
         flash("Product Not Found")
         return render_template('404.html')
@@ -131,7 +134,7 @@ def singleProductPage(category, slug):
     }
 
     # Fetch related product of current category
-    related = Products.query.filter_by(category_id=products.category_id).limit(6)
+    related = Products.query.filter(Products.id!=details['id'], Products.category_id==products.category_id).limit(6)
     products = {}
     for i in related:
         products[i.id] = {}
@@ -142,10 +145,6 @@ def singleProductPage(category, slug):
             "price": i.price,
             "image": url_for('static', filename=f"assets/images/products/{category.lower()}/{image.image_name}")
         }
-
-        # Don't include current product in related product
-        if i.id == details['id']:
-            products.pop(i.id)
 
     # SEO Meta data
     meta = returnMeta('products')

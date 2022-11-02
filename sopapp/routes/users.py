@@ -16,6 +16,13 @@ users = Blueprint('users', __name__, template_folder='templates')
 # ----------- User Dashboard ----------- #
 @users.route("/dashboard", methods=['GET', 'POST'])
 def dashboard():
+    # Check if session user exists
+    userExist = Users.query.filter_by(id=session['id']).first()
+    if not userExist:
+        session.pop('id', None)
+        session.pop('username', None)
+        session.pop('user_logged_in', None)
+
     # Redirect User if not logged in
     if not 'user_logged_in' in session and not 'username' in session:
         flash("Please login to continue", "text-red-500")
@@ -181,17 +188,15 @@ def checkout():
         faddress = form.address.data
         fzipcode = form.zipcode.data
 
-        ## User Authentication
         # Update user street, address and zipcode
         try:
             loggedinUser.name = fname,
             loggedinUser.number = fnumber,
             loggedinUser.address = faddress,
             loggedinUser.street = fstreet,
+            # loggedinUser.zipcode = (str(fzipcode), )
             loggedinUser.zipcode = fzipcode
             db.session.commit()
-            db.session.flush
-            uid = loggedinUser.id ## Get User id
             # Update Username in session
             session['username'] = fname
         except Exception as e:
@@ -201,7 +206,7 @@ def checkout():
         ## Place Order
         try:
             for item in session['shoppingCart']:
-                order = Orders(user_id=uid, product_id=item, quantity=int(session['shoppingCart'][item]['quantity']))
+                order = Orders(user_id=session['id'], product_id=item, quantity=int(session['shoppingCart'][item]['quantity']))
                 db.session.add(order)
                 db.session.commit()
                 # SEO Meta data

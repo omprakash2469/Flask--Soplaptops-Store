@@ -3,6 +3,10 @@ module.exports = {
   content: ["./sopapp/templates/main/*.html", "./sopapp/templates/users/*.html", "./sopapp/routes/*.py", "./sopapp/static/assets/js/users.js"],
   theme: {
     extend: {
+      fontFamily:{
+        lato: "'Lato', sans-serif",
+        source: "'Source Sans Pro', sans-serif"
+      },
       animation:{
         dropdown: 'dropdown .4s forwards',
         dropup: 'dropup .4s forwards'

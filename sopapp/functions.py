@@ -100,6 +100,28 @@ def returnSum(dict):
         sum = sum + int(dict[key]['price'])
     return sum
 
+# Convert raw product details data into html format
+def productDetailsFormat(string, method):
+    if method:
+        # Replace Heading
+        string = string.replace("[", '<div class="mb-1"><h5 class="text-lg font-lato font-semibold">')
+        string = string.replace("]", '</h5>')
+        
+        # Replace Paragraph
+        string = string.replace("(", '<p class="font-source text-lg text-gray-600">')
+        string = string.replace(")", '</p></div>')
+        return string
+    else:
+        # Replace Heading
+        string = string.replace('<div class="mb-1"><h5 class="text-lg font-lato font-semibold">', "[")
+        string = string.replace('</h5>', "]")
+        
+        # Replace Paragraph
+        string = string.replace('<p class="font-source text-lg text-gray-600">', "(")
+        string = string.replace('</p></div>', ")")
+        return string
+
+
 func_dict = {
     "NumberOfProducts":  NumberOfProducts,
     "getCategoryById":  getCategoryById,

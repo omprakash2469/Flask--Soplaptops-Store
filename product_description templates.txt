@@ -1,34 +1,34 @@
 500x500 Image Size
 
-Processor 
+[Processor]
 Intel i5 7th Generation
 
-Operating System 
+[Operating System]
 Windows 10 Home 
 
-Video Card 
+[Video Card]
 intel® uhd graphics 
 
-Display 
+[Display]
 Screen Size14 Inch Touch Screen
 
-Memory 
+[Memory]
 8GB RAM DDR4
 
-Storage
+[Storage]
 SSD 256GB M.2
 
-Color
+[Color]
 Black
 
-Accidental Damage Protection 
-none
+[Accidental Damage Protection]
+None
 
-Keyboard
+[Keyboard]
 English International backlit keyboard
 
-Battery Back Up
+[Battery Back Up]
 Good
 
-Warranty
+[Warranty]
 1 Year
