@@ -186,8 +186,8 @@ def checkout():
         try:
             loggedinUser.name = fname,
             loggedinUser.number = fnumber,
-            loggedinUser.street = fstreet,
             loggedinUser.address = faddress,
+            loggedinUser.street = fstreet,
             loggedinUser.zipcode = fzipcode
             db.session.commit()
             db.session.flush
