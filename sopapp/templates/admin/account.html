@@ -227,10 +227,10 @@
                     <div class="row">
                       <div class="col mb-3">
                         {{adminForm.email.label(class="form-label")}}
-                        {{adminForm.email(class="form-control")}}
+                        {{adminForm.email(class="form-control", placeholder="xyz@gmail.com")}}
                       </div>
                     </div>
-                    <div class="row">
+                    <div class="row" id="pass">
                       <div class="col mb-3">
                         {{adminForm.password.label(class="form-label")}}
                         {{adminForm.password(class="form-control phone-mask", placeholder="********")}}
@@ -336,7 +336,7 @@
           <div class="tab-pane fade" id="navs-pills-top-operations" role="tabpanel">
             <h5 class="card-header">Delete Account</h5>
             <div class="card-body">
-              <div class="mb-3 col-12 mb-0">
+              <div class="col-12 mb-0">
                 <div class="alert alert-warning">
                   <h6 class="alert-heading fw-bold mb-1">Are you sure you want to delete your account?</h6>
                   <p class="mb-0">Once you delete your account, there is no going back. Please be certain.</p>
@@ -367,8 +367,9 @@
   <script>
     // Get button and table of category
     editBtn = document.getElementsByClassName('editBtn')
-    console.log(editBtn)
     tableRow = document.getElementsByClassName('adminFormRow')
+    passField = document.getElementById('pass')
+     
     // Get Modal and Modal Form Variable
     mtitle = document.getElementById('adminAddTitle')
     maction = document.getElementById('adminForm')
@@ -393,6 +394,8 @@
         password = tableRow[i].children[4].innerText
         btn = "Update"
 
+        passField.style.display = 'none'
+
         // Set Modal-form values to display edit form
         mtitle.innerText = title
         maction.action = action
@@ -414,6 +417,7 @@
     // -------- Reset Modal-Form variable -------
     function adminReset() {
       // Get Modal and Modal Form Variables and reset them
+      passField.style.display = 'block'
       mtitle.innerText = "Add New Admin"
       maction.action = "{{url_for('auth.adminAdd')}}"
       mname.value = ""

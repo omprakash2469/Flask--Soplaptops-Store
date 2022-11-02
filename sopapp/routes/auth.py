@@ -134,20 +134,15 @@ def adminEdit():
 
     name = request.form.get('name')
     email = request.form.get('email')
-    password = request.form.get('password')
     roles = request.form.getlist('roles')
     aid = request.form.get('aid')
-    if name and email and password and roles and aid:
-        # Generate Password Hash
-        password = generate_password_hash(password, method="sha256")
-
+    if name and email and roles and aid:
         ### Get Admin by Id
         try:
             query = Admin.query.filter_by(id=aid).first()
             ## Update Admin
             query.name = name
             query.email = email
-            query.password = password
             db.session.commit()
             ## Delete Admin Role Association
             adminRoles = AdminRole.query.filter_by(admin_id=aid).all()

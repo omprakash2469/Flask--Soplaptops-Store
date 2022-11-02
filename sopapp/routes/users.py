@@ -162,6 +162,9 @@ def checkout():
     # Check if product are there in cart
     if 'shoppingCart' not in session:
         return redirect(url_for('main.index'))
+    
+    if session['shoppingCart'] == {}:
+        return redirect(url_for('main.index'))
 
     if 'id' not in session and 'username' not in session and 'user_logged_in' not in session:
         flash("Please Login To Proceed to Checkout", "text-red-500")
@@ -192,7 +195,7 @@ def checkout():
             # Update Username in session
             session['username'] = fname
         except Exception as e:
-            flash("Refresh Page! And Try Again")
+            flash(f"Refresh Page! And Try Again {str(e)}", "text-red-500")
             return redirect(url_for('users.checkout'))
 
         ## Place Order

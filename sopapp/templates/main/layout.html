@@ -74,9 +74,9 @@
                     <ul class="uppercase p-4 w-[95%] m-auto lg:flex lg:space-x-5 lg:py-2 lg:w-full">
                         <li><a class="text-sm py-4 block lg:px-5 lg:py-2 xl:text-base hover:text-black/70 font-semibold"
                                 href="{{url_for('main.index')}}">Home</a></li>
-                        <li class="relative group cursor-pointer"><a
+                        <li class="relative group cursor-pointer"><span
                                 class="text-sm py-4 block lg:px-5 lg:py-2 xl:text-base hover:text-black/70 font-semibold">Laptops
-                                &nbsp; <i class="fa-solid fa-chevron-down"></i></a>
+                                &nbsp; <i class="fa-solid fa-chevron-down"></i></span>
                             <ul
                                 class="px-3 py-2 bg-gray-200 w-full hidden group-hover:block lg:absolute z-10 lg:bg-white lg:w-[200px] lg:shadow-xl text-sm -top-96 group-hover:top-10">
                                 {% for category in categories %}
@@ -247,10 +247,10 @@
                                 <div class="mt-6 flex justify-center text-center text-sm text-gray-500">
                                     <p>
                                         or
-                                        <button type="button" class="font-medium text-indigo-600 hover:text-indigo-500">
+                                        <a href="{{url_for('main.index')}}#trendyProducts" class="font-medium text-indigo-600 hover:text-indigo-500">
                                             Continue Shopping
                                             <span aria-hidden="true"> &rarr;</span>
-                                        </button>
+                                        </a>
                                     </p>
                                 </div>
                             </div>
