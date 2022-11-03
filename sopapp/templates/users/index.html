@@ -27,7 +27,8 @@
             <!-- MAIN SECTION -->
             <div class="bg-gray-100 py-6 px-5 h-full">
                 <!-- Display Messages -->
-                <h1 class="text-xl sm:text-2xl relative">Welcome! {{session['username']|title()}} <span class="absolute w-8 h-[2px] bg-black -bottom-1 left-0"></span></h1>
+                <h1 class="text-xl sm:text-2xl relative">Welcome! {{session['username']|title()}} <span
+                        class="absolute w-8 h-[2px] bg-black -bottom-1 left-0"></span></h1>
                 {% with messages = get_flashed_messages(with_categories=True) %}
                 {% if messages %}
                 {% for category, message in messages %}
@@ -40,15 +41,19 @@
 
                 <div class="mt-12 text-justify sm:text-left">
                     <div class="grid grid-cols-2 gap-5 sm:gap-8 items-center md:grid-cols-3">
-                        <div class="flex flex-col border-2 bg-white box-border px-3 py-5 rounded-xl border-gray-200 w-full mx-auto">
+                        <div
+                            class="flex flex-col border-2 bg-white box-border px-3 py-5 rounded-xl border-gray-200 w-full mx-auto">
                             <span class="text-4xl text-center">{{orders|count}}</span>
                             <span class="text-lg text-center mt-2 uppercase">Orders</span>
                         </div>
-                        <div class="flex flex-col border-2 bg-white box-border px-3 py-5 rounded-xl border-gray-200 w-full mx-auto">
+                        <div
+                            class="flex flex-col border-2 bg-white box-border px-3 py-5 rounded-xl border-gray-200 w-full mx-auto">
                             <span class="text-4xl text-center">{{session['shoppingCart']|count}}</span>
                             <span class="text-center mt-2 uppercase text-lg">Cart Items</span>
                         </div>
-                        <a href="{{url_for('main.index')}}#trendyProducts" class="text-center mt-2 uppercase text-lg col-span-2 sm:col-span-1 text-blue-600">Continue Shopping &rarr;</a>
+                        <a href="{{url_for('main.index')}}#trendyProducts"
+                            class="text-center mt-2 uppercase text-lg col-span-2 sm:col-span-1 text-blue-600">Continue
+                            Shopping &rarr;</a>
                     </div>
                 </div>
             </div>
@@ -58,50 +63,45 @@
                 <div
                     class="flex flex-col xl:flex-row jusitfy-center items-stretch w-full xl:space-x-8 space-y-4 md:space-y-6 xl:space-y-0">
                     <div class="flex flex-col justify-start items-start w-full space-y-4 md:space-y-6 xl:space-y-8">
-                        <div
-                            class="flex flex-col justify-start items-start px-4 py-4 md:py-6 md:p-6 xl:p-8 w-full">
+                        <div class="flex flex-col justify-start items-start px-4 py-4 md:py-6 md:p-6 xl:p-8 w-full">
                             {% if orders %}
                             <p class="text-lg md:text-xl  font-semibold leading-6 xl:leading-5 text-gray-800">
                                 Your Orders</p>
                             {% for order in orders %}
                             <div
-                                class="mt-4 md:mt-6 flex flex-col md:flex-row justify-start items-start md:items-center md:space-x-6 xl:space-x-8 w-full">
-                                <div class="pb-4 md:pb-8 w-full md:w-40">
-                                    <img class="w-full hidden md:block rounded-md" src="{{orders[order]['image']}}"
-                                        alt="dress" />
-                                    <img class="w-full md:hidden rounded-md" src="{{orders[order]['image']}}"
-                                        alt="dress" />
+                                class="my-4 md:my-6 flex flex-col md:flex-row md:space-x-6 xl:space-x-8 w-full md:items-center">
+                                <div class="object-cover md:w-[30%]">
+                                    <img class="w-full rounded-md" src="{{orders[order]['image']}}" alt="dress" />
                                 </div>
-                                <div
-                                    class="border-b border-gray-200 md:flex-row flex-col flex justify-between items-start w-full pb-8 space-y-4 md:space-y-0">
-                                    <div class="w-full flex flex-col justify-start items-start space-y-8">
+                                <div class="flex-col flex justify-between items-start space-y-4 md:space-y-0 md:w-[70%]">
+                                    <div
+                                        class="w-full flex flex-col justify-end items-end space-y-8 md:space-y-4 my-4 md:my-0">
                                         <h3
-                                            class="text-xl xl:text-2xl font-semibold leading-6 text-gray-800 hover:text-gray-600">
-                                            <a
-                                                href="{{orders[order]['product_url']}}">{{orders[order]['name']|title()}}</a>
+                                            class="text-xl sm:text-2xl md:text-xl font-semibold leading-6 text-gray-800 hover:text-gray-600 self-start">
+                                            <a href="{{orders[order]['product_url']}}"
+                                                class="block">{{orders[order]['name']|title()}}</a>
                                         </h3>
-                                        <div class="flex justify-start items-start flex-col space-y-2">
-                                            <p class="text-base  leading-none text-gray-800"><span
+                                        <div class="grid sm:grid-cols-2 gap-3 w-full">
+                                            <p class="text-base leading-none text-gray-800"><span
                                                     class=" text-gray-500">Order Date: </span>
                                                 <strong>{{orders[order]['order_date']}}</strong>
                                             </p>
                                             <p class="text-base  leading-none text-gray-800"><span
                                                     class=" text-gray-500">Category: </span>
-                                                <strong>{{orders[order]['category']|upper()}}</strong>
+                                                <strong>{{orders[order]['category']|title()}}</strong>
+                                            </p>
+                                            <p class="text-base  leading-none text-gray-800"><span
+                                                    class=" text-gray-500">Qty: </span>
+                                                <strong>{{orders[order]['quantity']}}</strong>
+                                            </p>
+                                            <p class="text-base  leading-none text-gray-800"><span
+                                                    class=" text-gray-500">Total Price: </span>
+                                                <strong>Rs. {{orders[order]['price']}}</strong>
                                             </p>
                                         </div>
-                                    </div>
-                                    <div class="space-x-8 w-full flex justify-between flex-col">
-                                        <div class="flex justify-between items-start">
-                                            <p class="text-base  xl:text-lg leading-6 text-gray-800">Qty.
-                                                {{orders[order]['quantity']}}</p>
-                                            <p class="text-base  xl:text-lg font-semibold leading-6 text-gray-800">
-                                                Rs. {{orders[order]['price']}}</p>
-                                        </div>
-                                        <form action="{{url_for('users.cancelOrder')}}" method="post" class="flex justify-end">
-                                            <input type="hidden" name="orderid" value="{{order}}">
-                                            <button type="submit" class="block text-right mt-8">Cancel</button>
-                                        </form>
+                                        <button
+                                            class="bg-blue-500 px-3 py-1 text-white rounded-lg text-right my-6 cancel md:my-0 md:mr-10"
+                                            value="{{order}}">Cancel</button>
                                     </div>
                                 </div>
                             </div>
@@ -146,30 +146,9 @@
             <!-- ACCOUNT UPDATE MODAL FORM SECTION -->
             <div class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true"
                 id="infoedit">
-                <!--
-                  Background backdrop, show/hide based on modal state.
-              
-                  Entering: "ease-out duration-300"
-                    From: "opacity-0"
-                    To: "opacity-100"
-                  Leaving: "ease-in duration-200"
-                    From: "opacity-100"
-                    To: "opacity-0"
-                -->
                 <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
-
                 <div class="fixed inset-0 z-10 overflow-y-auto">
                     <div class="flex min-h-full items-end justify-center p-7 text-center sm:items-center sm:p-0">
-                        <!--
-                      Modal panel, show/hide based on modal state.
-              
-                      Entering: "ease-out duration-300"
-                        From: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                        To: "opacity-100 translate-y-0 sm:scale-100"
-                      Leaving: "ease-in duration-200"
-                        From: "opacity-100 translate-y-0 sm:scale-100"
-                        To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                    -->
                         <form method="POST" action="{{url_for('users.dashboard')}}"
                             class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-xl">
                             <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
@@ -269,7 +248,53 @@
                 </div>
             </div>
 
+            <!-- CANCEL ORDER MODAL -->
+            <div class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true"
+                id="cancelOrderModal">
+                <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+                <div class="fixed inset-0 z-10 overflow-y-auto">
+                    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                        <div
+                            class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                <div class="sm:flex sm:items-start">
+                                    <div
+                                        class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                                        <!-- Heroicon name: outline/exclamation-triangle -->
+                                        <svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                            aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M12 10.5v3.75m-9.303 3.376C1.83 19.126 2.914 21 4.645 21h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 4.88c-.866-1.501-3.032-1.501-3.898 0L2.697 17.626zM12 17.25h.007v.008H12v-.008z" />
+                                        </svg>
+                                    </div>
+                                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                                        <h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-title">
+                                            Cancel Order</h3>
+                                        <div class="mt-2">
+                                            <p class="text-sm text-gray-500">Are you sure you want to cancel your order?
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <form class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6"
+                                action="{{url_for('users.cancelOrder')}}" method="post">
+                                <input type="hidden" name="orderid" id="orderid" value="">
+                                <button type="submit"
+                                    class="inline-flex w-full justify-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm">Yes,
+                                    Cancel!</button>
+                                <button type="button"
+                                    class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                                    id="orderModalClose">No, Let me think!</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+
+    </div>
     </div>
     </div>
 </main>
@@ -284,6 +309,22 @@
     let close = document.getElementById('close');
     close.addEventListener('click', () => {
         modal.classList.toggle('hidden')
+    })
+
+    // ---------- User Information Update Model ---------- //
+    let cancel = document.getElementsByClassName('cancel');
+    let orderModal = document.getElementById('cancelOrderModal');
+    let orderid = document.getElementById('orderid');
+    for (let i = 0; i < cancel.length; i++) {
+        cancel[i].addEventListener('click', () => {
+            orderModal.classList.toggle('hidden');
+            orderid.value = cancel[i].value
+        })
+    }
+    let orderModalClose = document.getElementById('orderModalClose');
+    orderModalClose.addEventListener('click', () => {
+        orderModal.classList.toggle('hidden')
+        orderid.value = ""
     })
 </script>
 <script src="{{url_for('static', filename='assets/js/users.js')}}"></script>

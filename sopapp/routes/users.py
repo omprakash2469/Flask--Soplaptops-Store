@@ -190,11 +190,10 @@ def checkout():
 
         # Update user street, address and zipcode
         try:
-            loggedinUser.name = fname,
-            loggedinUser.number = fnumber,
-            loggedinUser.address = faddress,
-            loggedinUser.street = fstreet,
-            # loggedinUser.zipcode = (str(fzipcode), )
+            loggedinUser.name = fname
+            loggedinUser.number = fnumber
+            loggedinUser.address = faddress
+            loggedinUser.street = fstreet
             loggedinUser.zipcode = fzipcode
             db.session.commit()
             # Update Username in session
