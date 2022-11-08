@@ -1,8 +1,5 @@
 # ----------- Flask Modules ----------- #
-from ast import And
-from itertools import product
 from flask import Blueprint, render_template, flash, redirect, url_for, session, send_from_directory, request
-from sqlalchemy import func
 
 # ----------- Application Modules ----------- #
 from ..extensions import ROOT_DIR, db, params
@@ -55,6 +52,7 @@ def index():
 
     # SEO Meta data
     meta = returnMeta('home')
+    meta['canonical'] = request.base_url
     return render_template('main/home.html', categories=getCategories(), form=form, products=products, meta=meta)
 
 # ----------- Blogs Archives ----------- #
@@ -62,6 +60,8 @@ def index():
 def blogs():
     # SEO Meta data
     meta = returnMeta('blogs')
+    meta['title'] = meta['title'] + " | " + params['blog_name']
+    meta['canonical'] = request.base_url
     return render_template('main/blogs.html', meta=meta, categories=getCategories())
     
 # ----------- Products Archives ----------- #
@@ -90,6 +90,7 @@ def productArchives(category):
     # SEO Meta data
     meta = returnMeta('category')
     meta['title'] = category.capitalize() + " Laptops in Pune | " + params['blog_name']
+    meta['canonical'] = request.base_url
     return render_template('main/shop.html', meta=meta, categories=getCategories(), category=category, products=products)
 
 # ----------- Single Product Page ----------- #
@@ -149,6 +150,7 @@ def singleProductPage(category, slug):
     # SEO Meta data
     meta = returnMeta('products')
     meta['title'] = slug.title() + f" | {category.upper()} | " + params['blog_name']
+    meta['canonical'] = request.base_url
     return render_template('main/product.html', meta=meta, details=details, products=products, categories=getCategories())
 
 # ----------- About ----------- #
@@ -157,6 +159,8 @@ def about():
 
     # SEO Meta data
     meta = returnMeta('about')
+    meta['title'] = meta['title'] + " | " + params['blog_name']
+    meta['canonical'] = request.base_url
     return render_template('main/about.html', categories=getCategories(), meta=meta)
 
 # ----------- Privacy Policies ----------- #
@@ -164,6 +168,8 @@ def about():
 def privacyPolicy():
     # SEO Meta data
     meta = returnMeta('privacy-policy')
+    meta['title'] = meta['title'] + " | " + params['blog_name']
+    meta['canonical'] = request.base_url
     return render_template('main/privacy-policy.html', categories=getCategories(), meta=meta)
 
 # ----------- Contact ----------- #
@@ -191,6 +197,8 @@ def contact():
     
     # SEO Meta data
     meta = returnMeta('contact')
+    meta['title'] = meta['title'] + " | " + params['blog_name']
+    meta['canonical'] = request.base_url
     return render_template('main/contact.html', categories=getCategories(), form=form, meta=meta)
 
 

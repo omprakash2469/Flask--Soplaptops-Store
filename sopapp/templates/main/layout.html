@@ -8,6 +8,7 @@
     <meta name="description" content="{{meta['desc']}}">
     <meta name="keywords" content="{% for keyword in meta['keyword'] %} '{{keyword}}', {% endfor %}">
     <title>{{meta['title']}}</title>
+    <link rel="canonical" href="{{meta['canonical']}}">
     <!-- Style Sheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style.css') }}">
     <!-- Font Awesome Icons -->
@@ -42,7 +43,8 @@
             <!-- CART -->
             <div class="lg:w-[15%] flex justify-end items-center">
                 <span class="block cursor-pointer mr-4 relative pr-1" onclick="openCheckoutBar()">
-                    <i class="fa-solid fa-cart-shopping text-3xl hover:text-gray-500 transition-all"></i> <span class="absolute top-0 right-0 bg-yellow-400 px-1 rounded-full text-black font-semibold text-sm">{{session['shoppingCart']|count()}}</span>
+                    <i class="fa-solid fa-cart-shopping text-3xl hover:text-gray-500 transition-all"></i> <span
+                        class="absolute top-0 right-0 bg-yellow-400 px-1 rounded-full text-black font-semibold text-sm">{{session['shoppingCart']|count()}}</span>
                 </span>
 
                 <!-- PROFILE -->
@@ -78,7 +80,8 @@
                         </a>
                     </div>
                     <hr class="lg:hidden">
-                    <ul class="uppercase p-4 w-[95%] m-auto lg:flex lg:space-x-5 lg:py-2 lg:w-full font-source tracking-wider">
+                    <ul
+                        class="uppercase p-4 w-[95%] m-auto lg:flex lg:space-x-5 lg:py-2 lg:w-full font-source tracking-wider">
                         <li><a class="text-sm py-4 block lg:px-5 lg:py-2 xl:text-base hover:text-black/70 font-semibold"
                                 href="{{url_for('main.index')}}">Home</a></li>
                         <li class="relative group cursor-pointer"><span
@@ -209,10 +212,16 @@
                                                                     class="cart_item_price">{{session['shoppingCart'][item]['price']}}</span>
                                                             </p>
                                                         </div>
-                                                        <p class="mt-1 text-sm text-gray-500 font-lato"><strong class="font-semibold ">Category: </strong><span>{{session['shoppingCart'][item]['category']|title}}</span></p>
+                                                        <p class="mt-1 text-sm text-gray-500 font-lato"><strong
+                                                                class="font-semibold ">Category:
+                                                            </strong><span>{{session['shoppingCart'][item]['category']|title}}</span>
+                                                        </p>
                                                     </div>
                                                     <div class="flex flex-1 items-end justify-between text-sm">
-                                                        <p class="text-gray-500 font-semibold font-lato"><strong class="font-semibold ">Qty: </strong><span class="text-gray-500">{{session['shoppingCart'][item]['quantity']}}</span></p>
+                                                        <p class="text-gray-500 font-semibold font-lato"><strong
+                                                                class="font-semibold ">Qty: </strong><span
+                                                                class="text-gray-500">{{session['shoppingCart'][item]['quantity']}}</span>
+                                                        </p>
 
                                                         <div class="flex">
                                                             <button type="button"
@@ -240,19 +249,15 @@
                                 </div>
                                 <p class="mt-0.5 text-sm text-gray-500">Free Delivery | No Delivery Charges</p>
                                 <div class="mt-6">
-                                    <a 
-                                    {% if session['shoppingCart'] == {} %}
-                                    onclick="checkoutError()"
-                                    {% else %}
-                                    href="{{url_for('users.checkout')}}"
-                                    {% endif %}
-
+                                    <a {% if session['shoppingCart']=={} %} onclick="checkoutError()" {% else %}
+                                        href="{{url_for('users.checkout')}}" {% endif %}
                                         class="cursor-pointer flex items-center justify-center rounded-md border border-transparent bg-gray-800 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-gray-700">Checkout</a>
                                 </div>
                                 <div class="mt-6 flex justify-center text-center text-sm text-gray-500">
                                     <p>
                                         or
-                                        <a href="{{url_for('main.index')}}#trendyProducts" class="font-medium text-indigo-600 hover:text-indigo-500">
+                                        <a href="{{url_for('main.index')}}#trendyProducts"
+                                            class="font-medium text-indigo-600 hover:text-indigo-500">
                                             Continue Shopping
                                             <span aria-hidden="true"> &rarr;</span>
                                         </a>

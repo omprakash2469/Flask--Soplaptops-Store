@@ -1,5 +1,4 @@
 # ----------- Flask Modules ----------- #
-from ast import Param
 from flask import Blueprint, render_template, request, flash, url_for, session, redirect
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -101,6 +100,7 @@ def dashboard():
     # SEO Meta data
     meta = returnMeta('user')
     meta['title'] = session['username'] + " || Dashboard - " + params['blog_name']
+    meta['canonical'] = request.base_url
     return render_template('users/index.html', meta=meta, categories=getCategories(), orders=orders, user=user, form=form, uo=userOrders)
 
 
@@ -147,7 +147,6 @@ def userCart():
                 return {"state": "bg-green-200", "message":"Added Your Product in Cart"}
         else:
             return {"state": "bg-red-200", "message":"Refresh! And Try Again"}
-
 
     return redirect(url_for('main.index'))
 
@@ -217,7 +216,8 @@ def checkout():
 
     # SEO Meta data
     meta = returnMeta('checkout')
-    meta['title'] = "Checkout - " + session['username'] + " || " + params['blog_name']    
+    meta['title'] = "Checkout - " + session['username'] + " || " + params['blog_name']
+    meta['canonical'] = request.base_url
     return render_template('main/checkout.html', meta=meta, categories=getCategories(), form=form, user=loggedinUser)
 
 
@@ -256,6 +256,8 @@ def login():
 
     # SEO Meta data
     meta = returnMeta('login')
+    meta['title'] = meta['title'] + " | " + params['blog_name']
+    meta['canonical'] = request.base_url
     return render_template('users/login.html', meta=meta, categories=getCategories(), form=form)
 
 # ----------- User Signup ----------- #
@@ -300,6 +302,8 @@ def signup():
 
     # SEO Meta data
     meta = returnMeta('signup')
+    meta['title'] = meta['title'] + " | " + params['blog_name']
+    meta['canonical'] = request.base_url
     return render_template('users/signup.html', meta=meta, categories=getCategories(), form=form)
 
 

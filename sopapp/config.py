@@ -1,5 +1,5 @@
 # ------- Environment -------
-development = False
+development = True
 
 if development:
     # --------------- Development Config ---------------

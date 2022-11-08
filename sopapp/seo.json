@@ -7,52 +7,74 @@
                 "best laptops price in pune",
                 "laptops in pune",
                 "budget laptop in pune"
-            ]
+            ],
+            "canonical": ""
         },
         "about": {
-            "title": "About Us || SOPLaptops",
-            "desc": "About soplaptops and our working and services processes"
+            "title": "About Us",
+            "desc": "About soplaptops and our working and services processes",
+            "keyword":"",
+            "canonical": ""
         },
         "contact": {
-            "title": "Contact Us || SOPLaptops",
-            "desc": "Feel Free to contact and we will provide best possible service for you"
+            "title": "Contact Us",
+            "desc": "Feel Free to contact and we will provide best possible service for you",
+            "keyword":"",
+            "canonical": ""
         },
         "login": {
-            "title": "Login || SOPLaptops",
-            "desc": "Please Login to complete your purchase"
+            "title": "Login",
+            "desc": "Please Login to complete your purchase",
+            "keyword":"",
+            "canonical": ""
         },
         "signup": {
-            "title": "Sign Up || SOPLaptops",
-            "desc": "Please Signup to complete your purchase"
+            "title": "Sign Up",
+            "desc": "Please Signup to complete your purchase",
+            "keyword":"",
+            "canonical": ""
         },
         "privacy-policy": {
-            "title": "Privacy Policies || SOPLaptops",
-            "desc": "Read our privacy policies for your better understanding"
+            "title": "Privacy Policies",
+            "desc": "Read our privacy policies for your better understanding",
+            "keyword":"",
+            "canonical": ""
         },
         "user": {
             "title": "",
-            "desc": "current loggedin user soplaptops"
+            "desc": "current loggedin user soplaptops",
+            "keyword":"",
+            "canonical": ""
         },
         "category": {
             "title": "",
             "desc": "Laptop categories in pune",
-            "keyword": ""
+            "keyword": "",
+            "canonical": ""
         },
         "products": {
             "title": "",
-            "desc": "Best Laptop in pune"
+            "desc": "Best Laptop in pune",
+            "keyword":"",
+            "canonical": ""
         },
         "blogs": {
-            "title": "Blogs || SOPLaptops",
-            "desc": "Read Our Blogs"
+            "title": "Blogs",
+            "desc": "Read Our Blogs",
+            "keyword":"",
+            "canonical": ""
         },
         "orderConfirm": {
             "title": "Your Order has been placed",
-            "desc": "Your order is confirmed"
+            "desc": "Your order is confirmed",
+            "keyword":"",
+            "canonical": ""
         },
         "checkout": {
             "title": "",
-            "desc": "Purchase your laptop for college use"
+            "desc": "Purchase your laptop for college use",
+            "keyword":"",
+            "canonical": ""
         }
     }
 }
