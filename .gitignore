@@ -5,3 +5,5 @@ fullconf
 sopapp/static/assets/images/category/
 sopapp/static/assets/images/products/
 *.db
+sopapp/static/robots.txt
+sopapp/static/sitemap.xml
