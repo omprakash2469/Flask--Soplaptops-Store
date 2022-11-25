@@ -37,10 +37,10 @@ def configure_database(app):
         create_user()
     
     def create_user():
-        exist = Admin.query.filter_by(name='admin').first()
-        if not exist:
+        exist = Admin.query.count()
+        if exist == 0:
             # Add Default User
-            adduser = Admin(name='admin', email='sop@gmail.com', password=generate_password_hash('sop#website123', method="sha256"))
+            adduser = Admin(name='admin', email='development@gmail.com', password=generate_password_hash('development#website123', method="sha256"))
             db.session.add(adduser)
             db.session.commit()
             db.session.flush
