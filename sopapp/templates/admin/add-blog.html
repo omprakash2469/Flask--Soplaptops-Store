@@ -1,0 +1,91 @@
+{% if authAdminRole(current_user.id, 'content editor') %}
+{% extends '/admin/layout.html' %}
+{% block body %}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="py-3 mb-4"><small>{{vars['title']}}</small></h4>
+
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert {{category}} alert-dismissible" role="alert">
+        {{message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+        </button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <div>
+        <form class="col-xl" action="{{vars['action']}}" method="POST" enctype="multipart/form-data">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Blog Information</h5>
+                    <small class="text-muted float-end">{{vars['title']}}</small>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        {{form.title.label(class="form-label")}}
+                        {{form.title(class="form-control", placeholder="Enter Name",
+                        value=vars['blog_title'])}}
+                    </div>
+                    <div class="mb-3">
+                        {{form.metaDesc.label(class="form-label")}}
+                        {{form.metaDesc(class="form-control", placeholder="Enter Description", rows=3)}}
+
+                    </div>
+                    <div class="mb-3">
+                        {{form.intro.label(class="form-label")}}
+                        <span style="font-weight: bold;">Add &lt;br&gt; for line break</span>
+                        {{form.intro(class="form-control", placeholder="Enter Description", rows=6)}}
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">{{form.details.label()}} </h5>
+                    <em>"Enter Details in Given Brackets"</em>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        {{form.details(class="form-control", placeholder="Product Details", rows=20)}}
+                    </div>
+                </div>
+            </div>
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">{{form.image.label()}}  <span class="text-muted"> - 1080 x 720px</span></h5>
+                    {% if vars['image'] %}
+                    <a href="{{vars.image}}" class="btn btn-primary" target="_blank">
+                        Uploaded Images
+                    </a>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        {{form.image(class="form-control")}}
+                    </div>
+                    {{form.hidden_tag()}}
+                </div>
+
+            </div>
+            <div>
+                {{form.submit(class="btn btn-primary", value=vars['button'])}}
+            </div>
+        </form>
+        {{ckeditor.load()}}
+        {{ckeditor.config(name='details')}}
+    </div>
+</div>
+<!-- / Content -->
+
+{% endblock %}
+{% else %}
+{% extends '404.html' %}
+{% block content %}
+<p>Page Not Found</p>
+{% endblock %}
+{% endif %}

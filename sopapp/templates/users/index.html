@@ -1,5 +1,5 @@
 {% extends 'main/layout.html' %}
-{% block body %}
+{% block content %}
 
 <!-- MAIN SECTION  -->
 <main class="py-7">
@@ -299,7 +299,9 @@
     </div>
 </main>
 <!--/ MAIN SECTION  -->
+{% endblock %}
 
+{% block javascript %}
 <script>
     // ---------- User Information Update Model ---------- //
     let modal = document.getElementById('infoedit');

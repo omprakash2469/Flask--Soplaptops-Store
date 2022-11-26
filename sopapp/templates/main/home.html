@@ -1,5 +1,5 @@
 {% extends '/main/layout.html' %}
-{% block body %}
+{% block content %}
 <!-- HEADER -->
 <header>
     <!-- SLIDER -->
@@ -162,7 +162,9 @@
         {% endwith %}
     </div>
 </div>
+{% endblock %}
 
+{% block javascript %}
 <script>
     // Slider
     const slides = document.getElementById('slider').children

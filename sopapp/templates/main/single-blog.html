@@ -1,0 +1,143 @@
+{% extends 'main/layout.html' %}
+
+{% block content %}
+
+<!-- Blog Categories -->
+<section>
+    <div class="py-10 bg-gray-100">
+        <h5 class="container 2xl:w-[1420px] mx-auto p-4"><span class="text-gray-500">Home / Blog /</a>
+            </span><span class="text-lg md:text-2xl font-source">{{blog.title}}</span></h5>
+    </div>
+    <div class="container 2xl:w-[1420px] mx-auto p-4 md:py-8">
+        <h1 class="text-center mb-10 text-4xl md:pb-8 md:text-5xl lg:text-7xl lg:py-10 capitalize font-bold">{{blog.title}}</h1>
+        <div class="my-10 lg:max-w-4xl xl:max-w-5xl lg:mx-auto">
+            <div class="mb-10 lg:mb-14">
+                <img src="{{ url_for('static', filename='assets/images/blogs/')}}{{blog.image}}" alt="{{blog.title}}" class="w-full block object-cover rounded-lg">
+            </div>
+            <div class="mb-8 text-xl lg:text-lg font-source text-black">
+                <h2 class="font-semibold text-xl md:text-3xl font-lato">Introduction</h2><br>
+                {{blog.intro|safe}}
+            </div>
+            <hr class="my-2">
+            <div class="my-6 text-lg font-source" id="details">
+                {{blog.details|safe}}
+            </div>
+            <hr class="mt-14">
+            <div class="my-6 text-base font-lato">
+                Author - <span class="text-blue-600">{{blog.admin_id}}</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related Blogs -->
+<section class="bg-gray-100">
+    <div class="container 2xl:w-[1420px] mx-auto p-4 md:py-20">
+        <div class="mb-20">
+            <h1 class="text-xl font-semibold font-source tracking-wide text-center lg:text-3xl">Relate<span class="border-b-2 border-black">d B</span>logs</h1>
+        </div>
+        <div class="lg:w-[90%] lg:m-auto xl:w-[1200px] py-10 xl:py-16 px-5 md:px-0 grid gap-8 md:gap-10 xl:gap-14 sm:grid-cols-2">
+            {% for blog in relatedBlog %}
+            <figure class="shadow-md shadow-gray-200 bg-gray-100">
+                <a href="{{url_for('main.single_blog', slug=blog.slug)}}" class="block overflow-hidden">
+                    <img src="{{ url_for('static', filename='assets/images/blogs/')}}{{blog.image}}"
+                        alt="{{blog.title}}" class="block w-full object-cover hover:scale-110 transition-all duration-300 hover:opacity-90">
+                </a>
+                <figcaption class="p-4">
+                    <h2 class="font-semibold text-xl font-lato mb-3 md:text-2xl xl:text-3xl hover:text-gray-700 transition-all"><a href="{{url_for('main.single_blog', slug=blog.slug)}}">{{blog.title}}</a></h2>
+                    <p class="text-sm leading-5 font-source text-gray-700 mb-4 md:text-base xl:text-lg">{{blog.intro[:150]}}..</p>
+                    <div class="flex justify-between items-center">
+                        <span class="md:text-lg">{{blog.views}}+ Views</span>
+                        <a href="{{url_for('main.single_blog', slug=blog.slug)}}" class="block w-max bg-black text-white px-4 py-2 text-xs md:text-base xl:text-lg hover:bg-gray-700 transition-all">Read More</a>
+                    </div>
+                </figcaption>
+            </figure>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block javascript %}
+<script>
+    let details = document.getElementById('details')
+    let img = details.querySelectorAll('img')
+    let ul = details.querySelectorAll('ul')
+    let h1 = details.querySelectorAll('h1')
+    let h2 = details.querySelectorAll('h2')
+    let h3 = details.querySelectorAll('h3')
+    let pre = details.querySelectorAll('pre')
+    let code = details.querySelectorAll('code')
+    let a = details.querySelectorAll('a')
+    let p = details.querySelectorAll('p')
+
+    // Formatting Elements
+    // Images
+    for (let i = 0; i < img.length; i++) {
+        img[i].setAttribute('class', 'block my-8 rounded-lg mx-auto object-cover !w-max !h-max')
+    }
+    // Unordered List
+    for (let i = 0; i < ul.length; i++) {
+        ul[i].setAttribute('class', 'block my-3 mb-10 rounded-lg mx-auto bg-gray-100 py-5 mx-5 lg:mx-12 px-5 lg:px-12 text-base lg:text-lg space-y-1 border-l-4 border-gray-800')
+        let inner = ul[i].innerHTML.trim()
+        if (ul[i].innerHTML == "" || inner=="&nbsp;"){
+            ul[i].classList.add('hidden')
+        }
+    }
+    // Headings
+    // h1
+    for (let i = 0; i < h1.length; i++) {
+        h1[i].setAttribute('class', 'py-5 text-3xl lg:text-4xl text-black mt-5 font-lato')
+        let inner = h1[i].innerHTML.trim()
+        if (h1[i].innerHTML == "" || inner=="&nbsp;"){
+            h1[i].classList.add('hidden')
+        }
+    }
+    // h2
+    for (let i = 0; i < h2.length; i++) {
+        h2[i].setAttribute('class', 'py-5 text-2xl lg:text-3xl text-black font-semibold mt-10 font-lato')
+        let inner = h2[i].innerHTML.trim()
+        if (h2[i].innerHTML == "" || inner=="&nbsp;"){
+            h2[i].classList.add('hidden')
+        }
+    }
+    // h3
+    for (let i = 0; i < h3.length; i++) {
+        h3[i].setAttribute('class', 'py-5 text-xl lg:text-2xl text-black font-semibold font-lato')
+        let inner = h3[i].innerHTML.trim()
+        if (h3[i].innerHTML == "" || inner=="&nbsp;"){
+            h3[i].classList.add('hidden')
+        }
+    }
+    // a
+    for (let i = 0; i < a.length; i++) {
+        a[i].setAttribute('class', 'text-blue-600 hover:text-blue-700')
+        let inner = a[i].innerHTML.trim()
+        if (a[i].innerHTML == "" || inner=="&nbsp;"){
+            a[i].classList.add('hidden')
+        }
+    }
+    // p
+    console.log(p)
+    for (let i = 0; i < p.length; i++) {
+        p[i].classList.add('text-gray-700')
+    }
+    // Pre
+    for (let i = 0; i < pre.length; i++) {
+        pre[i].setAttribute('class', 'block my-[20px!important]')
+        // Remove if element is empty
+        let inner = pre[i].innerHTML.trim()
+        if (pre[i].innerHTML == "" || inner=="&nbsp;"){
+            pre[i].classList.add('hidden')
+        }
+    }
+    // Code
+    for (let i = 0; i < code.length; i++) {
+        code[i].setAttribute('class', 'language-javascript break-all')
+        if (code[i].innerHTML == "" || code[i].innerHTML=="&nbsp;"){
+            code[i].classList.add('hidden')
+        }
+    }
+
+</script>
+{% endblock %}

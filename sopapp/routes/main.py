@@ -4,7 +4,7 @@ from flask import Blueprint, render_template, flash, redirect, url_for, session,
 # ----------- Application Modules ----------- #
 from ..extensions import ROOT_DIR, db, params
 from ..functions import getCategories, returnMeta
-from ..models.main import EmailForm, Emails, Categories, Products, ProductsImages, Contacts, ContactForm
+from ..models.main import EmailForm, Emails, Categories, Products, ProductsImages, Contacts, ContactForm, Blogs
 
 # ----------- Instiantiate Blueprint ----------- #
 main = Blueprint('main', __name__, template_folder='templates')
@@ -62,7 +62,27 @@ def blogs():
     meta = returnMeta('blogs')
     meta['title'] = meta['title'] + " | " + params['blog_name']
     meta['canonical'] = request.base_url
-    return render_template('main/blogs.html', meta=meta, categories=getCategories())
+    return render_template('main/blogs.html', meta=meta, categories=getCategories(), blogs=Blogs.query.all())
+
+# ----------- Single Blog Page ----------- #
+@main.route('/blog/<string:slug>')
+def single_blog(slug):
+    slug = slug.lower()
+    ## Validate if blogs exists
+    blog = Blogs.query.filter(Blogs.slug.ilike(slug)).first()
+    
+    if not blog:
+        flash("Page Not Found")
+        return render_template('404.html')
+
+    # Get Related Blogs
+    relatedBlog = Blogs.query.filter(Blogs.id!=blog.id).limit(2)
+
+    # SEO Meta data
+    meta = returnMeta('blogs')
+    meta['title'] = meta['title'] + " | " + params['blog_name']
+    meta['canonical'] = request.base_url
+    return render_template('main/single-blog.html', meta=meta, categories=getCategories(), blog=blog, relatedBlog=relatedBlog)
     
 # ----------- Products Archives ----------- #
 @main.route('/category/<string:category>')

@@ -1,6 +1,7 @@
 # ----------- Flask Modules ----------- #
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, HiddenField, IntegerField, FileField, TextAreaField, SelectField, MultipleFileField
+from flask_ckeditor import CKEditorField
 from wtforms.validators import DataRequired
 from flask_wtf.file import FileField, FileAllowed
 
@@ -56,4 +57,13 @@ class AddProduct(FlaskForm):
     pid = HiddenField("product id")
     category = SelectField("Select Product Category", validators=[DataRequired()])
     image_file = MultipleFileField("Upload Product Images", validators=[FileAllowed(['jpg', 'jpeg'], message="Please Upload jpg / jpeg Images")])
+    submit = SubmitField("Save", validators=[DataRequired()])
+
+class AddBlog(FlaskForm):
+    title = StringField("Blog Title", validators=[DataRequired()])
+    metaDesc = TextAreaField("Meta Description", validators=[DataRequired()])
+    intro = TextAreaField("Blog Introduction", validators=[DataRequired()])
+    image = FileField("Featured Image")
+    details = CKEditorField("Blog", validators=[DataRequired()])
+    bid = HiddenField("blog id")
     submit = SubmitField("Save", validators=[DataRequired()])

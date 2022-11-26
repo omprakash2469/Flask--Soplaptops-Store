@@ -1,5 +1,5 @@
 {% extends 'main/layout.html' %}
-{% block body %}
+{% block content %}
 
 <!-- MAIN SECTION  -->
 <main class="py-7">
@@ -146,28 +146,31 @@
             </div>
         </div>
     </section>
-    <script>
-        let activeImage = document.getElementById('active_image')
-        let allImages = document.getElementById('product_images').children
-
-        const resetActiveImages = () => {
-            for (let i = 0; i < allImages.length; i++) {
-                allImages[i].classList.add('opacity-50')
-                activeImage.src = allImages[0].src
-            }
-        }
-        for (let i = 0; i < allImages.length; i++) {
-            allImages[i].addEventListener('click', () => {
-                resetActiveImages()
-                activeImage.src = allImages[i].src
-                allImages[i].classList.remove('opacity-50')
-
-            })
-        }
-        resetActiveImages()
-        allImages[0].classList.remove('opacity-50')
-    </script>
 </main>
 <!--/ MAIN SECTION  -->
 
+{% endblock %}
+
+{% block javascript %}
+<script>
+    let activeImage = document.getElementById('active_image')
+    let allImages = document.getElementById('product_images').children
+
+    const resetActiveImages = () => {
+        for (let i = 0; i < allImages.length; i++) {
+            allImages[i].classList.add('opacity-50')
+            activeImage.src = allImages[0].src
+        }
+    }
+    for (let i = 0; i < allImages.length; i++) {
+        allImages[i].addEventListener('click', () => {
+            resetActiveImages()
+            activeImage.src = allImages[i].src
+            allImages[i].classList.remove('opacity-50')
+
+        })
+    }
+    resetActiveImages()
+    allImages[0].classList.remove('opacity-50')
+</script>
 {% endblock %}

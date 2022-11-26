@@ -5,10 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="{{meta['desc']}}">
-    <meta name="keywords" content="{% for keyword in meta['keyword'] %} '{{keyword}}', {% endfor %}">
-    <title>{{meta['title']}}</title>
-    <link rel="canonical" href="{{meta['canonical']}}">
+    {% block head %} {% endblock %}
     <!-- Style Sheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style.css') }}">
     <!-- Font Awesome Icons -->
@@ -23,13 +20,13 @@
     <link rel="icon" href="{{ url_for('static', filename='assets/images/favicon.png')}}" type="image/x-icon" />
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-TB2DP30SPZ"></script>
-    <script>
+    <!-- <script>
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
 
         gtag('config', 'G-TB2DP30SPZ');
-    </script>
+    </script> -->
 </head>
 
 <body>
@@ -106,10 +103,10 @@
                             </ul>
                         </li>
                         <li><a class="text-sm py-4 block lg:px-5 lg:py-2 xl:text-base hover:text-black/70 font-semibold"
+                                href="{{url_for('main.blogs')}}">Blogs</a></li>
+                        <li><a class="text-sm py-4 block lg:px-5 lg:py-2 xl:text-base hover:text-black/70 font-semibold"
                                 href="{{url_for('main.about')}}">About</a>
                         </li>
-                        <li><a class="text-sm py-4 block lg:px-5 lg:py-2 xl:text-base hover:text-black/70 font-semibold"
-                                href="{{url_for('main.contact')}}">Contact</a></li>
                     </ul>
                 </div>
             </div>
@@ -140,7 +137,7 @@
     </nav>
     <!-- / NAVIGATION END -->
 
-    {% block body %} {% endblock %}
+    {% block content %} {% endblock %}
 
     <!-- CHECKOUT SIDEBAR -->
     <div class="relative z-10 hidden" aria-labelledby="slide-over-title" role="dialog" aria-modal="true"
@@ -286,7 +283,6 @@
     <footer class="footer-wrapper h-56 px-4 text-center bg-gray-100 flex justify-center items-center flex-col">
         <div class="footer-1 text-xs mb-4 md:w-[768px]">
             <a href="{{url_for('main.contact')}}" class="inline-block px-3 py-2">CONTACT</a>
-            <a href="{{url_for('main.index')}}" class="inline-block px-3 py-2">ATTRIBUTION</a>
             <a href="{{url_for('main.privacyPolicy')}}" class="inline-block px-3 py-2">PRIVACY POLICY</a>
             <a href="{{url_for('main.about')}}" class="inline-block px-3 py-2">ABOUT US</a>
         </div>
@@ -299,6 +295,8 @@
 
     <!-- JS Scripts -->
     <script src="{{ url_for('static', filename='assets/js/script.js') }}"></script>
+    {% block javascript %} {% endblock %}
+
 </body>
 
 </html>

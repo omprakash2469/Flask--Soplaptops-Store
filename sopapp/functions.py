@@ -1,5 +1,5 @@
 from flask import redirect, url_for, render_template
-import json
+import json, re
 from .models.main import Products, Categories
 from .models.auth import AdminRole, Admin
 from .extensions import roles, params
@@ -25,7 +25,12 @@ def NumberOfProducts(id):
         return query
     except:
         return redirect(url_for('main.error'))
-        
+
+# ----------- Slug Format ----------- #
+def slugFormat(string):
+    string = re.sub('[^a-zA-Z0-9 \n\.]', '', string)
+    return " ".join(string.strip().lower().split()).replace(' ', '-')
+
 ## Get Category Name by id
 def getCategoryById(id):
     try:
@@ -70,20 +75,8 @@ def authAdminRole(id, role):
         return  False
 
 # Get Categories
-def getCategories(*args):
-    if args:
-        try:
-            categories = Categories.query.filter_by(id=args[0]).first()
-            return categories.category.lower() # return category name
-        except:
-            return False
-    else:
-        try:
-            categories = Categories.query.all()
-            return categories # return category names
-        except Exception as e:
-            print(str(e))
-            return render_template('error.html', error=str(e))
+def getCategories():
+    return Categories.query.all()
 
 # Merge two Dictionary
 def MergeDicts(dict1, dict2):

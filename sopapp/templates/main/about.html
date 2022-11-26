@@ -1,5 +1,12 @@
 {% extends 'main/layout.html' %}
-{% block body %}
+
+{% block head %}
+<meta name="description" content="{{meta.desc}}">
+<title>{{meta.title}}</title>
+<link rel="canonical" href="{{meta.canonical}}">
+{% endblock %}
+
+{% block content %}
 
     <!-- MAIN SECTION  -->
     <main class="py-7">

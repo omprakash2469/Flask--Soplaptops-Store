@@ -1,5 +1,5 @@
 {% extends 'main/layout.html' %}
-{% block body %}
+{% block content %}
 
 <!-- MAIN SECTION  -->
 <main class="py-7">
@@ -15,6 +15,7 @@
                 <li class="cursor-pointer block p-5 hover:bg-gray-200 transition-all font-semibold bg-gray-200">
                     Privacy Policies</li>
                 <li class="cursor-pointer block p-5 hover:bg-gray-200 transition-all font-semibold">Guidelines</li>
+                <li class="cursor-pointer block p-5 hover:bg-gray-200 transition-all font-semibold">Attribution</li>
             </ul>
         </div>
 
@@ -27,11 +28,16 @@
             <div class="bg-gray-100 py-6 px-5 hidden">
                 <p>We are updating our Guidelines</p>
             </div>
+            <div class="bg-gray-100 py-6 px-5 hidden">
+                <p>Attribution</p>
+            </div>
         </div>
     </div>
 </main>
 <!--/ MAIN SECTION  -->
+{% endblock %}
 
+{% block javascript %}
 <script>
     let policyTabs = document.getElementById('policyTabs').children
     let policyBlocks = document.getElementById('policyBlocks').children

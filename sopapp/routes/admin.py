@@ -6,11 +6,11 @@ import shutil
 import os
 
 # ----------- Application Modules ----------- #
-from ..models.admin import AddCategory, AddProduct
-from ..models.main import Categories, Contacts, Products, ProductsImages
+from ..models.admin import AddCategory, AddProduct, AddBlog
+from ..models.main import Categories, Contacts, Products, ProductsImages, Blogs
 from ..models.users import Users, Orders
 from ..extensions import ROOT_DIR, db, params
-from ..functions import authAdminRole, getCategories, productDetailsFormat, getCategoryById
+from ..functions import authAdminRole, getCategories, productDetailsFormat, getCategoryById, slugFormat
 
 # ----------- Instiantiate Blueprint ----------- #
 admin = Blueprint('admin', __name__, template_folder='templates', url_prefix='/admin')
@@ -213,7 +213,7 @@ def adminAddProduct():
             db.session.commit()
             db.session.flush()
             pid = entry.id
-            category = getCategories(fcategory)
+            category = getCategoryById(fcategory)
 
             # Check if products folder exists
             if not os.path.exists(params['product_images_upload_path']):
@@ -298,7 +298,7 @@ def adminEditProductForm():
         fcategory = form.category.data
         fimage_file = form.image_file.data
         ## Get category by id
-        category = getCategories(fcategory)
+        category = getCategoryById(fcategory)
 
         # Fetch product information 
         product = Products.query.filter_by(id=pid).first()
@@ -382,7 +382,7 @@ def adminDeleteProduct():
         ### Get category by product id
         query = Products.query.filter_by(id=pid).first()
         cid  = query.category_id
-        category = getCategories(*[cid])
+        category = getCategoryById(cid)
 
         ### Fetch and remove images from folder
         try:
@@ -409,6 +409,260 @@ def adminDeleteProduct():
     flash("Unexpected Error Occured", "alert-danger")
     return redirect(url_for('admin.adminProductPage', category=category))
     
+# ----------- Blogs ----------- #
+#### Display Blogs Archives
+@admin.route("/blogs")
+@login_required
+def adminBlogs():
+    return render_template('admin/blogs.html', blogs=Blogs.query.all())
+
+#### Add New Blog
+@admin.route("/blog/add", methods=['GET', 'POST'])
+@login_required
+def adminAddBlog():
+    ### Check if user has permission
+    if not authAdminRole(current_user.id, 'content editor'):
+        flash('This page is not accessible', "alert-danger")
+        return redirect(url_for('admin.adminBlogs'))
+
+    form = AddBlog()
+    if form.validate_on_submit():
+        ### Get form values
+        ftitle = form.title.data
+        fmetaDesc = form.metaDesc.data
+        fintro = form.intro.data
+        fimage = form.image.data
+        fdetails = form.details.data
+
+        # Check Image upload
+        if not fimage:
+            flash("Please upload Images", "alert-danger")
+            return redirect(request.referrer)
+        
+        # Check if all blogs folder exists
+        if not os.path.exists(params['blog_images_upload_path']):
+            os.mkdir(params['blog_images_upload_path'])
+
+        # Create image name and upload image
+        image = secure_filename(slugFormat(ftitle) + os.path.splitext(fimage.filename)[1])
+        fimage.save(os.path.join(params['blog_images_upload_path'], image))
+
+        # Add Record in database
+        try:
+            ## Insert blog info into database
+            entry = Blogs(title=ftitle, metaDesc=fmetaDesc, intro=fintro, image=image, details=fdetails, slug=slugFormat(ftitle), admin_id=current_user.id)
+            db.session.add(entry)
+            db.session.commit()
+        except:
+            flash("Failed! Adding New Blog", "alert-danger")
+            return redirect(url_for('admin.adminAddBlog'))
+
+        flash("Successfully! Added New Blog", "alert-success")
+        return redirect(url_for('admin.adminBlogs'))
+
+
+    ### Set Form Values
+    vars = {
+        "title": "Add New Blog",
+        "action": url_for('admin.adminAddBlog'),
+        "blog_title": "",
+        "meta": "",
+        "intro": "",
+        "image": "",
+        "details": "",
+        "button": "Add Blog"
+    }
+    return render_template('admin/add-blog.html', form=form, vars=vars)
+
+#### Edit Blog
+@admin.route("/blog/editform", methods=['GET', 'POST'])
+@login_required
+def adminEditBlogForm():
+    ### Check if user has permission
+    if not authAdminRole(current_user.id, 'content editor'):
+        flash('This page is not accessible', "alert-danger")
+        return redirect(url_for('admin.adminBlogs'))
+
+    form = AddBlog()
+    form.category.choices = [(c.id, c.category) for c in getCategories()]
+    ### Display Blog Edit Form
+    if request.method == "POST" and request.form.get('action') == 'editform' and request.form.get('bid'):
+        bid = request.form.get('bid')
+        query = Blogs.query.filter_by(id=bid).first()
+        # Check if owner is making changes to blog
+        if query.admin_id != current_user.id:
+            flash('Cannot edit another users blog', "alert-danger")
+            return redirect(url_for('admin.adminBlogPage', category=slugFormat(getCategoryById(query.category_id), True)))
+
+        form.metaDesc.data = query.metaDesc # Populate textarea field
+        form.intro.data = query.intro # Populate textarea field
+        form.details.data = query.details # Populate textarea field
+        ## Note = Textarea cannot be populated through below mentioned format. That's why you have to do it like form.desc.data = value
+        vars = {
+        "title": "Edit Blog",
+        "action": url_for('admin.adminEditBlogForm'),
+        "blog_title": query.title,
+        "image": url_for('static', filename='assets/images/blogs/'+slugFormat(getCategoryById(query.category_id), True)+'/'+query.image),
+        "category": query.category_id,
+        "intro": "",
+        "metaDesc": "",
+        "details": "",
+        "button": "Update"
+        }
+        return render_template('admin/add-blog.html', categories=getCategories(), form=form, vars=vars)
+    
+    ### Edit Blog Information
+    if  form.validate_on_submit() and request.form.get('bid'):
+        ### Get Blog Id
+        bid = request.form.get('bid')
+
+        ### Get form values
+        ftitle = form.title.data
+        fmetaDesc = form.metaDesc.data
+        fintro = form.intro.data
+        fcategory = form.category.data
+        fimage = form.image.data
+        fdetails = form.details.data
+        # New Category
+        category = getCategoryById(fcategory)
+
+        # ----------- Validation 
+        # Fetch blog information
+        blog = Blogs.query.filter_by(id=bid).first()
+        # Check if blog exists
+        if not blog:
+            flash('Blog not found', "alert-danger")
+            return redirect(url_for('admin.adminBlogs'))
+
+        # Check if owner is making changes to blog
+        if blog.admin_id != current_user.id:
+            flash('Cannot edit another users blog', "alert-danger")
+            return redirect(url_for('admin.adminBlogPage', category=slugFormat(category, True)))
+
+        # Current Category Data
+        currentCategory = getCategoryById(blog.category_id)
+        currentCategoryPath = params['blog_images_upload_path'] + slugFormat(currentCategory, True) + "/"
+        newCategoryPath = params['blog_images_upload_path'] + slugFormat(category, True) + "/"
+
+        # ----------- Updating Images 
+        # Check if category of blog is changed
+        categoryChanged = False
+        if int(blog.category_id) != int(fcategory):
+            categoryChanged = True
+            blog.category_id = fcategory
+
+        # Check if title is changed
+        titleChanged = False
+        if (ftitle != blog.title):
+            titleChanged = True
+            blog.title = ftitle
+            blog.slug = slugFormat(ftitle)
+
+        ## Handle Image Upload
+        # Image upload and category changed or not changed
+        if fimage or categoryChanged or titleChanged:
+            # Delete Old Image if new are uploaded
+            if fimage:
+                ## ---- Image upload but no category changed ----
+                # Delete current images
+                if os.path.exists(currentCategoryPath+blog.image):
+                    os.remove(os.path.join(currentCategoryPath+blog.image))
+
+                ## ---- New Image upload ---- 
+                # Check if category has changed
+                if categoryChanged:
+                    uploadPath = newCategoryPath
+                else:
+                    uploadPath = currentCategoryPath
+
+                # Create folder if blog category folder doesn't exists
+                if not os.path.exists(uploadPath):
+                    os.mkdir(uploadPath)
+
+                # Create image name and upload new image
+                image = secure_filename(slugFormat(ftitle) + os.path.splitext(fimage.filename)[1])
+                fimage.save(os.path.join(uploadPath, image))
+
+                # Update image in database
+                blog.image = image
+            elif titleChanged:
+            ## ---- Title Change ----
+                image = slugFormat(ftitle) + os.path.splitext(blog.image)[1]
+                # Rename if only title is changed
+                os.rename(os.path.join(currentCategoryPath, blog.image), os.path.join(currentCategoryPath, image))
+                if categoryChanged:
+                    if not os.path.exists(newCategoryPath):
+                        os.mkdir(newCategoryPath)
+                    # Move Files from source to destination
+                    shutil.move(currentCategoryPath + image, newCategoryPath + image)
+                
+                # Update image in database
+                blog.image = image
+            else:
+                ## ---- Category changed but no image uploaded and no title changed ---- 
+                # Move images from old category to new category folder
+                # Check if destination folder exists
+                if not os.path.exists(newCategoryPath):
+                    os.mkdir(newCategoryPath)
+
+                # Move Files from source to destination
+                shutil.move(currentCategoryPath + blog.image, newCategoryPath + blog.image)
+
+        ## Update Blog Information
+        try:
+            # Update blog
+            blog.intro = fintro
+            blog.metaDesc = fmetaDesc
+            blog.details = fdetails
+            db.session.commit()
+        except:
+            flash("Refresh and Try Again! Unable to Update Blog", "alert-danger")
+            return redirect(url_for('admin.adminBlogPage', category=category))
+            
+        flash("Successfully! Update Blog", "alert-success")
+        return redirect(url_for('admin.adminBlogPage', category=slugFormat(category, True)))
+    
+    flash("Page Not Found", "alert-danger")
+    return redirect(url_for('main.error'))
+
+#### Delete Blog
+@admin.route("/blog/delete", methods=['POST'])
+@login_required
+def adminDeleteBlog():
+    ### Check if user has permission
+    if not authAdminRole(current_user.id, 'content editor'):
+        flash('This page is not accessible', "alert-danger")
+        return redirect(url_for('admin.adminBlogs'))
+
+    ### Validate if required values are set
+    if(request.method == "POST" and request.form.get('action') == 'delete'  and request.form.get('bid')):
+        bid = request.form.get('bid')
+        ### Get blog details
+        query = Blogs.query.get(bid)
+
+        # Check if owner is making changes to blog
+        if query.admin_id != current_user.id:
+            flash('Cannot delete another users blog', "alert-danger")
+            return redirect(url_for('admin.adminBlogs'))
+
+        ### Fetch and remove images from folder
+        imagePath = os.path.join(params['blog_images_upload_path'], query.image)
+        if os.path.exists(imagePath):
+            os.remove(imagePath)
+
+        try:
+            ## Delete blog record from database
+            db.session.delete(query)
+            db.session.commit()
+            flash("Deleted Blog! Successfully", "alert-danger")
+            return redirect(url_for('admin.adminBlogs'))
+        except:
+            flash("Error Deleting Blog!", "alert-danger")
+            return redirect(url_for('admin.adminBlogs'))
+
+    flash("Page Not Found", "alert-danger")
+    return redirect(url_for('main.error'))
+
 # ----------- Settings ----------- #
 #### Display Settings
 @admin.route("/settings")

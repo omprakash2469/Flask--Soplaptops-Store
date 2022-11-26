@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash
 # ----------- Application Modules ----------- #
 from .models.auth import Admin, AdminRole
 from .config import Config
-from .extensions import db, login_manager
+from .extensions import db, login_manager, migration, ckeditor
 from .functions import func_dict
 
 
@@ -13,6 +13,8 @@ from .functions import func_dict
 def register_extensions(app):
     db.init_app(app)
     login_manager.init_app(app)
+    migration.init_app(app, db)
+    ckeditor.init_app(app)
 
 # ----------- Register Blueprints ----------- #
 def register_blueprints(app):
@@ -40,7 +42,7 @@ def configure_database(app):
         exist = Admin.query.count()
         if exist == 0:
             # Add Default User
-            adduser = Admin(name='admin', email='development@gmail.com', password=generate_password_hash('development#website123', method="sha256"))
+            adduser = Admin(name='admin', email='development1270@gmail.com', password=generate_password_hash('development#website123', method="sha256"))
             db.session.add(adduser)
             db.session.commit()
             db.session.flush
@@ -51,7 +53,6 @@ def configure_database(app):
             db.session.add(roles)
             db.session.commit()
 
-    
     @app.teardown_request
     def shutdown_session(exception=None):
         db.session.remove()
