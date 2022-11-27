@@ -1,4 +1,11 @@
 {% extends '/main/layout.html' %}
+
+{% block head %}
+    <meta name="description" content="{{head.desc}}">
+    <title>{{head.title}}</title>
+    <link rel="canonical" href="{{head.canonical}}">
+{% endblock %}
+
 {% block content %}
 <div class="content-wrapper py-14 lg:w-[90%] lg:m-auto xl:w-[1200px] xl:py-16">
     <p class="text-5xl block text-center py-7"><i class="fa-solid fa-circle-check text-green-500"></i></p>

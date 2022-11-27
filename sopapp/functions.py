@@ -1,8 +1,8 @@
 from flask import redirect, url_for
-import json, re
+import re
 from .models.main import Products, Categories, ProductsImages
 from .models.auth import AdminRole, Admin
-from .extensions import roles, params
+from .extensions import roles
 from sopapp import login_manager
 
 # ----------- Login Manager ----------- #
@@ -14,12 +14,6 @@ def load_user(user_id):
 def adminById(id):
     admin = Admin.query.get(id)
     return admin.name
-
-# ----------- Return SEO Titles ----------- #
-def returnMeta(page):
-    with open(params['seo']) as c:
-        meta = json.load(c)["meta"][page]
-    return meta
 
 # ----------- Function for Jinja ----------- #
 ## Get Number of products by category id

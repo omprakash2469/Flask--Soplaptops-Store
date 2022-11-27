@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash
 
 # ----------- Application Modules ----------- #
 from .models.auth import Admin, AdminRole
-from .config import Config
+from .config import Config, production
 from .extensions import db, login_manager, migration, ckeditor
 from .functions import func_dict
 
@@ -74,7 +74,7 @@ def apply_themes(app):
     ## Jinja Function
     @app.context_processor
     def context_processor():
-        return dict(authAdminRole=func_dict['authAdminRole'], getCategoryById=func_dict['getCategoryById'], roleIdByAdminId=func_dict['roleIdByAdminId'], NumberOfProducts=func_dict['NumberOfProducts'], roleByAdminId=func_dict['roleByAdminId'], returnSum=func_dict['returnSum'], getProductImages=func_dict['getProductImages'])
+        return dict(authAdminRole=func_dict['authAdminRole'], getCategoryById=func_dict['getCategoryById'], roleIdByAdminId=func_dict['roleIdByAdminId'], NumberOfProducts=func_dict['NumberOfProducts'], roleByAdminId=func_dict['roleByAdminId'], returnSum=func_dict['returnSum'], getProductImages=func_dict['getProductImages'], production=production)
 
 
 # ----------- Initialize the core application ----------- #

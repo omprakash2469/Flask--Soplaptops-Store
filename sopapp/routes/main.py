@@ -3,8 +3,9 @@ from flask import Blueprint, render_template, flash, redirect, url_for, session,
 
 # ----------- Application Modules ----------- #
 from ..extensions import ROOT_DIR, db, params
-from ..functions import getCategories, returnMeta, adminById, getProductImages
+from ..functions import getCategories, adminById
 from ..models.main import EmailForm, Emails, Categories, Products, Contacts, ContactForm, Blogs
+from ..seo import meta, brand_name, primary_keyword
 
 # ----------- Instiantiate Blueprint ----------- #
 main = Blueprint('main', __name__, template_folder='templates')
@@ -48,18 +49,17 @@ def index():
     blogs = Blogs.query.order_by(Blogs.views.desc()).limit(4)
 
     # SEO Meta data
-    meta = returnMeta('home')
-    meta['canonical'] = request.base_url
-    return render_template('main/home.html', meta=meta, form=form, categories=getCategories(), products=products, blogs=blogs)
+    head = meta['home']
+    head['canonical'] = request.base_url
+    return render_template('main/home.html', head=head, form=form, categories=getCategories(), products=products, blogs=blogs)
 
 # ----------- Blogs Archives ----------- #
 @main.route('/blogs')
 def blogs():
     # SEO Meta data
-    meta = returnMeta('blogs')
-    meta['title'] = meta['title'] + " | " + params['blog_name']
-    meta['canonical'] = request.base_url
-    return render_template('main/blogs.html', meta=meta, categories=getCategories(), blogs=Blogs.query.all())
+    head = meta['blogs']
+    head['canonical'] = request.base_url
+    return render_template('main/blogs.html', head=head, categories=getCategories(), blogs=Blogs.query.all())
 
 # ----------- Single Blog Page ----------- #
 @main.route('/blog/<string:slug>')
@@ -82,10 +82,11 @@ def single_blog(slug):
     relatedBlog = Blogs.query.filter(Blogs.id!=blog.id).limit(2)
 
     # SEO Meta data
-    meta = returnMeta('blogs')
-    meta['title'] = meta['title'] + " | " + params['blog_name']
-    meta['canonical'] = request.base_url
-    return render_template('main/single-blog.html', meta=meta, categories=getCategories(), blog=blog, relatedBlog=relatedBlog)
+    head = meta['single_blog']
+    head['title'] = blog.title + f" || {brand_name}"
+    head['desc'] = blog.metaDesc
+    head['canonical'] = request.base_url
+    return render_template('main/single-blog.html', head=head, categories=getCategories(), blog=blog, relatedBlog=relatedBlog)
     
 # ----------- Products Archives ----------- #
 @main.route('/category/<string:category>')
@@ -100,10 +101,11 @@ def productArchives(category):
     products = Products.query.filter_by(category_id=query.id).all()
    
     # SEO Meta data
-    meta = returnMeta('category')
-    meta['title'] = category.capitalize() + " Laptops in Pune | " + params['blog_name']
-    meta['canonical'] = request.base_url
-    return render_template('main/shop.html', meta=meta, categories=getCategories(), category=category.lower(), products=products)
+    head = meta['category']
+    head['title'] = query.category.capitalize() + f" | {brand_name} | {primary_keyword}"
+    head['desc'] = f"Best deals on {query.category} Computers and Laptops in Pune. Explore products and Buy Now"
+    head['canonical'] = request.base_url
+    return render_template('main/shop.html', head=head, categories=getCategories(), category=category.lower(), products=products)
 
 # ----------- Single Product Page ----------- #
 @main.route("/category/<string:category>/<string:slug>")
@@ -133,29 +135,28 @@ def singleProductPage(category, slug):
     relatedProducts = Products.query.filter(Products.id!=product.id, Products.category_id==product.category_id).limit(6)
 
     # SEO Meta data
-    meta = returnMeta('products')
-    meta['title'] = slug.title() + f" | {category.upper()} | " + params['blog_name']
-    meta['canonical'] = request.base_url
-    return render_template('main/product.html', meta=meta, categories=getCategories(), product=product, relatedProducts=relatedProducts, category=category, button=button)
+    head = meta['product']
+    head['title'] = product.product + f" | {brand_name}"
+    head['desc'] = product.product_desc
+    head['canonical'] = request.base_url
+    return render_template('main/product.html', head=head, categories=getCategories(), product=product, relatedProducts=relatedProducts, category=category, button=button)
 
 # ----------- About ----------- #
 @main.route("/about")
 def about():
 
     # SEO Meta data
-    meta = returnMeta('about')
-    meta['title'] = meta['title'] + " | " + params['blog_name']
-    meta['canonical'] = request.base_url
-    return render_template('main/about.html', categories=getCategories(), meta=meta)
+    head = meta['about']
+    head['canonical'] = request.base_url
+    return render_template('main/about.html', categories=getCategories(), head=head)
 
 # ----------- Privacy Policies ----------- #
 @main.route("/privacy-policy")
 def privacyPolicy():
     # SEO Meta data
-    meta = returnMeta('privacy-policy')
-    meta['title'] = meta['title'] + " | " + params['blog_name']
-    meta['canonical'] = request.base_url
-    return render_template('main/privacy-policy.html', categories=getCategories(), meta=meta)
+    head = meta['privacy-policy']
+    head['canonical'] = request.base_url
+    return render_template('main/privacy-policy.html', categories=getCategories(), head=head)
 
 # ----------- Contact ----------- #
 @main.route("/contact", methods = ['GET', 'POST'])
@@ -181,10 +182,9 @@ def contact():
             return redirect(url_for('main.contact'))
     
     # SEO Meta data
-    meta = returnMeta('contact')
-    meta['title'] = meta['title'] + " | " + params['blog_name']
-    meta['canonical'] = request.base_url
-    return render_template('main/contact.html', categories=getCategories(), form=form, meta=meta)
+    head = meta['contact']
+    head['canonical'] = request.base_url
+    return render_template('main/contact.html', categories=getCategories(), form=form, head=head)
 
 
 # ----------- Error Handling ----------- #

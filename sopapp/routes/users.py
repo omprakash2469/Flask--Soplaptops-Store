@@ -7,7 +7,8 @@ from ..models.users import Orders, OrdersForm, Users, UserRegisterForm, UserUpda
 from ..models.main import Products, ProductsImages
 from ..models.auth import LoginForm
 from ..extensions import db, params
-from ..functions import MergeDicts, getCategories, getCategoryById, returnMeta
+from ..functions import MergeDicts, getCategories, getCategoryById
+from ..seo import meta, brand_name
 
 # ----------- Instiantiate Blueprint ----------- #
 users = Blueprint('users', __name__, template_folder='templates')
@@ -98,10 +99,11 @@ def dashboard():
     }
 
     # SEO Meta data
-    meta = returnMeta('user')
-    meta['title'] = session['username'] + " || Dashboard - " + params['blog_name']
-    meta['canonical'] = request.base_url
-    return render_template('users/index.html', meta=meta, categories=getCategories(), orders=orders, user=user, form=form, uo=userOrders)
+    head = meta['user']
+    head['title'] = "Dashboard | " + brand_name
+    head['canonical'] = request.base_url
+
+    return render_template('users/index.html', head=head, categories=getCategories(), orders=orders, user=user, form=form)
 
 
 # ----------- Shopping Cart ----------- #
@@ -208,17 +210,15 @@ def checkout():
                 db.session.add(order)
                 db.session.commit()
                 # SEO Meta data
-                meta = returnMeta('orderConfirm')
-            return render_template('main/confirmation.html', meta=meta, categories=getCategories())
+                head = meta['orderConfirm']
+            return render_template('main/confirmation.html', head=head, categories=getCategories())
         except Exception as e:
             flash(f"Error Placing Your Order {str(e)}", "bg-red-200")
             return redirect(url_for('users.checkout'))
 
     # SEO Meta data
-    meta = returnMeta('checkout')
-    meta['title'] = "Checkout - " + session['username'] + " || " + params['blog_name']
-    meta['canonical'] = request.base_url
-    return render_template('main/checkout.html', meta=meta, categories=getCategories(), form=form, user=loggedinUser)
+    head = meta['checkout']
+    return render_template('main/checkout.html', head=head, categories=getCategories(), form=form, user=loggedinUser)
 
 
 # ----------- User Login ----------- #
@@ -255,10 +255,9 @@ def login():
             return redirect(url_for('users.login'))
 
     # SEO Meta data
-    meta = returnMeta('login')
-    meta['title'] = meta['title'] + " | " + params['blog_name']
-    meta['canonical'] = request.base_url
-    return render_template('users/login.html', meta=meta, categories=getCategories(), form=form)
+    head = meta['login']
+    head['canonical'] = request.base_url
+    return render_template('users/login.html', head=head, categories=getCategories(), form=form)
 
 # ----------- User Signup ----------- #
 @users.route("/signup", methods=['GET', 'POST'])
@@ -301,10 +300,9 @@ def signup():
             return redirect(url_for('users.signup'))
 
     # SEO Meta data
-    meta = returnMeta('signup')
-    meta['title'] = meta['title'] + " | " + params['blog_name']
-    meta['canonical'] = request.base_url
-    return render_template('users/signup.html', meta=meta, categories=getCategories(), form=form)
+    head = meta['signup']
+    head['canonical'] = request.base_url
+    return render_template('users/signup.html', head=head, categories=getCategories(), form=form)
 
 
 ## Cancel Order

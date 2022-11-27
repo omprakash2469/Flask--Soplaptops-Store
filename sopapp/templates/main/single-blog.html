@@ -1,7 +1,12 @@
 {% extends 'main/layout.html' %}
 
-{% block content %}
+{% block head %}
+    <meta name="description" content="{{head.desc}}">
+    <title>{{head.title}}</title>
+    <link rel="canonical" href="{{head.canonical}}">
+{% endblock %}
 
+{% block content %}
 <!-- Blog Categories -->
 <section>
     <div class="py-10 bg-gray-100">
