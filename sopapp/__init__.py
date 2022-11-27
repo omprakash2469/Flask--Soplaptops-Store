@@ -74,7 +74,7 @@ def apply_themes(app):
     ## Jinja Function
     @app.context_processor
     def context_processor():
-        return dict(authAdminRole=func_dict['authAdminRole'], getCategoryById=func_dict['getCategoryById'], roleIdByAdminId=func_dict['roleIdByAdminId'], NumberOfProducts=func_dict['NumberOfProducts'], roleByAdminId=func_dict['roleByAdminId'], returnSum=func_dict['returnSum'])
+        return dict(authAdminRole=func_dict['authAdminRole'], getCategoryById=func_dict['getCategoryById'], roleIdByAdminId=func_dict['roleIdByAdminId'], NumberOfProducts=func_dict['NumberOfProducts'], roleByAdminId=func_dict['roleByAdminId'], returnSum=func_dict['returnSum'], getProductImages=func_dict['getProductImages'])
 
 
 # ----------- Initialize the core application ----------- #

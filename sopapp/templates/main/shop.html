@@ -18,14 +18,14 @@
             <div class="product-info md:mt-8">
                 <figure class="relative">
                     <div class="relative">
-                        <a href="{{products[p].product_url}}"
+                        <a href="{{url_for('main.singleProductPage', category=category.lower(), slug=p.slug)}}"
                             class="bg-black after:transition-all after:block after:absolute after:inset-0 hover:after:bg-black/30 after:w-full">
-                            <img class="w-full object-cover" src="{{products[p].image}}" alt="{{products[p].image}}">
+                            <img class="w-full object-cover" src="{{url_for('static', filename='assets/images/products/')}}{{category}}/{{getProductImages(False, *[p.id])}}" alt="{{p.product}}">
                         </a>
                     </div>
                     <figcaption class="text-center py-3">
-                        <h2 class="font-semibold text-xl mb-1 capitalize font-lato"><a href="{{products[p].product_url}}">{{products[p].product}}</a></h2>
-                        <p class="font-source">Rs. {{products[p].price}}</p>
+                        <h2 class="font-semibold text-xl mb-1 capitalize font-lato"><a href="{{url_for('main.singleProductPage', category=category.lower(), slug=p.slug)}}">{{p.product}}</a></h2>
+                        <p class="font-source">Rs. {{p.price}}</p>
                     </figcaption>
                 </figure>
             </div>

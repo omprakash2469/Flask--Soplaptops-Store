@@ -36,6 +36,7 @@ class Products(db.Model):
     details = db.Column(db.Text, nullable=False)
     price = db.Column(db.Integer, nullable=False)
     stock = db.Column(db.Integer, nullable=False)
+    slug = db.Column(db.Text, default="text")
     category_id = db.Column(db.Integer, nullable=False)
 
 class ProductsImages(db.Model):

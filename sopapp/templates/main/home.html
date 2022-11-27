@@ -115,21 +115,21 @@
     <!-- PRODUCTS -->
     <div
         class="categories pb-14 space-y-8 sm:w-4/6 sm:m-auto md:grid md:grid-cols-2 md:gap-8 md:w-11/12 xl:grid-cols-3 xl:gap-6 xl:w-[1200px]">
-        {% for p in products %}
-        {% for i in products[p] %}
+        {% for key, value in products.items() %}
+        {% for id, item in value.items() %}
         <div class="product-info md:mt-8">
             <figure class="relative">
                 <div class="relative">
-                    <a href="{{url_for('main.singleProductPage', category=p, slug=products[p][i]['product']|replace(' ', '-')|lower())}}"
+                    <a href="{{url_for('main.singleProductPage', category=key, slug=value[id].slug)}}"
                         class="bg-black after:transition-all after:block after:absolute after:inset-0 hover:after:bg-black/30 after:w-full">
                         <img class="w-full object-cover"
-                            src="{{url_for('static', filename='assets/images/products/')}}{{p}}/{{products[p][i]['image']}}"
-                            alt="apple category image">
+                            src="{{url_for('static', filename='assets/images/products/')}}{{key}}/{{getProductImages(False, *[value[id].id])}}"
+                            alt="{{value[id].product}}">
                     </a>
                 </div>
                 <figcaption class="text-center py-3">
-                    <h2 class="font-semibold mb-1 font-source text-xl">{{products[p][i]['product']}}</h2>
-                    <p class="font-lato">Rs. {{products[p][i]['price']}}</p>
+                    <h2 class="font-semibold mb-1 font-source text-xl"><a href="{{url_for('main.singleProductPage', category=key, slug=value[id].slug)}}">{{value[id].product}}</a></h2>
+                    <p class="font-lato">Rs. {{value[id].price}}</p>
                 </figcaption>
             </figure>
         </div>
@@ -137,8 +137,36 @@
         {% endfor %}
     </div>
 </div>
+
+<!-- BLOGS SECTION -->
+<div class="product-category px-4 py-10 bg-white">
+    <h1 class="text-xl mt-5 mb-12 sm:px-8 md:text-center font-lato tracking-wider font-semibold"><span
+            class="underline underline-offset-8 md:no-underline">OU</span><span
+            class="md:underline md:underline-offset-8">R B</span>LOGS</h1>
+
+    <!-- BLOGS -->
+    <div class="lg:w-[90%] lg:m-auto xl:w-[1200px] py-10 xl:py-16 px-5 md:px-0 grid gap-8 md:gap-10 xl:gap-14 sm:grid-cols-2">
+        {% for blog in blogs %}
+        <figure class="shadow-md shadow-gray-200 bg-gray-100">
+            <a href="{{url_for('main.single_blog', slug=blog.slug)}}" class="block overflow-hidden">
+                <img src="{{ url_for('static', filename='assets/images/blogs/')}}{{blog.image}}"
+                    alt="{{blog.title}}" class="block w-full object-cover hover:scale-110 transition-all duration-300 hover:opacity-90">
+            </a>
+            <figcaption class="p-4">
+                <h2 class="font-semibold text-xl font-lato mb-3 md:text-2xl xl:text-3xl hover:text-gray-700 transition-all"><a href="{{url_for('main.single_blog', slug=blog.slug)}}">{{blog.title}}</a></h2>
+                <p class="text-sm leading-5 font-source text-gray-700 mb-4 md:text-base xl:text-lg">{{blog.intro[:150]}}..</p>
+                <div class="flex justify-between items-center">
+                    <span class="md:text-lg">{{blog.views}}+ Views</span>
+                    <a href="{{url_for('main.single_blog', slug=blog.slug)}}" class="block w-max bg-black text-white px-4 py-2 text-xs md:text-base xl:text-lg hover:bg-gray-700 transition-all">Read More</a>
+                </div>
+            </figcaption>
+        </figure>
+        {% endfor %}
+    </div>
+</div>
+
 <!-- SUBSCRIBE TO NEW LETTER -->
-<div class="subscribe-wrapper py-16 px-4 text-center" id="subscribe">
+<div class="subscribe-wrapper py-16 px-4 text-center bg-gray-100" id="subscribe">
     <div class="subscribe-container m-auto md:w-[768px]">
         <h1 class="text-xl my-7 mb-3 font-semibold">SUBSCRIBE TO NEWSLETTER</h1>
         <P class="text-base mb-10">
@@ -149,7 +177,7 @@
             {{form.email(class="w-full text-center border border-gray-200 px-5 py-4 sm:w-[70%] sm:text-left
             outline-none", placeholder="Enter your Email Address here")}}
             {{form.submit(class="px-5 py-4 bg-black w-full text-white text-sm transition-all hover:bg-gray-800
-            sm:w-[30%]")}}
+            sm:w-[30%] cursor-pointer")}}
         </form>
         {% with messages = get_flashed_messages(with_categories=True) %}
         {% if messages %}

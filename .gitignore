@@ -1,11 +1,16 @@
 __pycache__
+
 node_modules
 sopenv
+
 fullconf
 sopapp/static/assets/images/category/
 sopapp/static/assets/images/products/
 sopapp/static/assets/images/blogs/
-*.db
 sopapp/static/robots.txt
 sopapp/static/sitemap.xml
+
+instance
 migrations
+
+*.db

@@ -6,7 +6,7 @@
     <!-- Single Product Page -->
     <div class="heading-box bg-gray-100 py-8 px-4 lg:py-12 flex">
         <h1 class="text-2xl lg:text-3xl md:w-[720px] md:m-auto lg:w-[90%] xl:w-[1200px] font-lato">
-            <span class="text-gray-400 text-xl">{{details['category']|upper()}} </span>/ {{details['product']}}
+            <span class="text-gray-400 text-xl">{{category|upper()}} </span>/ {{product.product}}
         </h1>
     </div>
 
@@ -32,15 +32,15 @@
                         src="https://dummyimage.com/400x400" id="active_image">
                     <!-- Other Product Images -->
                     <div class="product-images grid grid-cols-4 gap-3 my-2 py-4" id="product_images">
-                        {% for image in details['urls'] %}
-                        <img src="{{url_for('static', filename='assets/images/products/')}}{{details['category']}}/{{image.image_name}}"
+                        {% for image in getProductImages(True, product.id) %}
+                        <img src="{{url_for('static', filename='assets/images/products/')}}{{category.lower()}}/{{image.image_name}}"
                             class="w-full border-gray-300 cursor-pointer" alt="Great Laptops images">
                         {% endfor %}
                     </div>
                 </div>
                 <div class="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
-                    <h2 class="text-sm title-font text-gray-500 tracking-widest font-semibold"><a class="hover:text-black transition-colors" href="{{url_for('main.productArchives', category=details['category'].lower())}}">{{details['category'].upper()}}</a></h2>
-                    <h1 class="text-black text-4xl title-font font-medium mb-1 font-lato">{{details['product']}}</h1>
+                    <h2 class="text-sm title-font text-gray-500 tracking-widest font-semibold"><a class="hover:text-black transition-colors" href="{{url_for('main.productArchives', category=product.slug)}}">{{category.upper()}}</a></h2>
+                    <h1 class="text-black text-4xl title-font font-medium mb-1 font-lato">{{product.product}}</h1>
                     <div class="flex mb-4">
                         <span class="flex items-center">
                             <svg fill="currentColor" stroke="currentColor" stroke-linecap="round"
@@ -80,7 +80,7 @@
                             <span class="ml-3">4 Reviews</span>
                         </span>
                     </div>
-                    <p class="leading-relaxed text-gray-500 font-source text-lg break-words">{{details['desc']|safe}}</p>
+                    <p class="leading-relaxed text-gray-500 font-source text-lg break-words">{{product.product_desc|safe}}</p>
                     <div class="flex mt-6 items-center pb-5 border-b-2 border-gray-200 mb-5">
                         <div class="flex items-center">
                             <span class="mr-3">Quantity</span>
@@ -89,17 +89,17 @@
                                     class="w-32 rounded border border-gray-700 focus:ring-2 focus:ring-black-900 bg-transparent appearance-none py-2 focus:outline-none focus:border-black-500 text-black px-3">
                             </label>
                         </div>
-                        <input type="hidden" name="pid" id="pid" value="{{details['id']}}">
+                        <input type="hidden" name="pid" id="pid" value="{{product.id}}">
                     </div>
                     <div class="flex">
-                        <span class="title-font font-medium text-2xl text-black">Rs. {{details['price']}}</span>
+                        <span class="title-font font-medium text-2xl text-black">Rs. {{product.price}}</span>
                         <button
-                        {% if details['button'][0] == 'true' %}
+                        {% if button[0] == 'true' %}
                         onclick="openCheckoutBar()"
                         {% else %}
                         onclick="addAndOpenCart()"
                         {% endif %}
-                            class="flex ml-auto text-white bg-gray-800 border-0 py-2 px-6 focus:outline-none hover:bg-gray-700 rounded">{{details['button'][1]}}</button>
+                            class="flex ml-auto text-white bg-gray-800 border-0 py-2 px-6 focus:outline-none hover:bg-gray-700 rounded">{{button[1]}}</button>
                     </div>
                 </div>
             </div>
@@ -109,7 +109,7 @@
                         Product Details</h2>
                 </div>
                 <div class="md:columns-2 p-3 border border-gray-200">
-                    {{details['details']|safe()}}
+                    {{product.details|safe()}}
                 </div>
             </div>
         </div>
@@ -127,18 +127,18 @@
             <!-- RELATED -->
             <div
                 class="pb-14 space-y-8 sm:w-4/6 sm:m-auto md:grid md:grid-cols-2 md:gap-8 md:w-11/12 xl:grid-cols-3 xl:gap-6 xl:w-[1200px]">
-                {% for p in products %}
+                {% for p in relatedProducts %}
                 <div class="product-info md:mt-8">
                     <figure class="relative">
                         <div class="relative">
-                            <a href="{{products[p].product_url}}"
+                            <a href="{{url_for('main.singleProductPage', category=category.lower(), slug=p.slug)}}"
                                 class="bg-black after:transition-all after:block after:absolute after:inset-0 hover:after:bg-black/30 after:w-full">
-                                <img class="w-full object-cover" src="{{products[p].image}}" alt="apple category image">
+                                <img class="w-full object-cover" src="{{url_for('static', filename='assets/images/products/')}}{{category}}/{{getProductImages(False, *[p.id])}}" alt="{{p.product}}">
                             </a>
                         </div>
                         <figcaption class="text-center py-3">
-                            <h2 class="font-semibold mb-1 font-source text-xl">{{products[p].product}}</h2>
-                            <p class="font-lato">Rs. {{products[p].price}}</p>
+                            <h2 class="font-semibold text-xl mb-1 capitalize font-lato"><a href="{{url_for('main.singleProductPage', category=category.lower(), slug=p.slug)}}">{{p.product}}</a></h2>
+                            <p class="font-source">Rs. {{p.price}}</p>
                         </figcaption>
                     </figure>
                 </div>

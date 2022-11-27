@@ -1,6 +1,6 @@
-from flask import redirect, url_for, render_template
+from flask import redirect, url_for
 import json, re
-from .models.main import Products, Categories
+from .models.main import Products, Categories, ProductsImages
 from .models.auth import AdminRole, Admin
 from .extensions import roles, params
 from sopapp import login_manager
@@ -10,6 +10,10 @@ login_manager.login_view = 'auth.adminLogin'
 @login_manager.user_loader
 def load_user(user_id):
     return Admin.query.get(int(user_id))
+
+def adminById(id):
+    admin = Admin.query.get(id)
+    return admin.name
 
 # ----------- Return SEO Titles ----------- #
 def returnMeta(page):
@@ -30,6 +34,17 @@ def NumberOfProducts(id):
 def slugFormat(string):
     string = re.sub('[^a-zA-Z0-9 \n\.]', '', string)
     return " ".join(string.strip().lower().split()).replace(' ', '-')
+
+def getProductImages(bool, *id):
+    if id and bool:
+        images = ProductsImages.query.filter_by(product_id=id[0]).all()
+        return images
+    elif(id and not bool):
+        image = ProductsImages.query.filter_by(product_id=id[0]).first()
+        return image.image_name
+    else:
+        return False
+
 
 ## Get Category Name by id
 def getCategoryById(id):
@@ -123,5 +138,6 @@ func_dict = {
     "getCategories": getCategories,
     "MergeDicts": MergeDicts,
     "roleByAdminId": roleByAdminId,
-    "returnSum": returnSum
+    "returnSum": returnSum,
+    "getProductImages": getProductImages
 }

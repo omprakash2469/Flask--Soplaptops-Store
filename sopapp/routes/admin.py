@@ -51,7 +51,7 @@ def addCategories():
         imagefile = form.image_file.data
 
         ## Create Image filename
-        imageName = imgname.strip().lower().replace(' ', '-') + os.path.splitext(imagefile.filename)[1]
+        imageName = slugFormat(imgname) + os.path.splitext(imagefile.filename)[1]
         # Check if category folder exists
         if not os.path.exists(params['category_images_upload_path']):
             os.mkdir(params['category_images_upload_path'])
@@ -91,7 +91,7 @@ def editCategories():
        ### Check if Image is uploaded
         if imagefile != None:
             ## Create Image filename
-            imageName = imgname.strip().lower().replace(' ', '-') + os.path.splitext(imagefile.filename)[1]
+            imageName = slugFormat(imgname) + os.path.splitext(imagefile.filename)[1]
             oldImageName = data.category_img
             ## Check if file exists
             imagePath = params['category_images_upload_path']+ oldImageName
@@ -102,7 +102,7 @@ def editCategories():
         else:
             ## Create Image filename
             ext = os.path.splitext(data.category_img)[1]
-            imageName = imgname.strip().lower().replace(' ', '-') + ext
+            imageName = slugFormat(imgname) + ext
             src = params['category_images_upload_path'] + data.category_img
             dest = params['category_images_upload_path'] + imageName
             os.rename(src, dest)
@@ -204,11 +204,12 @@ def adminAddProduct():
         fdetails = productDetailsFormat(form.details.data, True)
         fcategory = form.category.data
         fimage_file = form.image_file.data
+        slug = slugFormat(fproduct_name)
 
         ### Check if Images are Uploaded
         if fimage_file[0]:
             ## Insert product info into database
-            entry = Products(product = fproduct_name, product_desc = fdesc, price = fprice, stock = fstock, details = fdetails, category_id = fcategory)
+            entry = Products(product = fproduct_name, product_desc = fdesc, price = fprice, stock = fstock, details = fdetails, slug=slug, category_id = fcategory)
             db.session.add(entry)
             db.session.commit()
             db.session.flush()
@@ -297,6 +298,7 @@ def adminEditProductForm():
         fdetails = productDetailsFormat(form.details.data, True)
         fcategory = form.category.data
         fimage_file = form.image_file.data
+        slug = slugFormat(fproduct_name)
         ## Get category by id
         category = getCategoryById(fcategory)
 
@@ -317,6 +319,7 @@ def adminEditProductForm():
             product.details = fdetails
             product.price = fprice
             product.stock = fstock
+            product.slug = slug
             if categoryChanged:
                 product.category_id = fcategory
             db.session.commit()
@@ -484,7 +487,6 @@ def adminEditBlogForm():
         return redirect(url_for('admin.adminBlogs'))
 
     form = AddBlog()
-    form.category.choices = [(c.id, c.category) for c in getCategories()]
     ### Display Blog Edit Form
     if request.method == "POST" and request.form.get('action') == 'editform' and request.form.get('bid'):
         bid = request.form.get('bid')
@@ -492,7 +494,7 @@ def adminEditBlogForm():
         # Check if owner is making changes to blog
         if query.admin_id != current_user.id:
             flash('Cannot edit another users blog', "alert-danger")
-            return redirect(url_for('admin.adminBlogPage', category=slugFormat(getCategoryById(query.category_id), True)))
+            return redirect(url_for('admin.adminBlogs'))
 
         form.metaDesc.data = query.metaDesc # Populate textarea field
         form.intro.data = query.intro # Populate textarea field
@@ -502,8 +504,7 @@ def adminEditBlogForm():
         "title": "Edit Blog",
         "action": url_for('admin.adminEditBlogForm'),
         "blog_title": query.title,
-        "image": url_for('static', filename='assets/images/blogs/'+slugFormat(getCategoryById(query.category_id), True)+'/'+query.image),
-        "category": query.category_id,
+        "image": url_for('static', filename='assets/images/blogs/' + query.image),
         "intro": "",
         "metaDesc": "",
         "details": "",
@@ -518,17 +519,15 @@ def adminEditBlogForm():
 
         ### Get form values
         ftitle = form.title.data
-        fmetaDesc = form.metaDesc.data
         fintro = form.intro.data
-        fcategory = form.category.data
+        fmetaDesc = form.metaDesc.data
         fimage = form.image.data
         fdetails = form.details.data
-        # New Category
-        category = getCategoryById(fcategory)
 
         # ----------- Validation 
         # Fetch blog information
-        blog = Blogs.query.filter_by(id=bid).first()
+        blog = Blogs.query.get(bid)
+
         # Check if blog exists
         if not blog:
             flash('Blog not found', "alert-danger")
@@ -537,20 +536,9 @@ def adminEditBlogForm():
         # Check if owner is making changes to blog
         if blog.admin_id != current_user.id:
             flash('Cannot edit another users blog', "alert-danger")
-            return redirect(url_for('admin.adminBlogPage', category=slugFormat(category, True)))
-
-        # Current Category Data
-        currentCategory = getCategoryById(blog.category_id)
-        currentCategoryPath = params['blog_images_upload_path'] + slugFormat(currentCategory, True) + "/"
-        newCategoryPath = params['blog_images_upload_path'] + slugFormat(category, True) + "/"
+            return redirect(url_for('admin.adminBlogs'))
 
         # ----------- Updating Images 
-        # Check if category of blog is changed
-        categoryChanged = False
-        if int(blog.category_id) != int(fcategory):
-            categoryChanged = True
-            blog.category_id = fcategory
-
         # Check if title is changed
         titleChanged = False
         if (ftitle != blog.title):
@@ -560,53 +548,31 @@ def adminEditBlogForm():
 
         ## Handle Image Upload
         # Image upload and category changed or not changed
-        if fimage or categoryChanged or titleChanged:
+        if fimage or titleChanged:
             # Delete Old Image if new are uploaded
             if fimage:
                 ## ---- Image upload but no category changed ----
                 # Delete current images
-                if os.path.exists(currentCategoryPath+blog.image):
-                    os.remove(os.path.join(currentCategoryPath+blog.image))
-
-                ## ---- New Image upload ---- 
-                # Check if category has changed
-                if categoryChanged:
-                    uploadPath = newCategoryPath
-                else:
-                    uploadPath = currentCategoryPath
-
-                # Create folder if blog category folder doesn't exists
-                if not os.path.exists(uploadPath):
-                    os.mkdir(uploadPath)
+                if os.path.exists(params['blog_images_upload_path']+blog.image):
+                    os.remove(os.path.join(params['blog_images_upload_path']+blog.image))
 
                 # Create image name and upload new image
                 image = secure_filename(slugFormat(ftitle) + os.path.splitext(fimage.filename)[1])
-                fimage.save(os.path.join(uploadPath, image))
+                fimage.save(os.path.join(params['blog_images_upload_path'], image))
 
-                # Update image in database
-                blog.image = image
-            elif titleChanged:
-            ## ---- Title Change ----
-                image = slugFormat(ftitle) + os.path.splitext(blog.image)[1]
-                # Rename if only title is changed
-                os.rename(os.path.join(currentCategoryPath, blog.image), os.path.join(currentCategoryPath, image))
-                if categoryChanged:
-                    if not os.path.exists(newCategoryPath):
-                        os.mkdir(newCategoryPath)
-                    # Move Files from source to destination
-                    shutil.move(currentCategoryPath + image, newCategoryPath + image)
-                
                 # Update image in database
                 blog.image = image
             else:
-                ## ---- Category changed but no image uploaded and no title changed ---- 
-                # Move images from old category to new category folder
-                # Check if destination folder exists
-                if not os.path.exists(newCategoryPath):
-                    os.mkdir(newCategoryPath)
+            ## ---- Title Change ----
+                image = secure_filename(slugFormat(ftitle) + os.path.splitext(fimage.filename)[1])
+                imagePath = os.path.join(params['blog_images_upload_path'], blog.image)
 
-                # Move Files from source to destination
-                shutil.move(currentCategoryPath + blog.image, newCategoryPath + blog.image)
+                # Rename if only title is changed
+                if os.path.exists(imagePath):
+                    os.rename(imagePath, os.path.join(params['blog_images_upload_path'], image))
+                
+                # Update image in database
+                blog.image = image
 
         ## Update Blog Information
         try:
@@ -617,10 +583,10 @@ def adminEditBlogForm():
             db.session.commit()
         except:
             flash("Refresh and Try Again! Unable to Update Blog", "alert-danger")
-            return redirect(url_for('admin.adminBlogPage', category=category))
+            return redirect(url_for('admin.adminBlogs'))
             
-        flash("Successfully! Update Blog", "alert-success")
-        return redirect(url_for('admin.adminBlogPage', category=slugFormat(category, True)))
+        flash("Successfully! Updated Blog", "alert-success")
+        return redirect(url_for('admin.adminBlogs'))
     
     flash("Page Not Found", "alert-danger")
     return redirect(url_for('main.error'))
