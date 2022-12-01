@@ -564,7 +564,7 @@ def adminEditBlogForm():
                 blog.image = image
             else:
             ## ---- Title Change ----
-                image = secure_filename(slugFormat(ftitle) + os.path.splitext(fimage.filename)[1])
+                image = secure_filename(slugFormat(ftitle) + os.path.splitext(blog.image)[1])
                 imagePath = os.path.join(params['blog_images_upload_path'], blog.image)
 
                 # Rename if only title is changed
